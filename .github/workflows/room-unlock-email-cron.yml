@@ -1,0 +1,28 @@
+name: Room Unlock Email Cron Worker
+
+on:
+  schedule:
+    # Runs every 15 minutes automatically so eligible participants receive emails on time
+    - cron: '*/15 * * * *'
+  # Allows researchers or admins to manually trigger the email worker anytime from GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  dispatch-unlock-emails:
+    name: Dispatch Room 3 & 4 Unlock Emails
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Supabase Edge Function
+        run: |
+          HTTP_STATUS=$(curl -s -o response.json -w "%{http_code}" -X POST \
+            "https://${{ secrets.SUPABASE_PROJECT_REF }}.supabase.co/functions/v1/send-unlock-notifications" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+            -H "Content-Type: application/json")
+
+          echo "Response HTTP Status: $HTTP_STATUS"
+          cat response.json
+
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "::error::Failed to dispatch unlock notifications (HTTP $HTTP_STATUS)"
+            exit 1
+          fi
