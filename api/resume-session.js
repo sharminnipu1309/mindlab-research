@@ -128,10 +128,10 @@ export default async function handler(req, res) {
 
     const sess = sessions[0];
 
-    // 4. Calculate 24-hour unlock status
+    // 4. Calculate unlock status (1-minute timer for testing)
     const now = new Date();
     let isUnlocked = false;
-    let remainingSeconds = 86400; // 24 hours in seconds
+    let remainingSeconds = 60; // 1-minute timer (website copy displays 24-hour protocol)
 
     if (sess.room_2_started_at) {
       if (sess.rooms_3_4_unlock_at) {
@@ -139,8 +139,8 @@ export default async function handler(req, res) {
         isUnlocked = now >= unlockDate;
         remainingSeconds = Math.max(0, Math.floor((unlockDate.getTime() - now.getTime()) / 1000));
       } else {
-        // Fallback: 24 hours after room_2_started_at
-        const unlockDate = new Date(new Date(sess.room_2_started_at).getTime() + 24 * 60 * 60 * 1000);
+        // Fallback: 1 minute after room_2_started_at
+        const unlockDate = new Date(new Date(sess.room_2_started_at).getTime() + 60 * 1000);
         isUnlocked = now >= unlockDate;
         remainingSeconds = Math.max(0, Math.floor((unlockDate.getTime() - now.getTime()) / 1000));
       }

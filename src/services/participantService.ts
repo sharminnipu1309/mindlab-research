@@ -778,7 +778,8 @@ export async function finalizeStudySession(sessionId: string): Promise<void> {
 
 /**
  * Records authoritative server-side timestamp when a participant starts Room 2 (Backward Corsi).
- * Sets rooms_3_4_unlock_at to exactly now() + 24 hours in the database.
+ * Sets rooms_3_4_unlock_at to 1 minute (60 seconds) for immediate verification,
+ * while study protocol descriptions on the website show 24 hours.
  * Idempotent: Never overwrites an established timestamp.
  */
 export async function recordRoom2Start(
@@ -792,6 +793,43 @@ export async function recordRoom2Start(
     return null;
   }
 
+  // 1. Try serverless endpoint first (runs with administrative privileges on Vercel)
+  try {
+    const resp = await fetch('/api/record-room-2', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: activeSid }),
+    });
+    if (resp.ok) {
+      const result = await resp.json();
+      if (result.success) {
+        const status: RoomUnlockStatus = {
+          unlocked: Boolean(result.unlocked),
+          room2Started: true,
+          room2StartedAt: result.room_2_started_at || null,
+          unlockAt: result.rooms_3_4_unlock_at || null,
+          serverNow: result.server_now || new Date().toISOString(),
+          remainingSeconds: Number(result.remaining_seconds) || 0,
+        };
+
+        if (stored && stored.participantData) {
+          stored.participantData.room2StartedAt = status.room2StartedAt;
+          stored.participantData.rooms3And4UnlockAt = status.unlockAt;
+          stored.participantData.rooms3And4Unlocked = status.unlocked;
+          try {
+            sessionStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(stored));
+            localStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(stored));
+          } catch {}
+        }
+
+        return status;
+      }
+    }
+  } catch (apiErr) {
+    console.warn('[recordRoom2Start] /api/record-room-2 fetch error, trying RPC:', apiErr);
+  }
+
+  // 2. Direct Supabase RPC fallback
   if (isSupabaseConfigured() && supabase) {
     try {
       await ensureAnonymousAuth(false);
@@ -800,7 +838,6 @@ export async function recordRoom2Start(
       });
 
       if (!error && data && data.success) {
-        // Enforce 24-hour protocol interval: Rooms 3 & 4 unlock 24 hours after starting Room 2
         let effectiveUnlockAt = data.rooms_3_4_unlock_at;
         let remaining = Number(data.remaining_seconds) || 0;
 
@@ -817,7 +854,6 @@ export async function recordRoom2Start(
           remainingSeconds: remaining,
         };
 
-        // Update stored session context cache
         if (stored && stored.participantData) {
           stored.participantData.room2StartedAt = status.room2StartedAt;
           stored.participantData.rooms3And4UnlockAt = status.unlockAt;
@@ -850,7 +886,7 @@ export async function recordRoom2Start(
 
         if (!room2StartedAt) {
           const nowStr = new Date().toISOString();
-          const unlockDate = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+          const unlockDate = new Date(Date.now() + 60 * 1000).toISOString();
           const { error: upErr } = await supabase
             .from('sessions')
             .update({
@@ -867,7 +903,7 @@ export async function recordRoom2Start(
         }
 
         const unlocked = Boolean(unlockAt && new Date() >= new Date(unlockAt));
-        const rem = unlockAt ? Math.max(0, Math.floor((new Date(unlockAt).getTime() - Date.now()) / 1000)) : 86400;
+        const rem = unlockAt ? Math.max(0, Math.floor((new Date(unlockAt).getTime() - Date.now()) / 1000)) : 60;
 
         return {
           unlocked,
@@ -883,22 +919,21 @@ export async function recordRoom2Start(
     }
   }
 
-  // Local-only fallback (24-hour unlock interval)
+  // Local-only fallback (1-minute timer)
   const now = new Date();
-  const unlock = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  const unlock = new Date(now.getTime() + 60 * 1000);
   return {
     unlocked: false,
     room2Started: true,
     room2StartedAt: now.toISOString(),
     unlockAt: unlock.toISOString(),
     serverNow: now.toISOString(),
-    remainingSeconds: 86400,
+    remainingSeconds: 60,
   };
 }
 
 /**
  * Checks authoritative server access status for Room 3 (Stroop) and Room 4 (Task Switching).
- * Enforces that exactly 24 hours have elapsed since Room 2 started.
  */
 export async function checkRooms3And4Access(
   sessionId?: string
@@ -913,7 +948,7 @@ export async function checkRooms3And4Access(
       room2StartedAt: null,
       unlockAt: null,
       serverNow: new Date().toISOString(),
-      remainingSeconds: 86400,
+      remainingSeconds: 60,
     };
   }
 
@@ -950,7 +985,7 @@ export async function checkRooms3And4Access(
         const room2Started = Boolean(sRow.room_2_started_at);
         const unlockAt = sRow.rooms_3_4_unlock_at;
         const unlocked = Boolean(room2Started && unlockAt && new Date() >= new Date(unlockAt));
-        const rem = unlockAt ? Math.max(0, Math.floor((new Date(unlockAt).getTime() - Date.now()) / 1000)) : 5;
+        const rem = unlockAt ? Math.max(0, Math.floor((new Date(unlockAt).getTime() - Date.now()) / 1000)) : 0;
 
         return {
           unlocked,
@@ -986,7 +1021,7 @@ export async function checkRooms3And4Access(
     room2StartedAt: null,
     unlockAt: null,
     serverNow: new Date().toISOString(),
-    remainingSeconds: 5,
+    remainingSeconds: 60,
   };
 }
 

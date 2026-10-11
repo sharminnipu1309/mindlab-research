@@ -60,8 +60,9 @@ function formatRemainingShort(seconds: number): string {
 export default function ParticipantDashboard({ navigate, participant }: Props) {
   const [currentParticipant, setCurrentParticipant] = useState<ParticipantSession>(participant);
   const [interruptedModalTask, setInterruptedModalTask] = useState<InterruptedModalData | null>(null);
+  const [showUnlockAlertModal, setShowUnlockAlertModal] = useState<boolean>(false);
   const [unlockStatus, setUnlockStatus] = useState<RoomUnlockStatus | null>(null);
-  const [remainingSeconds, setRemainingSeconds] = useState<number>(5);
+  const [remainingSeconds, setRemainingSeconds] = useState<number>(60);
   const lastSyncRef = useRef<{ serverRemaining: number; syncPerfTime: number } | null>(null);
 
   // Sync latest session status and trial counts directly from Supabase on mount
@@ -78,6 +79,15 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
           serverRemaining: st.remainingSeconds,
           syncPerfTime: performance.now(),
         };
+
+        // Show celebration alert once if newly unlocked
+        if (st.unlocked && st.room2Started) {
+          const alertKey = `mindlab_unlock_alert_shown_${sid}`;
+          if (sessionStorage.getItem(alertKey) !== 'true') {
+            setShowUnlockAlertModal(true);
+            sessionStorage.setItem(alertKey, 'true');
+          }
+        }
       });
     }
   }, [participant]);
@@ -93,11 +103,20 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
       setRemainingSeconds(updatedRemaining);
 
       if (updatedRemaining <= 0) {
+        // Countdown elapsed: trigger unlock state and show celebration alert immediately
+        setUnlockStatus(prev => prev ? { ...prev, unlocked: true, remainingSeconds: 0 } : null);
+        setCurrentParticipant(prev => ({ ...prev, rooms3And4Unlocked: true }));
+        setShowUnlockAlertModal(true);
+
         const sid = currentParticipant.sessionId || participant.sessionId || getStoredSessionContext()?.sessionId;
         if (sid) {
+          sessionStorage.setItem(`mindlab_unlock_alert_shown_${sid}`, 'true');
           checkRooms3And4Access(sid).then(st => {
             setUnlockStatus(st);
             setRemainingSeconds(st.remainingSeconds);
+            if (st.unlocked) {
+              setCurrentParticipant(prev => ({ ...prev, rooms3And4Unlocked: true }));
+            }
           });
         }
       }
@@ -1054,6 +1073,52 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
               >
                 Start Fresh Attempt
                 <ArrowRight size={15} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── LEVEL UNLOCKED CELEBRATION ALERT MODAL ─────────────────── */}
+      {showUnlockAlertModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#11152F]/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white dark:bg-[#162036] rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border-2 border-[#10B981] dark:border-[#059669] text-center animate-scale-up relative">
+            <button
+              onClick={() => setShowUnlockAlertModal(false)}
+              className="absolute top-4 right-4 text-[#94A3B8] hover:text-[#11152F] dark:hover:text-white p-1 rounded-lg transition-colors cursor-pointer"
+              aria-label="Close alert"
+            >
+              ✕
+            </button>
+            <div className="w-16 h-16 rounded-2xl bg-[#D1EDE5] dark:bg-[#064E3B]/60 text-[#0D9488] dark:text-[#34D399] flex items-center justify-center mx-auto mb-4 border border-[#A7F3D0] dark:border-[#059669] shadow-sm">
+              <Sparkles size={32} />
+            </div>
+            <div className="text-[11px] font-extrabold text-[#0D9488] dark:text-[#34D399] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif] mb-1">
+              Study Protocol Update
+            </div>
+            <h3 className="text-xl sm:text-2xl font-extrabold text-[#11152F] dark:text-white font-['Plus_Jakarta_Sans',sans-serif] mb-2">
+              🎉 Room 3 &amp; Room 4 Unlocked!
+            </h3>
+            <p className="text-xs sm:text-sm text-[#475569] dark:text-[#94A3B8] leading-relaxed mb-6 font-medium">
+              The required interval has elapsed under our research protocol. You may now continue with <strong>Room 03 (Stroop Attention Task)</strong> and <strong>Room 04 (Task Switching Flexibility)</strong>!
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => {
+                  setShowUnlockAlertModal(false);
+                  navigate('stroop-room');
+                }}
+                className="flex-1 py-3 px-5 rounded-xl font-bold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-[#EF4444] hover:bg-[#DC2626] text-white shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>Start Room 03</span>
+                <ArrowRight size={16} />
+              </button>
+              <button
+                onClick={() => setShowUnlockAlertModal(false)}
+                className="flex-1 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] text-[#64748B] dark:text-[#94A3B8] hover:text-[#11152F] dark:hover:text-white bg-[#F1F5F9] dark:bg-[#1E293B] hover:bg-[#E2E8F0] dark:hover:bg-[#334155] transition-colors cursor-pointer"
+              >
+                View Dashboard
               </button>
             </div>
           </div>
