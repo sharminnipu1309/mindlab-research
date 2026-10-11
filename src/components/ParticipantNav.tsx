@@ -1,6 +1,7 @@
 import Logo from './Logo';
 import { X, LogOut } from 'lucide-react';
 import { Page } from '../types';
+import ThemeToggle from './ThemeToggle';
 
 interface ParticipantNavProps {
   navigate: (page: Page) => void;
@@ -59,7 +60,8 @@ export default function ParticipantNav({
         )}
 
         {/* Right side */}
-        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <ThemeToggle />
           {participantId && (
             <span className="text-xs sm:text-sm font-['JetBrains_Mono',monospace] text-[#73758C] bg-[#F8F8FC] px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-[#E9E8F2] truncate max-w-[120px] sm:max-w-none">
               {participantId}

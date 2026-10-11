@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Logo from './Logo';
+import ThemeToggle from './ThemeToggle';
 import { Page } from '../types';
 import {
   LayoutDashboard, Users, FlaskConical, BarChart3, Activity,
@@ -219,6 +220,7 @@ export default function AdminLayout({ currentPage, navigate, onLogout, children,
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <ThemeToggle />
             <div className="text-[11px] sm:text-xs text-[#9597AB] bg-[#F8F8FC] px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-[#E9E8F2] font-['Plus_Jakarta_Sans',sans-serif]">
               <span className="text-[#4A9B7F] font-bold">●</span>{' '}
               <span className="font-medium hidden xs:inline">Demo Data</span>

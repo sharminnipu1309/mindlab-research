@@ -3,6 +3,7 @@ import { Page, ParticipantSession } from '../types';
 import Logo from '../components/Logo';
 import CognitiveNetworkHero from '../components/CognitiveNetworkHero';
 import ResumeSessionModal from '../components/ResumeSessionModal';
+import ThemeToggle from '../components/ThemeToggle';
 import { HanoiVisual, CorsiVisual, StroopVisual, TaskSwitchingVisual } from '../components/TaskVisuals';
 import { ArrowRight, ChevronRight, Shield, BookOpen, FlaskConical, CheckCircle2, Lock, Sparkles, Layers, Grid3X3, Eye, Repeat, RotateCcw } from 'lucide-react';
 
@@ -67,6 +68,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <ThemeToggle />
             <button
               onClick={() => setShowResumeModal(true)}
               className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-[#171B3A]/80 hover:bg-[#1E2452] border border-[#2D356D] hover:border-[#6D5AE6] text-white flex items-center gap-1.5 transition-all hover:scale-[1.02] active:scale-[0.98]"

@@ -27,7 +27,7 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [generatedId] = useState(generateId);
 
-  const genderOptions = ['Female', 'Male', 'Non-binary', 'Genderqueer', 'Agender', 'Prefer not to say', 'Other'];
+  const genderOptions = ['Male', 'Female', 'Prefer not to say'];
 
   const validateForm = () => {
     const errs: Record<string, string> = {};

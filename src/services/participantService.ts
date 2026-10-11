@@ -800,26 +800,11 @@ export async function recordRoom2Start(
       });
 
       if (!error && data && data.success) {
-        // Active 5-second verification timer: Rooms 3 & 4 unlock 5 seconds after starting Room 2
+        // Enforce 24-hour protocol interval: Rooms 3 & 4 unlock 24 hours after starting Room 2
         let effectiveUnlockAt = data.rooms_3_4_unlock_at;
         let remaining = Number(data.remaining_seconds) || 0;
 
-        if (!data.already_started) {
-          const fiveSecUnlock = new Date(Date.now() + 5 * 1000).toISOString();
-          try {
-            await supabase
-              .from('sessions')
-              .update({
-                rooms_3_4_unlock_at: fiveSecUnlock,
-                unlock_email_status: 'pending',
-              })
-              .eq('id', activeSid);
-            effectiveUnlockAt = fiveSecUnlock;
-            remaining = 5;
-          } catch (updateErr) {
-            console.warn('[recordRoom2Start] Could not set 5s unlock override:', updateErr);
-          }
-        } else if (effectiveUnlockAt) {
+        if (effectiveUnlockAt) {
           remaining = Math.max(0, Math.floor((new Date(effectiveUnlockAt).getTime() - Date.now()) / 1000));
         }
 
@@ -865,7 +850,7 @@ export async function recordRoom2Start(
 
         if (!room2StartedAt) {
           const nowStr = new Date().toISOString();
-          const unlockDate = new Date(Date.now() + 5 * 1000).toISOString();
+          const unlockDate = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
           const { error: upErr } = await supabase
             .from('sessions')
             .update({
@@ -882,7 +867,7 @@ export async function recordRoom2Start(
         }
 
         const unlocked = Boolean(unlockAt && new Date() >= new Date(unlockAt));
-        const rem = unlockAt ? Math.max(0, Math.floor((new Date(unlockAt).getTime() - Date.now()) / 1000)) : 5;
+        const rem = unlockAt ? Math.max(0, Math.floor((new Date(unlockAt).getTime() - Date.now()) / 1000)) : 86400;
 
         return {
           unlocked,
@@ -898,16 +883,16 @@ export async function recordRoom2Start(
     }
   }
 
-  // Local-only fallback (5-second unlock interval)
+  // Local-only fallback (24-hour unlock interval)
   const now = new Date();
-  const unlock = new Date(now.getTime() + 5 * 1000);
+  const unlock = new Date(now.getTime() + 24 * 60 * 60 * 1000);
   return {
     unlocked: false,
     room2Started: true,
     room2StartedAt: now.toISOString(),
     unlockAt: unlock.toISOString(),
     serverNow: now.toISOString(),
-    remainingSeconds: 5,
+    remainingSeconds: 86400,
   };
 }
 
@@ -928,7 +913,7 @@ export async function checkRooms3And4Access(
       room2StartedAt: null,
       unlockAt: null,
       serverNow: new Date().toISOString(),
-      remainingSeconds: 5,
+      remainingSeconds: 86400,
     };
   }
 
@@ -1010,105 +995,18 @@ export async function checkRooms3And4Access(
  * Calls /api/send-unlock-email with participant information.
  * Deduplicated per session to avoid sending multiple emails.
  */
-export async function triggerUnlockNotificationEmail(options?: {
+export async function triggerUnlockNotificationEmail(_options?: {
   sessionId?: string;
   recipientEmail?: string;
   participantName?: string;
   participantCode?: string;
   delayMs?: number;
 }): Promise<{ success: boolean; error?: string; messageId?: string }> {
-  const stored = getStoredSessionContext();
-  const activeSid = options?.sessionId || stored?.sessionId;
-
-  // Deduplication check via sessionStorage
-  if (activeSid && typeof sessionStorage !== 'undefined') {
-    const key = `mindlab_unlock_email_sent_${activeSid}`;
-    if (sessionStorage.getItem(key)) {
-      console.log(`[Unlock Email] Notification already dispatched for session ${activeSid}.`);
-      return { success: true };
-    }
-  }
-
-  // Resolve participant details
-  let recipient = options?.recipientEmail || stored?.participantData?.email || '';
-  let name = options?.participantName || stored?.participantData?.name || 'Participant';
-  let code = options?.participantCode || stored?.participantData?.id || stored?.participantData?.participantCode || 'ML-STUDY';
-
-  // If email is missing, lookup from Supabase
-  if (!recipient && activeSid && isSupabaseConfigured() && supabase) {
-    try {
-      const { data: sessRow } = await supabase
-        .from('sessions')
-        .select('participant_id, unlock_email_status')
-        .eq('id', activeSid)
-        .maybeSingle();
-
-      if (sessRow?.unlock_email_status === 'sent') {
-        if (typeof sessionStorage !== 'undefined') {
-          sessionStorage.setItem(`mindlab_unlock_email_sent_${activeSid}`, 'true');
-        }
-        return { success: true };
-      }
-
-      if (sessRow?.participant_id) {
-        const { data: pRow } = await supabase
-          .from('participants')
-          .select('email, name, participant_code')
-          .eq('id', sessRow.participant_id)
-          .maybeSingle();
-
-        if (pRow) {
-          recipient = pRow.email || recipient;
-          name = pRow.name || name;
-          code = pRow.participant_code || code;
-        }
-      }
-    } catch (lookupErr) {
-      console.warn('[Unlock Email] Could not lookup participant from Supabase:', lookupErr);
-    }
-  }
-
-  if (!recipient || !recipient.includes('@')) {
-    console.warn('[Unlock Email] No registered recipient email available to send unlock notification.');
-    return { success: false, error: 'No recipient email available' };
-  }
-
-  // Exactly 1 second delay after unlocking (as requested)
-  const delay = options?.delayMs ?? 1000;
-  console.log(`[Unlock Email] Level unlocked! Waiting ${delay}ms before sending email via Nodemailer to ${recipient}...`);
-  await new Promise(resolve => setTimeout(resolve, delay));
-
-  try {
-    const response = await fetch('/api/send-unlock-email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: recipient,
-        name,
-        participantCode: code,
-        sessionId: activeSid,
-      }),
-    });
-
-    const result = await response.json().catch(() => ({}));
-
-    if (response.ok && result.success) {
-      console.log(`[Unlock Email] ✅ Unlock email successfully sent via Nodemailer to ${recipient}!`, result);
-      if (activeSid && typeof sessionStorage !== 'undefined') {
-        sessionStorage.setItem(`mindlab_unlock_email_sent_${activeSid}`, 'true');
-      }
-      return { success: true, messageId: result.messageId };
-    } else {
-      console.warn('[Unlock Email] Server returned error:', result?.error || response.statusText);
-      return { success: false, error: result?.error || `HTTP ${response.status}` };
-    }
-  } catch (err: any) {
-    console.error('[Unlock Email] Network error calling /api/send-unlock-email:', err);
-    return { success: false, error: err?.message || 'Network error' };
-  }
+  // Automated email dispatching paused per user instructions (in-website notification is active)
+  console.log('[Unlock Email] Automated email paused; in-website unlock notification is active.');
+  return { success: true };
 }
+
 
 /**
  * Returns current experiment session options (cached or default).
@@ -1315,9 +1213,9 @@ export interface ResumeSessionResult {
  * Protects participant privacy with first-name verification and exponential rate-limiting.
  */
 export async function resumeParticipantSession(
-  rawCode: string,
-  verificationName?: string,
-  verificationEmail?: string
+  nameOrCode: string,
+  emailOrName?: string,
+  maybeEmail?: string
 ): Promise<ResumeSessionResult> {
   const rateLimit = checkResumeRateLimit();
   if (!rateLimit.allowed) {
@@ -1329,219 +1227,150 @@ export async function resumeParticipantSession(
     };
   }
 
-  const normalizedCode = normalizeParticipantCode(rawCode);
-  if (!normalizedCode || !/^ML-[\w-]{3,12}$/i.test(normalizedCode)) {
-    recordFailedResumeAttempt();
-    return {
-      success: false,
-      error: 'Please enter a valid Participant ID format (e.g., ML-1042).',
-    };
+  // Normalize inputs: allow (name, email) or legacy (code, name, email)
+  let name = '';
+  let email = '';
+  if (maybeEmail) {
+    name = (emailOrName || '').trim();
+    email = maybeEmail.trim().toLowerCase();
+  } else if (emailOrName && emailOrName.includes('@')) {
+    name = (nameOrCode || '').trim();
+    email = emailOrName.trim().toLowerCase();
+  } else if (nameOrCode && nameOrCode.includes('@')) {
+    email = nameOrCode.trim().toLowerCase();
+    name = (emailOrName || '').trim();
+  } else {
+    name = (nameOrCode || '').trim();
+    email = (emailOrName || '').trim().toLowerCase();
   }
 
-  const cleanVerifName = (verificationName || '').trim().toLowerCase();
-  const cleanVerifEmail = (verificationEmail || '').trim().toLowerCase();
-  if (!cleanVerifName) {
-    return {
-      success: false,
-      error: 'First name verification is required to resume a session.',
-    };
+  if (!name) {
+    return { success: false, error: 'Please enter your Name.' };
+  }
+  if (!email || !email.includes('@')) {
+    return { success: false, error: 'Please enter your registered Email address.' };
   }
 
-  // 1. Check local session storage on this device
+  // 1. Check local session context on this device
   const localCtx = getStoredSessionContext();
-  if (localCtx && localCtx.participantCode.toUpperCase() === normalizedCode) {
+  if (localCtx && localCtx.participantData) {
     const localP = localCtx.participantData;
-    const localFirstName = localP.name.trim().split(' ')[0].toLowerCase();
-    if (localFirstName !== cleanVerifName) {
-      recordFailedResumeAttempt();
+    const localEmail = (localP.email || '').trim().toLowerCase();
+    const localName = (localP.name || '').trim().toLowerCase();
+    const inputName = name.toLowerCase();
+
+    if (
+      localEmail === email &&
+      (localName === inputName ||
+        localName.split(' ')[0] === inputName.split(' ')[0] ||
+        localName.includes(inputName) ||
+        inputName.includes(localName.split(' ')[0]))
+    ) {
+      resetResumeRateLimit();
       return {
-        success: false,
-        error: 'Participant ID or verification name is incorrect.',
+        success: true,
+        participant: localP,
+        sessionId: localCtx.sessionId,
       };
     }
-
-    resetResumeRateLimit();
-    return {
-      success: true,
-      participant: localP,
-      sessionId: localCtx.sessionId,
-    };
   }
 
-  // 2. Query Supabase RPC if available
+  // 2. Call serverless API endpoint /api/resume-session
+  try {
+    const apiRes = await fetch('/api/resume-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email }),
+    });
+
+    const result = await apiRes.json().catch(() => ({}));
+
+    if (apiRes.ok && result.success && result.participant && result.sessionId) {
+      resetResumeRateLimit();
+      const ctx: StoredSessionContext = {
+        participantId: result.participant.dbId || result.participant.id,
+        sessionId: result.sessionId,
+        participantCode: result.participant.id,
+        participantData: result.participant,
+      };
+      try {
+        sessionStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(ctx));
+        localStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(ctx));
+      } catch {}
+
+      return {
+        success: true,
+        participant: result.participant,
+        sessionId: result.sessionId,
+      };
+    } else if (result.error && apiRes.status !== 404 && apiRes.status !== 500) {
+      recordFailedResumeAttempt();
+      return { success: false, error: result.error };
+    }
+  } catch (apiErr) {
+    console.warn('[Resume] /api/resume-session error, trying direct Supabase lookup:', apiErr);
+  }
+
+  // 3. Fallback: Query Supabase RPC or direct lookup
   if (isSupabaseConfigured() && supabase) {
     try {
       await ensureAnonymousAuth(false);
-      const { data, error } = await supabase.rpc('resume_participant_session', {
-        p_participant_code: normalizedCode,
-        p_verification_name: cleanVerifName,
-        p_verification_email: cleanVerifEmail || null,
+      const { data, error } = await supabase.rpc('resume_participant_by_name_and_email', {
+        p_name: name,
+        p_email: email,
       });
 
-      if (!error && data && typeof data === 'object') {
-        const resp = data as {
-          success: boolean;
-          error?: string;
-          participant?: {
-            id: string;
-            dbId: string;
-            name: string;
-            hanoiCompleted: boolean;
-            corsiCompleted: boolean;
-            stroopCompleted: boolean;
-            taskSwitchingCompleted: boolean;
-            hanoiCount?: number;
-            corsiCount?: number;
-            stroopCount?: number;
-            tsCount?: number;
-          };
-          session?: {
-            id: string;
-            status: string;
-            room2StartedAt?: string | null;
-            rooms3And4UnlockAt?: string | null;
-            rooms3And4Unlocked?: boolean;
-          };
+      if (!error && data && data.success && data.participant && data.session) {
+        resetResumeRateLimit();
+        const p = data.participant;
+        const sess = data.session;
+        const participantData: ParticipantSession = {
+          id: p.id,
+          dbId: p.dbId,
+          name: p.name,
+          email: p.email,
+          age: p.age || 0,
+          gender: p.gender || 'unspecified',
+          adhdDiagnosis: p.adhdDiagnosis || 'none',
+          hanoiCompleted: p.hanoiCompleted,
+          corsiCompleted: p.corsiCompleted,
+          stroopCompleted: p.stroopCompleted,
+          taskSwitchingCompleted: p.taskSwitchingCompleted,
+          hanoiStatus: p.hanoiCompleted ? 'completed' : ((p.hanoiCount || 0) > 0 ? 'in_progress' : 'not_started'),
+          corsiStatus: p.corsiCompleted ? 'completed' : ((p.corsiCount || 0) > 0 ? 'in_progress' : 'not_started'),
+          stroopStatus: p.stroopCompleted ? 'completed' : ((p.stroopCount || 0) > 0 ? 'in_progress' : 'not_started'),
+          taskSwitchingStatus: p.taskSwitchingCompleted ? 'completed' : ((p.tsCount || 0) > 0 ? 'in_progress' : 'not_started'),
+          hanoiProgressCount: p.hanoiCount || 0,
+          corsiProgressCount: p.corsiCount || 0,
+          stroopProgressCount: p.stroopCount || 0,
+          taskSwitchingProgressCount: p.tsCount || 0,
+          room2StartedAt: sess.room2StartedAt || null,
+          rooms3And4UnlockAt: sess.rooms3And4UnlockAt || null,
+          rooms3And4Unlocked: sess.rooms3And4Unlocked,
         };
 
-        if (resp.success && resp.participant && resp.session) {
-          resetResumeRateLimit();
-          const p = resp.participant;
-          const sess = resp.session;
+        const ctx: StoredSessionContext = {
+          participantId: p.dbId,
+          sessionId: sess.id,
+          participantCode: p.id,
+          participantData,
+        };
+        try {
+          sessionStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(ctx));
+          localStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(ctx));
+        } catch {}
 
-          const participantData: ParticipantSession = {
-            id: p.id,
-            dbId: p.dbId,
-            name: p.name,
-            age: 0,
-            gender: 'unspecified',
-            hanoiCompleted: p.hanoiCompleted,
-            corsiCompleted: p.corsiCompleted,
-            stroopCompleted: p.stroopCompleted,
-            taskSwitchingCompleted: p.taskSwitchingCompleted,
-            hanoiStatus: p.hanoiCompleted ? 'completed' : ((p.hanoiCount || 0) > 0 ? 'in_progress' : 'not_started'),
-            corsiStatus: p.corsiCompleted ? 'completed' : ((p.corsiCount || 0) > 0 ? 'in_progress' : 'not_started'),
-            stroopStatus: p.stroopCompleted ? 'completed' : ((p.stroopCount || 0) > 0 ? 'in_progress' : 'not_started'),
-            taskSwitchingStatus: p.taskSwitchingCompleted ? 'completed' : ((p.tsCount || 0) > 0 ? 'in_progress' : 'not_started'),
-            hanoiProgressCount: p.hanoiCount || 0,
-            corsiProgressCount: p.corsiCount || 0,
-            stroopProgressCount: p.stroopCount || 0,
-            taskSwitchingProgressCount: p.tsCount || 0,
-            room2StartedAt: sess.room2StartedAt || null,
-            rooms3And4UnlockAt: sess.rooms3And4UnlockAt || null,
-            rooms3And4Unlocked: sess.rooms3And4Unlocked ?? Boolean(sess.room2StartedAt && sess.rooms3And4UnlockAt && new Date() >= new Date(sess.rooms3And4UnlockAt)),
-          };
-
-          const ctx: StoredSessionContext = {
-            participantId: p.dbId,
-            sessionId: sess.id,
-            participantCode: p.id,
-            participantData,
-          };
-          try {
-            sessionStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(ctx));
-            localStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(ctx));
-          } catch {}
-
-          return { success: true, participant: participantData, sessionId: sess.id };
-        } else if (resp.error) {
-          recordFailedResumeAttempt();
-          return { success: false, error: resp.error };
-        }
+        return { success: true, participant: participantData, sessionId: sess.id };
       }
     } catch (rpcErr) {
-      console.warn('[Resume] resume_participant_session RPC fallback:', rpcErr);
-    }
-
-    // 3. Fallback: Query participants directly under authenticated session
-    try {
-      const { data: pRow } = await supabase
-        .from('participants')
-        .select('id, participant_code, name, age, gender, adhd_diagnosis, email')
-        .eq('participant_code', normalizedCode)
-        .maybeSingle();
-
-      if (pRow) {
-        if (cleanVerifName) {
-          const firstName = pRow.name.trim().split(' ')[0].toLowerCase();
-          if (firstName !== cleanVerifName && !pRow.name.toLowerCase().includes(cleanVerifName)) {
-            recordFailedResumeAttempt();
-            return { success: false, error: 'Verification name does not match the participant on record.' };
-          }
-        }
-
-        if (cleanVerifEmail && pRow.email) {
-          if (cleanVerifEmail !== pRow.email.trim().toLowerCase()) {
-            recordFailedResumeAttempt();
-            return { success: false, error: 'Registered email address does not match participant records.' };
-          }
-        }
-
-        const { data: sRow } = await supabase
-          .from('sessions')
-          .select('*')
-          .eq('participant_id', pRow.id)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-
-        if (sRow) {
-          resetResumeRateLimit();
-          const [hCount, cCount, sCount, tsCount] = await Promise.all([
-            supabase.from('hanoi_puzzles').select('id', { count: 'exact', head: true }).eq('session_id', sRow.id),
-            supabase.from('corsi_trials').select('id', { count: 'exact', head: true }).eq('session_id', sRow.id),
-            supabase.from('stroop_trials').select('id', { count: 'exact', head: true }).eq('session_id', sRow.id),
-            supabase.from('task_switching_trials').select('id', { count: 'exact', head: true }).eq('session_id', sRow.id),
-          ]);
-
-          const participantData: ParticipantSession = {
-            id: pRow.participant_code,
-            dbId: pRow.id,
-            name: pRow.name,
-            age: pRow.age,
-            gender: pRow.gender,
-            adhdDiagnosis: pRow.adhd_diagnosis,
-            email: pRow.email,
-            hanoiCompleted: sRow.hanoi_completed,
-            corsiCompleted: sRow.corsi_completed,
-            stroopCompleted: sRow.stroop_completed,
-            taskSwitchingCompleted: sRow.task_switching_completed,
-            hanoiStatus: sRow.hanoi_completed ? 'completed' : ((hCount.count || 0) > 0 ? 'in_progress' : 'not_started'),
-            corsiStatus: sRow.corsi_completed ? 'completed' : ((cCount.count || 0) > 0 ? 'in_progress' : 'not_started'),
-            stroopStatus: sRow.stroop_completed ? 'completed' : ((sCount.count || 0) > 0 ? 'in_progress' : 'not_started'),
-            taskSwitchingStatus: sRow.task_switching_completed ? 'completed' : ((tsCount.count || 0) > 0 ? 'in_progress' : 'not_started'),
-            hanoiProgressCount: hCount.count || 0,
-            corsiProgressCount: cCount.count || 0,
-            stroopProgressCount: sCount.count || 0,
-            taskSwitchingProgressCount: tsCount.count || 0,
-            room2StartedAt: sRow.room_2_started_at || null,
-            rooms3And4UnlockAt: sRow.rooms_3_4_unlock_at || null,
-            rooms3And4Unlocked: Boolean(sRow.room_2_started_at && sRow.rooms_3_4_unlock_at && new Date() >= new Date(sRow.rooms_3_4_unlock_at)),
-          };
-
-          const ctx: StoredSessionContext = {
-            participantId: pRow.id,
-            sessionId: sRow.id,
-            participantCode: pRow.participant_code,
-            participantData,
-          };
-          try {
-            sessionStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(ctx));
-            localStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(ctx));
-          } catch {}
-
-          return { success: true, participant: participantData, sessionId: sRow.id };
-        }
-      }
-    } catch (fallbackErr) {
-      console.warn('[Resume] Direct fallback error:', fallbackErr);
+      console.warn('[Resume] Supabase RPC lookup error:', rpcErr);
     }
   }
 
   recordFailedResumeAttempt();
   return {
     success: false,
-    error: `Participant ID "${normalizedCode}" was not found or has not been registered on this device yet.`,
+    error: 'No active session found matching this Name and Email address. Please verify your details.',
   };
 }
 

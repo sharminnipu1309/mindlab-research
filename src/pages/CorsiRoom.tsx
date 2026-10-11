@@ -9,7 +9,6 @@ import {
   getExperimentSessionOptions,
   getDataMeasurementsConfig,
   recordRoom2Start,
-  triggerUnlockNotificationEmail,
 } from '../services/participantService';
 
 interface Props {
@@ -124,7 +123,6 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
 
   // Record authoritative server/database timestamp immediately when Room 2 starts
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | null = null;
     let isMounted = true;
     const activeSid = sessionId || getStoredSessionContext()?.sessionId;
     if (activeSid) {
@@ -135,22 +133,6 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
           participant.rooms3And4UnlockAt = status.unlockAt;
           participant.rooms3And4Unlocked = status.unlocked;
         }
-
-        // Schedule unlock notification: 1 second after countdown finishes
-        const remSec = status?.remainingSeconds ?? 5;
-        const totalDelayMs = (Math.max(0, remSec) + 1) * 1000;
-        console.log(`[CorsiRoom] Room 2 started. Next level unlocks in ${remSec}s. Email scheduled in ${totalDelayMs}ms.`);
-        timer = setTimeout(() => {
-          triggerUnlockNotificationEmail({
-            sessionId: activeSid,
-            recipientEmail: participant?.email || getStoredSessionContext()?.participantData?.email,
-            participantName: participant?.name || getStoredSessionContext()?.participantData?.name,
-            participantCode: participant?.id || getStoredSessionContext()?.participantData?.id,
-            delayMs: 0,
-          }).catch(err => {
-            console.warn('[CorsiRoom] Auto-dispatch error:', err);
-          });
-        }, totalDelayMs);
       }).catch(err => {
         console.error('[CorsiRoom] Error recording Room 2 start timestamp:', err);
       });
@@ -158,7 +140,6 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
 
     return () => {
       isMounted = false;
-      if (timer) clearTimeout(timer);
     };
   }, [sessionId, participant?.id]);
 
@@ -338,14 +319,6 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
       persistCorsiResults(activeSid, result).catch(err => {
         console.error('[CorsiRoom] Error persisting Corsi results on finish:', err);
       });
-      // Send unlock email 1 second after finishing Room 2 (next level unlocked)
-      triggerUnlockNotificationEmail({
-        sessionId: activeSid,
-        recipientEmail: participant?.email || getStoredSessionContext()?.participantData?.email,
-        participantName: participant?.name || getStoredSessionContext()?.participantData?.name,
-        participantCode: participant?.id || getStoredSessionContext()?.participantData?.id,
-        delayMs: 1000,
-      }).catch(() => {});
     }
     onComplete(result);
     navigate('participant-dashboard');

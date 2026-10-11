@@ -13,6 +13,7 @@ import {
   Sparkles,
   Check,
   Lock,
+  Unlock,
   RotateCcw,
   Info,
   AlertTriangle,
@@ -20,7 +21,6 @@ import {
 import {
   refreshParticipantSessionStatus,
   checkRooms3And4Access,
-  triggerUnlockNotificationEmail,
   getStoredSessionContext,
 } from '../services/participantService';
 
@@ -78,19 +78,6 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
           serverRemaining: st.remainingSeconds,
           syncPerfTime: performance.now(),
         };
-
-        // If next level is already unlocked, send unlock notification 1 second after mounting
-        if (st.unlocked && (st.room2Started || currentParticipant.room2StartedAt)) {
-          triggerUnlockNotificationEmail({
-            sessionId: sid,
-            recipientEmail: currentParticipant.email || participant.email || getStoredSessionContext()?.participantData?.email,
-            participantName: currentParticipant.name || participant.name || getStoredSessionContext()?.participantData?.name,
-            participantCode: currentParticipant.id || participant.id || getStoredSessionContext()?.participantData?.id,
-            delayMs: 1000,
-          }).catch(err => {
-            console.warn('[ParticipantDashboard] Error triggering unlock email:', err);
-          });
-        }
       });
     }
   }, [participant]);
@@ -111,19 +98,6 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
           checkRooms3And4Access(sid).then(st => {
             setUnlockStatus(st);
             setRemainingSeconds(st.remainingSeconds);
-
-            // One second after someone unlocks the next level, send Nodemailer notification
-            if (st.unlocked) {
-              triggerUnlockNotificationEmail({
-                sessionId: sid,
-                recipientEmail: currentParticipant.email || participant.email || getStoredSessionContext()?.participantData?.email,
-                participantName: currentParticipant.name || participant.name || getStoredSessionContext()?.participantData?.name,
-                participantCode: currentParticipant.id || participant.id || getStoredSessionContext()?.participantData?.id,
-                delayMs: 1000,
-              }).catch(err => {
-                console.warn('[ParticipantDashboard] Error triggering unlock email on unlock:', err);
-              });
-            }
           });
         }
       }
@@ -288,17 +262,17 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                   <h2 className="text-base sm:text-lg font-bold text-[#11152F] mt-1 font-['Plus_Jakarta_Sans',sans-serif]">
                     Unlocks in <span className="font-['JetBrains_Mono',monospace] text-[#6D5AE6]">{formatRemainingDetailed(remainingSeconds)}</span>
                   </h2>
-                  <p className="text-xs sm:text-sm text-[#64748B] mt-1 max-w-2xl leading-relaxed">
-                    Under our research design, Room 3 (Stroop) and Room 4 (Task Switching) unlock exactly 24 hours after you start Room 2. An automated notification will be sent to your registered email (<strong className="text-[#11152F]">{currentParticipant.email || 'provided at registration'}</strong>) as soon as they become available. You may safely exit and return tomorrow.
+                  <p className="text-xs sm:text-sm text-[#64748B] dark:text-[#94A3B8] mt-1 max-w-2xl leading-relaxed">
+                    Under our research design, Room 3 (Stroop) and Room 4 (Task Switching) unlock exactly 24 hours after you start Room 2. An on-screen notification will appear right here when your next levels are unlocked. You may safely exit and resume anytime using your Name and Email.
                   </p>
                 </div>
               </div>
               {unlockStatus?.unlockAt && (
-                <div className="bg-white px-4 py-2.5 rounded-xl border border-[#C5C1F1] text-left sm:text-right flex-shrink-0 shadow-xs">
+                <div className="bg-white dark:bg-[#162036] px-4 py-2.5 rounded-xl border border-[#C5C1F1] dark:border-[#2A374F] text-left sm:text-right flex-shrink-0 shadow-xs">
                   <div className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                     Target Unlock Time
                   </div>
-                  <div className="text-xs sm:text-sm font-bold text-[#11152F] font-['JetBrains_Mono',monospace] mt-0.5">
+                  <div className="text-xs sm:text-sm font-bold text-[#11152F] dark:text-white font-['JetBrains_Mono',monospace] mt-0.5">
                     {new Date(unlockStatus.unlockAt).toLocaleString(undefined, {
                       month: 'short',
                       day: 'numeric',
@@ -308,6 +282,35 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* ─── ROOMS 3 & 4 UNLOCKED NOTIFICATION BANNER ────────────────── */}
+        {isRoom2Started && areRooms3And4Unlocked && (
+          <div className="mb-6 sm:mb-8 bg-gradient-to-r from-[#D1EDE5] via-[#E4F5F2] to-[#D1EDE5] dark:from-[#064E3B]/40 dark:via-[#065F46]/30 dark:to-[#064E3B]/40 border-2 border-[#10B981] dark:border-[#059669] rounded-2xl p-4 sm:p-6 shadow-sm animate-pop-in">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-start gap-3.5">
+                <div className="w-11 h-11 rounded-2xl bg-[#10B981] text-white flex items-center justify-center flex-shrink-0 shadow-md">
+                  <Sparkles size={22} />
+                </div>
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#059669] dark:text-[#34D399] font-['Plus_Jakarta_Sans',sans-serif]">
+                      Study Protocol Update
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#10B981]/20 text-[#065F46] dark:text-[#6EE7B7] border border-[#10B981]/40 flex items-center gap-1 font-['Plus_Jakarta_Sans',sans-serif]">
+                      <Unlock size={10} /> Rooms 3 &amp; 4 Unlocked!
+                    </span>
+                  </div>
+                  <h2 className="text-base sm:text-xl font-bold text-[#11152F] dark:text-white mt-1 font-['Plus_Jakarta_Sans',sans-serif]">
+                    🎉 Room 3 &amp; Room 4 are now officially unlocked and ready to solve!
+                  </h2>
+                  <p className="text-xs sm:text-sm text-[#475569] dark:text-[#94A3B8] mt-1 max-w-2xl leading-relaxed">
+                    The 24-hour interval has elapsed. You can now proceed with <strong>Room 03 (Stroop Attention Task)</strong> and <strong>Room 04 (Task Switching Flexibility)</strong> below.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         )}
