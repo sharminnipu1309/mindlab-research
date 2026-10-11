@@ -70,13 +70,6 @@ export default function LandingPage({ navigate, onResume }: Props) {
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <ThemeToggle />
             <button
-              onClick={() => setShowResumeModal(true)}
-              className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-[#171B3A]/80 hover:bg-[#1E2452] border border-[#2D356D] hover:border-[#6D5AE6] text-white flex items-center gap-1.5 transition-all hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <RotateCcw size={14} className="text-[#818CF8]" />
-              <span>Resume session</span>
-            </button>
-            <button
               onClick={() => navigate('research-info')}
               className="px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-[#6D5AE6] hover:bg-[#5B48D9] text-white flex items-center gap-1.5 sm:gap-2 shadow-[0_0_20px_rgba(109,90,230,0.45)] hover:shadow-[0_0_28px_rgba(109,90,230,0.65)] transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
