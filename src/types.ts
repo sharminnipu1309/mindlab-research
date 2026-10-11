@@ -242,6 +242,7 @@ export type ExperimentStatus = 'not_started' | 'in_progress' | 'completed';
 
 export interface ParticipantSession {
   id: string;
+  participantCode?: string;
   dbId?: string;
   sessionId?: string;
   name: string;

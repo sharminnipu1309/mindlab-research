@@ -24,6 +24,7 @@ react(),
       figmaErrorOverlayReplay(),
       figmaReactRefreshBoundaryFallback(),
       figmaMakeKitPlugin({ storiesGlob: '/src/**/*.stories.{ts,tsx,js,jsx}' }),
+      localApiEmailPlugin(),
     ],
     resolve: {
       alias: {
@@ -358,4 +359,56 @@ function figmaMakeKitPlugin(options: { storiesGlob: string | string[] }): Plugin
       })
     },
   }
+}
+
+function localApiEmailPlugin(): Plugin {
+  return {
+    name: 'local-api-email-plugin',
+    apply: 'serve',
+    configureServer(server) {
+      server.middlewares.use(async (req, res, next) => {
+        const url = (req.url || '').split('?')[0];
+        if (url !== '/api/send-unlock-email') return next();
+
+        try {
+          // @ts-expect-error local api handler import
+          const { default: handler } = await import('./api/send-unlock-email.js');
+          let bodyStr = '';
+          req.on('data', chunk => {
+            bodyStr += chunk;
+          });
+          req.on('end', async () => {
+            let body = {};
+            try {
+              body = JSON.parse(bodyStr);
+            } catch {}
+
+            const mockRes: any = {
+              statusCode: 200,
+              setHeader(k: string, v: string) {
+                res.setHeader(k, v);
+              },
+              status(code: number) {
+                this.statusCode = code;
+                return this;
+              },
+              json(data: any) {
+                res.writeHead(this.statusCode, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(data));
+              },
+              end() {
+                res.end();
+              },
+            };
+
+            const mockReq: any = { method: req.method, body };
+            await handler(mockReq, mockRes);
+          });
+        } catch (err: any) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: err?.message || 'Server error' }));
+        }
+      });
+    },
+  };
 }

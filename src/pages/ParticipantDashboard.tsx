@@ -17,7 +17,11 @@ import {
   Info,
   AlertTriangle,
 } from 'lucide-react';
-import { refreshParticipantSessionStatus, checkRooms3And4Access } from '../services/participantService';
+import {
+  refreshParticipantSessionStatus,
+  checkRooms3And4Access,
+  triggerUnlockNotificationEmail,
+} from '../services/participantService';
 
 interface Props {
   navigate: (page: Page) => void;
@@ -73,6 +77,19 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
           serverRemaining: st.remainingSeconds,
           syncPerfTime: performance.now(),
         };
+
+        // If next level is already unlocked, send unlock notification 1 second after mounting
+        if (st.unlocked && (st.room2Started || currentParticipant.room2StartedAt)) {
+          triggerUnlockNotificationEmail({
+            sessionId: sid,
+            recipientEmail: currentParticipant.email || participant.email,
+            participantName: currentParticipant.name || participant.name,
+            participantCode: currentParticipant.id || participant.id,
+            delayMs: 1000,
+          }).catch(err => {
+            console.warn('[ParticipantDashboard] Error triggering unlock email:', err);
+          });
+        }
       });
     }
   }, [participant]);
@@ -93,6 +110,19 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
           checkRooms3And4Access(sid).then(st => {
             setUnlockStatus(st);
             setRemainingSeconds(st.remainingSeconds);
+
+            // One second after someone unlocks the next level, send Nodemailer notification
+            if (st.unlocked) {
+              triggerUnlockNotificationEmail({
+                sessionId: sid,
+                recipientEmail: currentParticipant.email || participant.email,
+                participantName: currentParticipant.name || participant.name,
+                participantCode: currentParticipant.id || participant.id,
+                delayMs: 1000,
+              }).catch(err => {
+                console.warn('[ParticipantDashboard] Error triggering unlock email on unlock:', err);
+              });
+            }
           });
         }
       }

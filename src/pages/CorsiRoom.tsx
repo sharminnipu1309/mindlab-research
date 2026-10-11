@@ -9,6 +9,7 @@ import {
   getExperimentSessionOptions,
   getDataMeasurementsConfig,
   recordRoom2Start,
+  triggerUnlockNotificationEmail,
 } from '../services/participantService';
 
 interface Props {
@@ -313,6 +314,14 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
       persistCorsiResults(activeSid, result).catch(err => {
         console.error('[CorsiRoom] Error persisting Corsi results on finish:', err);
       });
+      // Send unlock email 1 second after finishing Room 2 (next level unlocked)
+      triggerUnlockNotificationEmail({
+        sessionId: activeSid,
+        recipientEmail: participant.email,
+        participantName: participant.name,
+        participantCode: participant.id,
+        delayMs: 1000,
+      }).catch(() => {});
     }
     onComplete(result);
     navigate('participant-dashboard');

@@ -1001,8 +1001,113 @@ export async function checkRooms3And4Access(
     room2StartedAt: null,
     unlockAt: null,
     serverNow: new Date().toISOString(),
-    remainingSeconds: 86400,
+    remainingSeconds: 5,
   };
+}
+
+/**
+ * Triggers the Nodemailer unlock notification email 1 second after a level unlocks.
+ * Calls /api/send-unlock-email with participant information.
+ * Deduplicated per session to avoid sending multiple emails.
+ */
+export async function triggerUnlockNotificationEmail(options?: {
+  sessionId?: string;
+  recipientEmail?: string;
+  participantName?: string;
+  participantCode?: string;
+  delayMs?: number;
+}): Promise<{ success: boolean; error?: string; messageId?: string }> {
+  const stored = getStoredSessionContext();
+  const activeSid = options?.sessionId || stored?.sessionId;
+
+  // Deduplication check via sessionStorage
+  if (activeSid && typeof sessionStorage !== 'undefined') {
+    const key = `mindlab_unlock_email_sent_${activeSid}`;
+    if (sessionStorage.getItem(key)) {
+      console.log(`[Unlock Email] Notification already dispatched for session ${activeSid}.`);
+      return { success: true };
+    }
+  }
+
+  // Resolve participant details
+  let recipient = options?.recipientEmail || stored?.participantData?.email || '';
+  let name = options?.participantName || stored?.participantData?.name || 'Participant';
+  let code = options?.participantCode || stored?.participantData?.id || stored?.participantData?.participantCode || 'ML-STUDY';
+
+  // If email is missing, lookup from Supabase
+  if (!recipient && activeSid && isSupabaseConfigured() && supabase) {
+    try {
+      const { data: sessRow } = await supabase
+        .from('sessions')
+        .select('participant_id, unlock_email_status')
+        .eq('id', activeSid)
+        .maybeSingle();
+
+      if (sessRow?.unlock_email_status === 'sent') {
+        if (typeof sessionStorage !== 'undefined') {
+          sessionStorage.setItem(`mindlab_unlock_email_sent_${activeSid}`, 'true');
+        }
+        return { success: true };
+      }
+
+      if (sessRow?.participant_id) {
+        const { data: pRow } = await supabase
+          .from('participants')
+          .select('email, name, participant_code')
+          .eq('id', sessRow.participant_id)
+          .maybeSingle();
+
+        if (pRow) {
+          recipient = pRow.email || recipient;
+          name = pRow.name || name;
+          code = pRow.participant_code || code;
+        }
+      }
+    } catch (lookupErr) {
+      console.warn('[Unlock Email] Could not lookup participant from Supabase:', lookupErr);
+    }
+  }
+
+  if (!recipient || !recipient.includes('@')) {
+    console.warn('[Unlock Email] No registered recipient email available to send unlock notification.');
+    return { success: false, error: 'No recipient email available' };
+  }
+
+  // Exactly 1 second delay after unlocking (as requested)
+  const delay = options?.delayMs ?? 1000;
+  console.log(`[Unlock Email] Level unlocked! Waiting ${delay}ms before sending email via Nodemailer to ${recipient}...`);
+  await new Promise(resolve => setTimeout(resolve, delay));
+
+  try {
+    const response = await fetch('/api/send-unlock-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: recipient,
+        name,
+        participantCode: code,
+        sessionId: activeSid,
+      }),
+    });
+
+    const result = await response.json().catch(() => ({}));
+
+    if (response.ok && result.success) {
+      console.log(`[Unlock Email] ✅ Unlock email successfully sent via Nodemailer to ${recipient}!`, result);
+      if (activeSid && typeof sessionStorage !== 'undefined') {
+        sessionStorage.setItem(`mindlab_unlock_email_sent_${activeSid}`, 'true');
+      }
+      return { success: true, messageId: result.messageId };
+    } else {
+      console.warn('[Unlock Email] Server returned error:', result?.error || response.statusText);
+      return { success: false, error: result?.error || `HTTP ${response.status}` };
+    }
+  } catch (err: any) {
+    console.error('[Unlock Email] Network error calling /api/send-unlock-email:', err);
+    return { success: false, error: err?.message || 'Network error' };
+  }
 }
 
 /**
