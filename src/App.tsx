@@ -70,6 +70,7 @@ export default function App() {
     registerParticipantSession(p).then(res => {
       if (res?.sessionId) {
         activeSessionIdRef.current = res.sessionId;
+        setParticipant(prev => (prev ? { ...prev, sessionId: res.sessionId, dbId: res.participantId } : prev));
       }
     });
   };

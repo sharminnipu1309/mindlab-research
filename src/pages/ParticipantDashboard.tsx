@@ -21,6 +21,7 @@ import {
   refreshParticipantSessionStatus,
   checkRooms3And4Access,
   triggerUnlockNotificationEmail,
+  getStoredSessionContext,
 } from '../services/participantService';
 
 interface Props {
@@ -68,7 +69,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
     refreshParticipantSessionStatus(participant).then(updated => {
       setCurrentParticipant(updated);
     });
-    const sid = participant.sessionId || currentParticipant.sessionId;
+    const sid = participant.sessionId || currentParticipant.sessionId || getStoredSessionContext()?.sessionId;
     if (sid) {
       checkRooms3And4Access(sid).then(st => {
         setUnlockStatus(st);
@@ -82,9 +83,9 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
         if (st.unlocked && (st.room2Started || currentParticipant.room2StartedAt)) {
           triggerUnlockNotificationEmail({
             sessionId: sid,
-            recipientEmail: currentParticipant.email || participant.email,
-            participantName: currentParticipant.name || participant.name,
-            participantCode: currentParticipant.id || participant.id,
+            recipientEmail: currentParticipant.email || participant.email || getStoredSessionContext()?.participantData?.email,
+            participantName: currentParticipant.name || participant.name || getStoredSessionContext()?.participantData?.name,
+            participantCode: currentParticipant.id || participant.id || getStoredSessionContext()?.participantData?.id,
             delayMs: 1000,
           }).catch(err => {
             console.warn('[ParticipantDashboard] Error triggering unlock email:', err);
@@ -105,7 +106,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
       setRemainingSeconds(updatedRemaining);
 
       if (updatedRemaining <= 0) {
-        const sid = currentParticipant.sessionId || participant.sessionId;
+        const sid = currentParticipant.sessionId || participant.sessionId || getStoredSessionContext()?.sessionId;
         if (sid) {
           checkRooms3And4Access(sid).then(st => {
             setUnlockStatus(st);
@@ -115,9 +116,9 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             if (st.unlocked) {
               triggerUnlockNotificationEmail({
                 sessionId: sid,
-                recipientEmail: currentParticipant.email || participant.email,
-                participantName: currentParticipant.name || participant.name,
-                participantCode: currentParticipant.id || participant.id,
+                recipientEmail: currentParticipant.email || participant.email || getStoredSessionContext()?.participantData?.email,
+                participantName: currentParticipant.name || participant.name || getStoredSessionContext()?.participantData?.name,
+                participantCode: currentParticipant.id || participant.id || getStoredSessionContext()?.participantData?.id,
                 delayMs: 1000,
               }).catch(err => {
                 console.warn('[ParticipantDashboard] Error triggering unlock email on unlock:', err);
