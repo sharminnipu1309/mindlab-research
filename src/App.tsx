@@ -40,11 +40,89 @@ import {
 import { signOutAdmin, checkAdminSession } from './services/adminService';
 import { useEffect, useRef } from 'react';
 
+const VALID_PAGES: Page[] = [
+  'landing',
+  'research-info',
+  'consent',
+  'participant-dashboard',
+  'hanoi-room',
+  'corsi-room',
+  'stroop-room',
+  'task-switching-room',
+  'task-completion',
+  'admin-login',
+  'admin-dashboard',
+  'admin-participants',
+  'admin-experiments',
+  'admin-hanoi-analysis',
+  'admin-corsi-analysis',
+  'admin-stroop-analysis',
+  'admin-task-switching-analysis',
+  'admin-graphs',
+  'admin-exports',
+  'admin-settings',
+];
+
+const CURRENT_PAGE_STORAGE_KEY = 'mindlab_current_page';
+
+function getInitialPage(): Page {
+  // 1. Check URL hash (e.g. #participant-dashboard)
+  if (typeof window !== 'undefined' && window.location.hash) {
+    const hash = window.location.hash.replace(/^#/, '') as Page;
+    if (VALID_PAGES.includes(hash)) {
+      return hash;
+    }
+  }
+
+  // 2. Check saved page from sessionStorage or localStorage
+  try {
+    const saved = (sessionStorage.getItem(CURRENT_PAGE_STORAGE_KEY) || localStorage.getItem(CURRENT_PAGE_STORAGE_KEY)) as Page;
+    if (saved && VALID_PAGES.includes(saved)) {
+      return saved;
+    }
+  } catch {}
+
+  // 3. Fallback: if active participant session is stored, return dashboard
+  try {
+    const stored = getStoredSessionContext();
+    if (stored?.participantData) {
+      return 'participant-dashboard';
+    }
+  } catch {}
+
+  return 'landing';
+}
+
 export default function App() {
-  const [page, setPage] = useState<Page>('landing');
-  const [participant, setParticipant] = useState<ParticipantSession | null>(null);
+  const [page, setPage] = useState<Page>(getInitialPage);
+  const [participant, setParticipant] = useState<ParticipantSession | null>(() => {
+    return getStoredSessionContext()?.participantData || null;
+  });
   const [isAdminAuth, setIsAdminAuth] = useState(false);
-  const activeSessionIdRef = useRef<string | null>(null);
+  const activeSessionIdRef = useRef<string | null>(getStoredSessionContext()?.sessionId || null);
+
+  // Sync hash changes for browser back/forward and mobile tab reloads
+  useEffect(() => {
+    const handleHashChange = () => {
+      const h = window.location.hash.replace(/^#/, '') as Page;
+      if (h && VALID_PAGES.includes(h)) {
+        setPage(h);
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  // Synchronize hash with initial page on mount if not already present
+  useEffect(() => {
+    if (page && typeof window !== 'undefined' && window.location.hash !== '#' + page) {
+      try {
+        window.history.replaceState(null, '', '#' + page);
+        sessionStorage.setItem(CURRENT_PAGE_STORAGE_KEY, page);
+        localStorage.setItem(CURRENT_PAGE_STORAGE_KEY, page);
+      } catch {}
+    }
+  }, [page]);
 
   // Attempt session restoration and configuration sync on page load
   useEffect(() => {
@@ -62,6 +140,13 @@ export default function App() {
 
   const navigate = (p: Page) => {
     setPage(p);
+    try {
+      sessionStorage.setItem(CURRENT_PAGE_STORAGE_KEY, p);
+      localStorage.setItem(CURRENT_PAGE_STORAGE_KEY, p);
+      if (typeof window !== 'undefined' && window.location.hash !== '#' + p) {
+        window.history.replaceState(null, '', '#' + p);
+      }
+    } catch {}
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -154,7 +239,16 @@ export default function App() {
 
   // Guard: participant pages need a registered participant
   const requireParticipant = (el: React.ReactNode) => {
-    if (!participant) { navigate('consent'); return null; }
+    if (!participant) {
+      const stored = getStoredSessionContext();
+      if (stored?.participantData) {
+        setParticipant(stored.participantData);
+        activeSessionIdRef.current = stored.sessionId;
+        return el;
+      }
+      navigate('consent');
+      return null;
+    }
     return el;
   };
 
