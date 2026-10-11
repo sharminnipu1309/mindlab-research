@@ -136,7 +136,7 @@ BEGIN
         v_already_started := true;
         v_unlock_at := v_sess.rooms_3_4_unlock_at;
     ELSE
-        v_unlock_at := v_now + INTERVAL '24 hours';
+        v_unlock_at := v_now + INTERVAL '5 seconds';
         UPDATE public.sessions
         SET 
             room_2_started_at = v_now,

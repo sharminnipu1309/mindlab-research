@@ -24,26 +24,34 @@ jobs:
     name: Dispatch Room 3 & 4 Unlock Emails
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Supabase Edge Function
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Unlock Email Dispatcher
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://ummiczxtncwvozgvqlih.supabase.co' }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST || 'smtp.gmail.com' }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT || '465' }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: |
-          PAYLOAD=$(cat << 'EOF'
-          {
-            "dryRun": ${{ inputs.dry_run }},
-            "testRecipient": "${{ inputs.test_recipient }}"
-          }
-          EOF
-          )
-
-          HTTP_STATUS=$(curl -s -o response.json -w "%{http_code}" -X POST \
-            "https://${{ secrets.SUPABASE_PROJECT_REF }}.supabase.co/functions/v1/send-unlock-notifications" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d "$PAYLOAD")
-
-          echo "Response HTTP Status: $HTTP_STATUS"
-          cat response.json
-
-          if [ "$HTTP_STATUS" -ne 200 ]; then
-            echo "::error::Failed to dispatch unlock notifications (HTTP $HTTP_STATUS)"
-            exit 1
+          ARGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
           fi
+          if [ -n "${{ inputs.test_recipient }}" ]; then
+            ARGS="$ARGS --test-recipient=${{ inputs.test_recipient }}"
+          fi
+          node scripts/send_unlock_emails.mjs $ARGS

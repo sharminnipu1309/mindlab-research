@@ -3,13 +3,37 @@
 // Can be executed via Cron, worker service, or manual/automated testing.
 
 import { createClient } from '@supabase/supabase-js';
+import nodemailer from 'nodemailer';
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || 'https://ummiczxtncwvozgvqlih.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_edu6CvEJ0QECXm-ZQByfJg_LvIjOK6n';
+
+// SMTP / Nodemailer Configuration
+const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
+const SMTP_PORT = parseInt(process.env.SMTP_PORT || '465', 10);
+const SMTP_SECURE = process.env.SMTP_SECURE === 'true' || SMTP_PORT === 465;
+const SMTP_USER = process.env.SMTP_USER || process.env.GMAIL_USER || '';
+const SMTP_PASS = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD || '';
+
+// Fallback HTTP API providers
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '';
-const EMAIL_FROM = process.env.RESEND_FROM_EMAIL || process.env.EMAIL_FROM || 'MindLab Study <onboarding@resend.dev>';
+
+const EMAIL_FROM = process.env.EMAIL_FROM || process.env.RESEND_FROM_EMAIL || (SMTP_USER ? `MindLab Study <${SMTP_USER}>` : 'MindLab Study <onboarding@resend.dev>');
 const APP_BASE_URL = process.env.APP_BASE_URL || process.env.SITE_URL || process.env.VITE_APP_URL || 'https://mindlab-research.vercel.app';
+
+export function createSmtpTransporter() {
+  if (!SMTP_USER || !SMTP_PASS) return null;
+  return nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: SMTP_SECURE,
+    auth: {
+      user: SMTP_USER,
+      pass: SMTP_PASS,
+    },
+  });
+}
 
 export function getUnlockEmailTemplates({ firstName, participantCode, appUrl = APP_BASE_URL, isTest = false }) {
   const subject = isTest
@@ -18,7 +42,7 @@ export function getUnlockEmailTemplates({ firstName, participantCode, appUrl = A
 
   const textBody = `Hello ${firstName},
 
-Your 24-hour waiting interval is now complete. Room 03 (Attention Challenge) and Room 04 (Flexibility Challenge) are unlocked and ready for you to complete.
+Your waiting interval is now complete. Room 03 (Attention Challenge) and Room 04 (Flexibility Challenge) are unlocked and ready for you to complete.
 
 Participant ID: ${participantCode}
 Study Link: ${appUrl}
@@ -39,7 +63,7 @@ MindLab Research Team`;
   <p style="font-size: 16px; margin-bottom: 16px;">Hello <strong>${firstName}</strong>,</p>
   
   <p style="font-size: 14px; margin-bottom: 16px;">
-    Your 24-hour waiting interval is now complete. <strong>Room 03 (Stroop Task)</strong> and <strong>Room 04 (Task Switching)</strong> are officially unlocked and ready.
+    Your waiting interval is now complete. <strong>Room 03 (Stroop Task)</strong> and <strong>Room 04 (Task Switching)</strong> are officially unlocked and ready for you to solve.
   </p>
   
   <div style="background-color: #F8F8FC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
@@ -67,12 +91,21 @@ export async function processUnlockEmails({
   targetSessionId = null,
   batchSize = 20 
 } = {}) {
+  const smtpTransport = createSmtpTransporter();
+  const providerLabel = smtpTransport
+    ? `Nodemailer SMTP (${SMTP_HOST}:${SMTP_PORT}, user: ${SMTP_USER ? 'configured' : 'none'})`
+    : RESEND_API_KEY
+    ? 'Resend API'
+    : SENDGRID_API_KEY
+    ? 'SendGrid API'
+    : 'None configured (SMTP_USER/SMTP_PASS, RESEND_API_KEY, or SENDGRID_API_KEY required)';
+
   console.log('--- MindLab Room 3 & 4 Unlock Email Dispatcher ---');
   console.log(`Timestamp: ${new Date().toISOString()}`);
   console.log(`Dry Run: ${dryRun}`);
   console.log(`Target Session: ${targetSessionId || 'All eligible'}`);
   console.log(`Test Recipient: ${testRecipient || 'Direct to participant'}`);
-  console.log(`Email Provider: ${RESEND_API_KEY ? 'Resend configured' : SENDGRID_API_KEY ? 'SendGrid configured' : 'None configured (API key required)'}`);
+  console.log(`Email Provider: ${providerLabel}`);
 
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -131,20 +164,22 @@ export async function processUnlockEmails({
     const recipient = testRecipient || actualEmail;
     const firstName = (session.participant_name || 'Participant').split(' ')[0];
 
-    // Sandbox sender protection: prevent burning participant retries when sender domain is unverified
-    const isSandboxSender = EMAIL_FROM.toLowerCase().includes('onboarding@resend.dev') || EMAIL_FROM.toLowerCase().includes('@resend.dev');
-    const isAccountOwnerOrSink = recipient.toLowerCase() === 'sharmin.nipu1309@gmail.com' || recipient.toLowerCase().endsWith('@resend.dev');
+    // Sandbox sender protection ONLY applies when using Resend sandbox without SMTP
+    if (!smtpTransport) {
+      const isSandboxSender = EMAIL_FROM.toLowerCase().includes('onboarding@resend.dev') || EMAIL_FROM.toLowerCase().includes('@resend.dev');
+      const isAccountOwnerOrSink = recipient.toLowerCase() === 'sharmin.nipu1309@gmail.com' || recipient.toLowerCase().endsWith('@resend.dev');
 
-    if (isSandboxSender && !isAccountOwnerOrSink) {
-      console.warn(`[Email Worker] Skipping external recipient ${recipient}: sender is sandbox (${EMAIL_FROM}). Custom domain required at resend.com/domains.`);
-      results.push({
-        session_id: session.session_id,
-        participant_code: session.participant_code,
-        recipient,
-        status: 'skipped_unverified_sender_domain',
-        error: 'Custom sending domain required to send to external recipients',
-      });
-      continue;
+      if (isSandboxSender && !isAccountOwnerOrSink) {
+        console.warn(`[Email Worker] Skipping external recipient ${recipient}: sender is sandbox (${EMAIL_FROM}). Nodemailer SMTP or custom domain required.`);
+        results.push({
+          session_id: session.session_id,
+          participant_code: session.participant_code,
+          recipient,
+          status: 'skipped_unverified_sender_domain',
+          error: 'Nodemailer SMTP or custom sending domain required to send to external recipients',
+        });
+        continue;
+      }
     }
     
     console.log(`Processing unlock email for participant ${session.participant_code} (to: ${recipient})...`);
@@ -159,7 +194,22 @@ export async function processUnlockEmails({
     let sendSuccess = false;
     let sendError = null;
 
-    if (RESEND_API_KEY) {
+    if (smtpTransport) {
+      try {
+        const info = await smtpTransport.sendMail({
+          from: EMAIL_FROM,
+          to: recipient,
+          subject,
+          text: textBody,
+          html: htmlBody,
+        });
+        console.log(`[Nodemailer] Delivered unlock email to ${recipient}. MessageId: ${info.messageId}`);
+        sendSuccess = true;
+      } catch (e) {
+        console.error(`[Nodemailer] Delivery error to ${recipient}:`, e.message);
+        sendError = e.message;
+      }
+    } else if (RESEND_API_KEY) {
       try {
         const response = await fetch('https://api.resend.com/emails', {
           method: 'POST',
@@ -211,7 +261,7 @@ export async function processUnlockEmails({
         sendError = e.message;
       }
     } else {
-      sendError = 'No email provider credentials configured (RESEND_API_KEY or SENDGRID_API_KEY required)';
+      sendError = 'No email provider credentials configured (SMTP_USER/SMTP_PASS, RESEND_API_KEY, or SENDGRID_API_KEY required)';
     }
 
     // Atomically record outcome in Supabase

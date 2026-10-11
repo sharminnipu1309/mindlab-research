@@ -800,13 +800,36 @@ export async function recordRoom2Start(
       });
 
       if (!error && data && data.success) {
+        // Active 5-second verification timer: Rooms 3 & 4 unlock 5 seconds after starting Room 2
+        let effectiveUnlockAt = data.rooms_3_4_unlock_at;
+        let remaining = Number(data.remaining_seconds) || 0;
+
+        if (!data.already_started) {
+          const fiveSecUnlock = new Date(Date.now() + 5 * 1000).toISOString();
+          try {
+            await supabase
+              .from('sessions')
+              .update({
+                rooms_3_4_unlock_at: fiveSecUnlock,
+                unlock_email_status: 'pending',
+              })
+              .eq('id', activeSid);
+            effectiveUnlockAt = fiveSecUnlock;
+            remaining = 5;
+          } catch (updateErr) {
+            console.warn('[recordRoom2Start] Could not set 5s unlock override:', updateErr);
+          }
+        } else if (effectiveUnlockAt) {
+          remaining = Math.max(0, Math.floor((new Date(effectiveUnlockAt).getTime() - Date.now()) / 1000));
+        }
+
         const status: RoomUnlockStatus = {
-          unlocked: Boolean(data.unlocked),
+          unlocked: remaining <= 0,
           room2Started: true,
           room2StartedAt: data.room_2_started_at || null,
-          unlockAt: data.rooms_3_4_unlock_at || null,
+          unlockAt: effectiveUnlockAt || null,
           serverNow: data.server_now || new Date().toISOString(),
-          remainingSeconds: Number(data.remaining_seconds) || 0,
+          remainingSeconds: remaining,
         };
 
         // Update stored session context cache
@@ -842,7 +865,7 @@ export async function recordRoom2Start(
 
         if (!room2StartedAt) {
           const nowStr = new Date().toISOString();
-          const unlockDate = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+          const unlockDate = new Date(Date.now() + 5 * 1000).toISOString();
           const { error: upErr } = await supabase
             .from('sessions')
             .update({
@@ -859,7 +882,7 @@ export async function recordRoom2Start(
         }
 
         const unlocked = Boolean(unlockAt && new Date() >= new Date(unlockAt));
-        const rem = unlockAt ? Math.max(0, Math.floor((new Date(unlockAt).getTime() - Date.now()) / 1000)) : 86400;
+        const rem = unlockAt ? Math.max(0, Math.floor((new Date(unlockAt).getTime() - Date.now()) / 1000)) : 5;
 
         return {
           unlocked,
@@ -875,16 +898,16 @@ export async function recordRoom2Start(
     }
   }
 
-  // Local-only fallback
+  // Local-only fallback (5-second unlock interval)
   const now = new Date();
-  const unlock = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  const unlock = new Date(now.getTime() + 5 * 1000);
   return {
     unlocked: false,
     room2Started: true,
     room2StartedAt: now.toISOString(),
     unlockAt: unlock.toISOString(),
     serverNow: now.toISOString(),
-    remainingSeconds: 86400,
+    remainingSeconds: 5,
   };
 }
 
@@ -905,7 +928,7 @@ export async function checkRooms3And4Access(
       room2StartedAt: null,
       unlockAt: null,
       serverNow: new Date().toISOString(),
-      remainingSeconds: 86400,
+      remainingSeconds: 5,
     };
   }
 
@@ -942,7 +965,7 @@ export async function checkRooms3And4Access(
         const room2Started = Boolean(sRow.room_2_started_at);
         const unlockAt = sRow.rooms_3_4_unlock_at;
         const unlocked = Boolean(room2Started && unlockAt && new Date() >= new Date(unlockAt));
-        const rem = unlockAt ? Math.max(0, Math.floor((new Date(unlockAt).getTime() - Date.now()) / 1000)) : 86400;
+        const rem = unlockAt ? Math.max(0, Math.floor((new Date(unlockAt).getTime() - Date.now()) / 1000)) : 5;
 
         return {
           unlocked,

@@ -56,7 +56,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
   const [currentParticipant, setCurrentParticipant] = useState<ParticipantSession>(participant);
   const [interruptedModalTask, setInterruptedModalTask] = useState<InterruptedModalData | null>(null);
   const [unlockStatus, setUnlockStatus] = useState<RoomUnlockStatus | null>(null);
-  const [remainingSeconds, setRemainingSeconds] = useState<number>(86400);
+  const [remainingSeconds, setRemainingSeconds] = useState<number>(5);
   const lastSyncRef = useRef<{ serverRemaining: number; syncPerfTime: number } | null>(null);
 
   // Sync latest session status and trial counts directly from Supabase on mount
