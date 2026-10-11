@@ -5,8 +5,19 @@ on:
   # Prevents exhausting database retry attempts (attempt 4/5 reached on pending participants).
   # schedule:
   #   - cron: '*/15 * * * *'
-  # Allows researchers or admins to manually trigger the email worker anytime from GitHub Actions tab
+  # Controlled manual trigger for testing and research dispatch
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run mode (logs actions without sending emails or mutating retry counts)'
+        required: true
+        default: true
+        type: boolean
+      test_recipient:
+        description: 'Optional test recipient override (e.g. delivered@resend.dev)'
+        required: false
+        default: 'delivered@resend.dev'
+        type: string
 
 jobs:
   dispatch-unlock-emails:
@@ -15,10 +26,19 @@ jobs:
     steps:
       - name: Trigger Supabase Edge Function
         run: |
+          PAYLOAD=$(cat << 'EOF'
+          {
+            "dryRun": ${{ inputs.dry_run }},
+            "testRecipient": "${{ inputs.test_recipient }}"
+          }
+          EOF
+          )
+
           HTTP_STATUS=$(curl -s -o response.json -w "%{http_code}" -X POST \
             "https://${{ secrets.SUPABASE_PROJECT_REF }}.supabase.co/functions/v1/send-unlock-notifications" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
-            -H "Content-Type: application/json")
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD")
 
           echo "Response HTTP Status: $HTTP_STATUS"
           cat response.json

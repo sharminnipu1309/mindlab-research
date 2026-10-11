@@ -1,6 +1,6 @@
 // supabase/functions/send-unlock-notifications/index.ts
 // Supabase Edge Function: Server-side Room 3 & 4 Unlock Email Notification Dispatcher
-// Triggered on a schedule (e.g. pg_cron, cron webhook) or on-demand by researchers.
+// Triggered on-demand by researchers or automated runners.
 
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.117.3';
@@ -21,13 +21,18 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') || '';
 const SENDGRID_API_KEY = Deno.env.get('SENDGRID_API_KEY') || '';
 const EMAIL_FROM = Deno.env.get('RESEND_FROM_EMAIL') || Deno.env.get('EMAIL_FROM') || 'MindLab Study <onboarding@resend.dev>';
-const APP_BASE_URL = Deno.env.get('APP_BASE_URL') || Deno.env.get('SITE_URL') || Deno.env.get('VITE_APP_URL') || 'https://mindlab.io';
+const APP_BASE_URL = Deno.env.get('APP_BASE_URL') || Deno.env.get('SITE_URL') || Deno.env.get('VITE_APP_URL') || 'https://mindlab-research.vercel.app';
 const CRON_SECRET = Deno.env.get('CRON_SECRET') || '';
 
 serve(async (req: Request) => {
   // Allow health check GET
   if (req.method === 'GET') {
-    return new Response(JSON.stringify({ status: 'ready', provider: RESEND_API_KEY ? 'resend' : (SENDGRID_API_KEY ? 'sendgrid' : 'none_configured') }), {
+    return new Response(JSON.stringify({ 
+      status: 'ready', 
+      provider: RESEND_API_KEY ? 'resend' : (SENDGRID_API_KEY ? 'sendgrid' : 'none_configured'),
+      from_configured: EMAIL_FROM,
+      app_url: APP_BASE_URL,
+    }), {
       headers: { 'Content-Type': 'application/json' },
     });
   }
@@ -53,6 +58,24 @@ serve(async (req: Request) => {
     });
   }
 
+  // Parse optional payload for safe testing / dry-run
+  let reqPayload: any = {};
+  if (req.method === 'POST') {
+    try {
+      reqPayload = await req.json();
+    } catch {
+      reqPayload = {};
+    }
+  }
+
+  const isDryRun = Boolean(reqPayload?.dryRun);
+  const testRecipientOverride = typeof reqPayload?.testRecipient === 'string' && reqPayload.testRecipient.trim() 
+    ? reqPayload.testRecipient.trim() 
+    : null;
+  const targetSessionId = typeof reqPayload?.targetSessionId === 'string' && reqPayload.targetSessionId.trim()
+    ? reqPayload.targetSessionId.trim()
+    : null;
+
   const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
   try {
@@ -66,21 +89,30 @@ serve(async (req: Request) => {
       return new Response(JSON.stringify({ error: claimError.message }), { status: 500 });
     }
 
-    const sessions = (claimed || []) as ClaimedSession[];
+    let sessions = (claimed || []) as ClaimedSession[];
+    
+    // If targetSessionId was specified, filter strictly to that session
+    if (targetSessionId) {
+      sessions = sessions.filter(s => s.session_id === targetSessionId);
+    }
+
     if (sessions.length === 0) {
       return new Response(JSON.stringify({ message: 'No pending unlock emails ready to send.', count: 0 }), {
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    console.log(`[Unlock Email Dispatcher] Claimed ${sessions.length} sessions for dispatch.`);
+    console.log(`[Unlock Email Dispatcher] Claimed ${sessions.length} sessions for dispatch. DryRun: ${isDryRun}`);
     const results = [];
 
     // 2. Process each claimed session
     for (const session of sessions) {
-      const recipient = session.participant_email;
+      // Allow safe recipient override during testing
+      const recipient = testRecipientOverride || session.participant_email;
       const firstName = session.participant_name.split(' ')[0] || session.participant_name;
-      const subject = `MindLab Study: Room 03 & Room 04 Are Now Unlocked (${session.participant_code})`;
+      const subject = testRecipientOverride 
+        ? `[TEST] MindLab Study: Room 03 & Room 04 Are Now Unlocked (${session.participant_code})`
+        : `MindLab Study: Room 03 & Room 04 Are Now Unlocked (${session.participant_code})`;
       
       const textBody = `Hello ${firstName},
 
@@ -96,6 +128,7 @@ MindLab Research Team`;
 
       const htmlBody = `
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 580px; margin: 0 auto; padding: 24px; color: #1E293B; line-height: 1.5;">
+  ${testRecipientOverride ? `<div style="background-color: #FEF3C7; border: 1px solid #F59E0B; border-radius: 8px; padding: 10px; margin-bottom: 16px; font-size: 12px; color: #92400E;"><strong>[TEST RUN]</strong> Delivered to test recipient: ${testRecipientOverride}</div>` : ''}
   <div style="border-bottom: 2px solid #8B5CF6; padding-bottom: 16px; margin-bottom: 20px;">
     <h1 style="color: #6D28D9; font-size: 22px; margin: 0;">MindLab Cognitive Research</h1>
     <p style="color: #64748B; font-size: 13px; margin: 4px 0 0 0;">Cognitive Flexibility & Attention Study</p>
@@ -122,6 +155,18 @@ MindLab Research Team`;
     To resume, select <strong>"Resume Session"</strong> on the homepage, enter Participant ID <strong>${session.participant_code}</strong>, and verify your first name (<strong>${firstName}</strong>).
   </p>
 </div>`;
+
+      if (isDryRun) {
+        console.log(`[Dry Run] Would send email to ${recipient} for session ${session.session_id}`);
+        results.push({
+          session_id: session.session_id,
+          participant_code: session.participant_code,
+          recipient,
+          status: 'dry_run',
+          success: true,
+        });
+        continue;
+      }
 
       let sendSuccess = false;
       let sendError: string | null = null;
@@ -202,7 +247,12 @@ MindLab Research Team`;
       });
     }
 
-    return new Response(JSON.stringify({ processed: results.length, results }), {
+    return new Response(JSON.stringify({ 
+      processed: results.length, 
+      dry_run: isDryRun, 
+      test_override: Boolean(testRecipientOverride), 
+      results 
+    }), {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (err: any) {
