@@ -108,7 +108,8 @@ export async function processUnlockEmails({
 
   // 1. Claim eligible sessions atomically via RPC
   const { data: claimed, error: claimError } = await supabase.rpc('claim_pending_unlock_emails', {
-    p_batch_size: batchSize,
+    p_batch_size: targetSessionId ? 1 : batchSize,
+    p_target_session_id: targetSessionId || null,
   });
 
   if (claimError) {
@@ -116,11 +117,7 @@ export async function processUnlockEmails({
     return { success: false, error: claimError.message, processed: 0 };
   }
 
-  let sessions = claimed || [];
-  if (targetSessionId) {
-    sessions = sessions.filter(s => s.session_id === targetSessionId);
-  }
-
+  const sessions = claimed || [];
   console.log(`Found ${sessions.length} eligible session(s) pending unlock notification.`);
 
   if (sessions.length === 0) {
@@ -133,6 +130,22 @@ export async function processUnlockEmails({
     const actualEmail = session.participant_email;
     const recipient = testRecipient || actualEmail;
     const firstName = (session.participant_name || 'Participant').split(' ')[0];
+
+    // Sandbox sender protection: prevent burning participant retries when sender domain is unverified
+    const isSandboxSender = EMAIL_FROM.toLowerCase().includes('onboarding@resend.dev') || EMAIL_FROM.toLowerCase().includes('@resend.dev');
+    const isAccountOwnerOrSink = recipient.toLowerCase() === 'sharmin.nipu1309@gmail.com' || recipient.toLowerCase().endsWith('@resend.dev');
+
+    if (isSandboxSender && !isAccountOwnerOrSink) {
+      console.warn(`[Email Worker] Skipping external recipient ${recipient}: sender is sandbox (${EMAIL_FROM}). Custom domain required at resend.com/domains.`);
+      results.push({
+        session_id: session.session_id,
+        participant_code: session.participant_code,
+        recipient,
+        status: 'skipped_unverified_sender_domain',
+        error: 'Custom sending domain required to send to external recipients',
+      });
+      continue;
+    }
     
     console.log(`Processing unlock email for participant ${session.participant_code} (to: ${recipient})...`);
 
