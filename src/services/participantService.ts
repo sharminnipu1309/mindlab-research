@@ -985,7 +985,9 @@ export async function checkRooms3And4Access(
         const room2Started = Boolean(sRow.room_2_started_at);
         const unlockAt = sRow.rooms_3_4_unlock_at;
         const unlocked = Boolean(room2Started && unlockAt && new Date() >= new Date(unlockAt));
-        const rem = unlockAt ? Math.max(0, Math.floor((new Date(unlockAt).getTime() - Date.now()) / 1000)) : 0;
+        const rem = (room2Started && unlockAt)
+          ? Math.max(0, Math.floor((new Date(unlockAt).getTime() - Date.now()) / 1000))
+          : 60;
 
         return {
           unlocked,

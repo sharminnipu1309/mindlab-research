@@ -64,6 +64,8 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
   const [unlockStatus, setUnlockStatus] = useState<RoomUnlockStatus | null>(null);
   const [remainingSeconds, setRemainingSeconds] = useState<number>(60);
   const lastSyncRef = useRef<{ serverRemaining: number; syncPerfTime: number } | null>(null);
+  const hasTriggeredAlertRef = useRef<boolean>(false);
+  const timerWasRunningRef = useRef<boolean>(false);
 
   // Sync latest session status and trial counts directly from Supabase on mount
   useEffect(() => {
@@ -79,22 +81,19 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
           serverRemaining: st.remainingSeconds,
           syncPerfTime: performance.now(),
         };
-
-        // Show celebration alert once if newly unlocked
-        if (st.unlocked && st.room2Started) {
-          const alertKey = `mindlab_unlock_alert_shown_${sid}`;
-          if (sessionStorage.getItem(alertKey) !== 'true') {
-            setShowUnlockAlertModal(true);
-            sessionStorage.setItem(alertKey, 'true');
-          }
-        }
+        // DO NOT show popup on mount. Popup should strictly only appear after the 1-minute timer finishes.
       });
     }
   }, [participant]);
 
   // Monotonic ticker unaffected by OS date/clock alteration
   useEffect(() => {
-    if (!unlockStatus || unlockStatus.unlocked || remainingSeconds <= 0) return;
+    // Only run ticker if Room 2 has started and is not yet unlocked
+    if (!unlockStatus || !unlockStatus.room2Started || unlockStatus.unlocked || remainingSeconds <= 0) {
+      return;
+    }
+
+    timerWasRunningRef.current = true;
 
     const interval = setInterval(() => {
       if (!lastSyncRef.current) return;
@@ -103,14 +102,19 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
       setRemainingSeconds(updatedRemaining);
 
       if (updatedRemaining <= 0) {
-        // Countdown elapsed: trigger unlock state and show celebration alert immediately
+        clearInterval(interval);
+        // Countdown elapsed: trigger unlock state and show celebration alert ONLY once when timer finishes
         setUnlockStatus(prev => prev ? { ...prev, unlocked: true, remainingSeconds: 0 } : null);
         setCurrentParticipant(prev => ({ ...prev, rooms3And4Unlocked: true }));
-        setShowUnlockAlertModal(true);
+
+        if (timerWasRunningRef.current && !hasTriggeredAlertRef.current) {
+          hasTriggeredAlertRef.current = true;
+          timerWasRunningRef.current = false;
+          setShowUnlockAlertModal(true);
+        }
 
         const sid = currentParticipant.sessionId || participant.sessionId || getStoredSessionContext()?.sessionId;
         if (sid) {
-          sessionStorage.setItem(`mindlab_unlock_alert_shown_${sid}`, 'true');
           checkRooms3And4Access(sid).then(st => {
             setUnlockStatus(st);
             setRemainingSeconds(st.remainingSeconds);
@@ -182,9 +186,11 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
   );
 
   const areRooms3And4Unlocked = Boolean(
-    unlockStatus
-      ? unlockStatus.unlocked
-      : (currentParticipant.rooms3And4Unlocked && isRoom2Started)
+    isRoom2Started && (
+      unlockStatus
+        ? unlockStatus.unlocked
+        : Boolean(currentParticipant.rooms3And4Unlocked)
+    )
   );
 
   const challengeStages = [
@@ -1080,7 +1086,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
       )}
 
       {/* ─── LEVEL UNLOCKED CELEBRATION ALERT MODAL ─────────────────── */}
-      {showUnlockAlertModal && (
+      {showUnlockAlertModal && isRoom2Started && areRooms3And4Unlocked && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#11152F]/60 backdrop-blur-xs animate-fade-in">
           <div className="bg-white dark:bg-[#162036] rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border-2 border-[#10B981] dark:border-[#059669] text-center animate-scale-up relative">
             <button
