@@ -95,29 +95,34 @@ const PRACTICE_TRIALS: PracticeTrialConfig[] = [
 
 /**
  * CorsiBoard Component
- * Slightly reduced grid size (~20% smaller than original 96px on desktop)
- * while maintaining responsive touch targets and clear visibility.
+ * - Slightly reduced grid size (~20% smaller than original 96px on desktop)
+ * - showSelectionIndicators: ONLY true in practice mode to show selection numbers (1, 2, 3...)
+ * - During official experimental trials: showSelectionIndicators is FALSE (no numbers, no persistent markings, clean grid)
  */
+interface CorsiBoardProps {
+  highlighted: number | null;
+  flashBlock: number | null;
+  playerResponse: number[];
+  showSelectionIndicators?: boolean;
+  disabled: boolean;
+  onBlockClick: (i: number) => void;
+}
+
 function CorsiBoard({
   highlighted,
   flashBlock,
   playerResponse,
+  showSelectionIndicators = false,
   disabled,
   onBlockClick,
-}: {
-  highlighted: number | null;
-  flashBlock: number | null;
-  playerResponse: number[];
-  disabled: boolean;
-  onBlockClick: (i: number) => void;
-}) {
+}: CorsiBoardProps) {
   return (
-    <div className="grid grid-cols-3 gap-2.5 sm:gap-3.5">
+    <div className="grid grid-cols-3 gap-2 sm:gap-3">
       {Array.from({ length: 9 }, (_, i) => {
         const isHighlighted = highlighted === i;
         const isFlashing = flashBlock === i;
         const responseIndex = playerResponse.indexOf(i);
-        const isSelected = responseIndex !== -1;
+        const isSelected = showSelectionIndicators && responseIndex !== -1;
 
         return (
           <button
@@ -128,14 +133,17 @@ function CorsiBoard({
             className={`corsi-block w-14 h-14 xs:w-16 xs:h-16 sm:w-20 sm:h-20 ${
               isHighlighted
                 ? 'highlighted'
-                : isFlashing || isSelected
+                : isFlashing
+                ? 'selected'
+                : isSelected
                 ? 'selected'
                 : 'bg-[#E9E8F2] dark:bg-[#1A2248]'
-            } ${disabled ? 'disabled cursor-default' : 'cursor-pointer hover:scale-[1.03]'}`}
+            } ${disabled ? 'disabled cursor-default' : 'cursor-pointer hover:scale-[1.02] active:scale-95'}`}
             onClick={() => !disabled && onBlockClick(i)}
             style={{ cursor: disabled ? 'default' : 'pointer' }}
           >
-            {isSelected && (
+            {/* Display sequence order number ONLY during practice/tutorial when showSelectionIndicators is true */}
+            {showSelectionIndicators && isSelected && (
               <span className="text-sm sm:text-base font-black font-['JetBrains_Mono',monospace] text-white drop-shadow-xs select-none">
                 {responseIndex + 1}
               </span>
@@ -177,6 +185,7 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
   const dataConfig = dataConfigRef.current;
   const animRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const flashTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isSubmittingRef = useRef<boolean>(false);
 
   // Exact trial-level records and span tracking (only populated during official trials)
   const allTrialsRef = useRef<CorsiTrialRecord[]>([]);
@@ -229,6 +238,7 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
     setPracticeSequence(seq);
     setPracticePlayerResponse([]);
     setPracticeLastResult(null);
+    isSubmittingRef.current = false;
 
     setPhase('practiceWatching');
     setHighlightedBlock(null);
@@ -274,6 +284,9 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
 
   const handlePracticeDone = () => {
     if (phase !== 'practiceRecall') return;
+    if (isSubmittingRef.current) return;
+    if (practicePlayerResponse.length === 0) return;
+
     const expected = [...practiceSequence].reverse();
     const isCorrect =
       practicePlayerResponse.length === expected.length &&
@@ -305,6 +318,7 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
   const playSequence = useCallback((seq: number[]) => {
     setPhase('watching');
     setHighlightedBlock(null);
+    isSubmittingRef.current = false;
 
     let delay = 300;
     seq.forEach((blockIdx, i) => {
@@ -335,6 +349,7 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
     setSequence(seq);
     setPlayerResponse([]);
     setLastResult(null);
+    isSubmittingRef.current = false;
     playSequence(seq);
   }, [playSequence, sessionId]);
 
@@ -343,9 +358,11 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
     if (playerResponse.includes(i)) return;
     if (playerResponse.length >= seqLen) return;
 
+    // Record internal selection order (for research data)
     setPlayerResponse(prev => [...prev, i]);
 
-    // Brief visual flash on click (200ms)
+    // Brief visual flash on click (200ms) for tactile touch feedback,
+    // but NO persistent markings or numbers are left on the grid.
     if (flashTimeoutRef.current) {
       clearTimeout(flashTimeoutRef.current);
     }
@@ -390,6 +407,10 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
 
   const handleDone = () => {
     if (phase !== 'recall') return;
+    if (isSubmittingRef.current) return;
+    if (playerResponse.length === 0) return;
+    isSubmittingRef.current = true;
+
     const expected = [...sequence].reverse();
 
     // Calculate position accuracy
@@ -432,6 +453,7 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
     setPhase('feedback');
 
     setTimeout(() => {
+      isSubmittingRef.current = false;
       if (trialNumber === TRIALS_PER_LEVEL) {
         if (newCorrect >= REQUIRED_CORRECT) {
           // Successfully completed this level
@@ -527,21 +549,21 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
         />
       )}
 
-      {/* Header strip */}
-      <div className="bg-white dark:bg-[#15193B] border-b border-[#E9E8F2] dark:border-[#252E63] px-4 sm:px-8 py-3 sm:py-4 transition-colors">
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+      {/* Header strip - compact vertical height */}
+      <div className="bg-white dark:bg-[#15193B] border-b border-[#E9E8F2] dark:border-[#252E63] px-3 sm:px-8 py-2 sm:py-2.5 transition-colors">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
           <div className="text-center sm:text-left">
             <div className="text-[10px] font-bold text-[#69AFA8] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
               Room 02 — Backward Corsi Block Task
             </div>
-            <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mt-1 flex-wrap">
+            <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mt-0.5 flex-wrap">
               {isPracticeMode ? (
                 <>
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#E4F2F0] text-[#0D9488] dark:bg-teal-950/60 dark:text-teal-300">
                     Practice Trial {practiceIndex + 1} of 3
                   </span>
                   <span className="text-xs text-[#73758C]">·</span>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#EDEAF8] dark:bg-[#1E2552] text-xs font-medium text-[#6567C9] dark:text-[#A5A6F6]">
+                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#EDEAF8] dark:bg-[#1E2552] text-xs font-medium text-[#6567C9] dark:text-[#A5A6F6]">
                     <span>Sequence:</span>
                     <strong className="text-sm font-black font-['JetBrains_Mono',monospace] text-[#252640] dark:text-white">
                       {currentPracticeConfig.sequenceLength}
@@ -555,7 +577,7 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
                     Level {level} of {TOTAL_LEVELS}
                   </span>
                   <span className="text-xs text-[#73758C]">·</span>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#EDEAF8] dark:bg-[#1E2552] text-xs font-medium text-[#6567C9] dark:text-[#A5A6F6]">
+                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#EDEAF8] dark:bg-[#1E2552] text-xs font-medium text-[#6567C9] dark:text-[#A5A6F6]">
                     <span>Sequence:</span>
                     <strong className="text-sm font-black font-['JetBrains_Mono',monospace] text-[#252640] dark:text-white">
                       {seqLen}
@@ -573,12 +595,12 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
 
           {/* Practice Phase Header Indicator */}
           {isPracticeMode && (
-            <div className="flex items-center gap-4 sm:gap-6">
+            <div className="flex items-center gap-3 sm:gap-5">
               <div className="text-center">
                 <div className="text-[8px] sm:text-[9px] font-bold text-[#9597AB] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
                   Practice
                 </div>
-                <div className="text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#252640] dark:text-white">
+                <div className="text-sm sm:text-base font-bold font-['JetBrains_Mono',monospace] text-[#252640] dark:text-white">
                   {practiceIndex + 1}/3
                 </div>
               </div>
@@ -586,7 +608,7 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
                 {PRACTICE_TRIALS.map((_, i) => (
                   <div
                     key={i}
-                    className={`w-2.5 h-2.5 rounded-full transition-all ${
+                    className={`w-2 h-2 rounded-full transition-all ${
                       i < practiceIndex
                         ? 'bg-[#4A9B7F]'
                         : i === practiceIndex
@@ -596,7 +618,7 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
                   />
                 ))}
               </div>
-              <span className="hidden xs:inline-block px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase rounded-md bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-700/50">
+              <span className="px-2 py-0.5 text-[9px] sm:text-[10px] font-bold tracking-wider uppercase rounded-md bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-700/50">
                 Not Scored
               </span>
             </div>
@@ -604,12 +626,12 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
 
           {/* Official Trials Header Indicator */}
           {isOfficialMode && (
-            <div className="flex items-center gap-4 sm:gap-6">
+            <div className="flex items-center gap-3 sm:gap-5">
               <div className="text-center">
                 <div className="text-[8px] sm:text-[9px] font-bold text-[#9597AB] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
                   Trial
                 </div>
-                <div className="text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#252640] dark:text-white">
+                <div className="text-sm sm:text-base font-bold font-['JetBrains_Mono',monospace] text-[#252640] dark:text-white">
                   {trialNumber}/{TRIALS_PER_LEVEL}
                 </div>
               </div>
@@ -617,12 +639,12 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
                 <div className="text-[8px] sm:text-[9px] font-bold text-[#9597AB] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
                   Correct
                 </div>
-                <div className="text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#4A9B7F]">
+                <div className="text-sm sm:text-base font-bold font-['JetBrains_Mono',monospace] text-[#4A9B7F]">
                   {correctTrials}
                 </div>
               </div>
               {/* Trial progress dots */}
-              <div className="flex gap-1 sm:gap-1.5">
+              <div className="flex gap-1">
                 {Array.from({ length: TRIALS_PER_LEVEL }, (_, i) => (
                   <div
                     key={i}
@@ -641,91 +663,91 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-6 sm:py-10">
+      {/* Main Content Area - Optimized compact padding for single-viewport fit */}
+      <div className="flex-1 flex flex-col items-center justify-center px-3 sm:px-6 py-2 sm:py-4">
 
         {/* 1. TUTORIAL & PRACTICE INTRO SECTION */}
         {phase === 'tutorialIntro' && (
-          <div className="text-center max-w-xl w-full animate-fade-in-up">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#E4F2F0] dark:bg-teal-950/60 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-5">
-              <Eye size={28} className="text-[#69AFA8] dark:text-teal-400" />
+          <div className="text-center max-w-xl w-full animate-fade-in-up py-2">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#E4F2F0] dark:bg-teal-950/60 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+              <Eye size={26} className="text-[#69AFA8] dark:text-teal-400" />
             </div>
 
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E4F2F0] dark:bg-teal-950/60 text-[#0D9488] dark:text-teal-300 text-xs font-bold uppercase tracking-wider mb-2">
-              <Sparkles size={14} />
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#E4F2F0] dark:bg-teal-950/60 text-[#0D9488] dark:text-teal-300 text-xs font-bold uppercase tracking-wider mb-2">
+              <Sparkles size={13} />
               Interactive Tutorial & Practice
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-bold text-[#252640] dark:text-white mb-2 sm:mb-3 font-['Plus_Jakarta_Sans',sans-serif]">
+            <h2 className="text-lg sm:text-2xl font-bold text-[#252640] dark:text-white mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
               Backward Corsi Block Task
             </h2>
 
-            <p className="text-xs sm:text-base text-[#73758C] dark:text-slate-300 leading-relaxed mb-4">
+            <p className="text-xs sm:text-sm text-[#73758C] dark:text-slate-300 leading-relaxed mb-3">
               Watch the highlighted blocks carefully. When the sequence ends, select the blocks in{' '}
               <strong className="text-[#252640] dark:text-white">REVERSE ORDER</strong> — tapping the{' '}
               <strong className="text-[#6567C9] dark:text-[#A5A6F6]">last block shown first</strong>.
             </p>
 
             {/* Visual Directional Tutorial Box */}
-            <div className="bg-white dark:bg-[#15193B] rounded-2xl border border-[#E9E8F2] dark:border-[#252E63] p-4 sm:p-5 mb-5 text-left shadow-xs">
-              <div className="text-xs font-bold text-[#6567C9] dark:text-[#A5A6F6] uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                <Info size={15} />
+            <div className="bg-white dark:bg-[#15193B] rounded-2xl border border-[#E9E8F2] dark:border-[#252E63] p-3.5 sm:p-4 mb-4 text-left shadow-xs">
+              <div className="text-xs font-bold text-[#6567C9] dark:text-[#A5A6F6] uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                <Info size={14} />
                 How Reverse Recall Works (Visual Example)
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {/* Step 1: Presentation */}
-                <div className="p-3.5 rounded-xl bg-[#F8F8FC] dark:bg-[#1A2248] border border-[#E9E8F2] dark:border-[#252E63]">
-                  <div className="flex items-center gap-1.5 mb-2 text-xs font-bold text-[#6567C9] dark:text-[#A5A6F6]">
-                    <Eye size={15} />
+                <div className="p-3 rounded-xl bg-[#F8F8FC] dark:bg-[#1A2248] border border-[#E9E8F2] dark:border-[#252E63]">
+                  <div className="flex items-center gap-1.5 mb-1.5 text-xs font-bold text-[#6567C9] dark:text-[#A5A6F6]">
+                    <Eye size={14} />
                     <span>STEP 1: WATCH SEQUENCE</span>
                   </div>
-                  <p className="text-[11px] sm:text-xs text-[#73758C] dark:text-slate-400 mb-2.5">
+                  <p className="text-[11px] text-[#73758C] dark:text-slate-400 mb-2">
                     Blocks highlight in forward presentation order:
                   </p>
                   <div className="flex items-center justify-center gap-1 sm:gap-2">
-                    <div className="px-2.5 py-1.5 rounded-lg bg-[#6567C9] text-white font-mono text-xs font-bold shadow-xs">
-                      Box A <span className="text-[10px] opacity-80">(1st)</span>
+                    <div className="px-2 py-1 rounded-lg bg-[#6567C9] text-white font-mono text-[11px] font-bold shadow-xs">
+                      Box A <span className="opacity-80 text-[10px]">(1st)</span>
                     </div>
-                    <ArrowRight size={14} className="text-[#6567C9] flex-shrink-0" />
-                    <div className="px-2.5 py-1.5 rounded-lg bg-[#6567C9] text-white font-mono text-xs font-bold shadow-xs">
-                      Box B <span className="text-[10px] opacity-80">(2nd)</span>
+                    <ArrowRight size={13} className="text-[#6567C9] flex-shrink-0" />
+                    <div className="px-2 py-1 rounded-lg bg-[#6567C9] text-white font-mono text-[11px] font-bold shadow-xs">
+                      Box B <span className="opacity-80 text-[10px]">(2nd)</span>
                     </div>
-                    <ArrowRight size={14} className="text-[#6567C9] flex-shrink-0" />
-                    <div className="px-2.5 py-1.5 rounded-lg bg-[#6567C9] text-white font-mono text-xs font-bold shadow-xs ring-2 ring-amber-400">
-                      Box C <span className="text-[10px] opacity-80">(Last)</span>
+                    <ArrowRight size={13} className="text-[#6567C9] flex-shrink-0" />
+                    <div className="px-2 py-1 rounded-lg bg-[#6567C9] text-white font-mono text-[11px] font-bold shadow-xs ring-2 ring-amber-400">
+                      Box C <span className="opacity-80 text-[10px]">(Last)</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Step 2: Reverse Recall */}
-                <div className="p-3.5 rounded-xl bg-[#E4F2F0]/60 dark:bg-[#132E35] border border-[#69AFA8]/30">
-                  <div className="flex items-center gap-1.5 mb-2 text-xs font-bold text-[#4A9B7F] dark:text-emerald-400">
-                    <Undo2 size={15} />
+                <div className="p-3 rounded-xl bg-[#E4F2F0]/60 dark:bg-[#132E35] border border-[#69AFA8]/30">
+                  <div className="flex items-center gap-1.5 mb-1.5 text-xs font-bold text-[#4A9B7F] dark:text-emerald-400">
+                    <Undo2 size={14} />
                     <span>STEP 2: REVERSE RECALL</span>
                   </div>
-                  <p className="text-[11px] sm:text-xs text-[#73758C] dark:text-slate-300 mb-2.5">
+                  <p className="text-[11px] text-[#73758C] dark:text-slate-300 mb-2">
                     Tap in <strong>reverse order</strong> (last block first!):
                   </p>
                   <div className="flex items-center justify-center gap-1 sm:gap-2">
-                    <div className="px-2.5 py-1.5 rounded-lg bg-[#4A9B7F] text-white font-mono text-xs font-bold shadow-xs ring-2 ring-emerald-300">
-                      Box C <span className="text-[10px] opacity-90">(1st Tap)</span>
+                    <div className="px-2 py-1 rounded-lg bg-[#4A9B7F] text-white font-mono text-[11px] font-bold shadow-xs ring-2 ring-emerald-300">
+                      Box C <span className="opacity-90 text-[10px]">(1st Tap)</span>
                     </div>
-                    <ArrowRight size={14} className="text-[#4A9B7F] flex-shrink-0" />
-                    <div className="px-2.5 py-1.5 rounded-lg bg-[#4A9B7F] text-white font-mono text-xs font-bold shadow-xs">
-                      Box B <span className="text-[10px] opacity-90">(2nd Tap)</span>
+                    <ArrowRight size={13} className="text-[#4A9B7F] flex-shrink-0" />
+                    <div className="px-2 py-1 rounded-lg bg-[#4A9B7F] text-white font-mono text-[11px] font-bold shadow-xs">
+                      Box B <span className="opacity-90 text-[10px]">(2nd Tap)</span>
                     </div>
-                    <ArrowRight size={14} className="text-[#4A9B7F] flex-shrink-0" />
-                    <div className="px-2.5 py-1.5 rounded-lg bg-[#4A9B7F] text-white font-mono text-xs font-bold shadow-xs">
-                      Box A <span className="text-[10px] opacity-90">(3rd Tap)</span>
+                    <ArrowRight size={13} className="text-[#4A9B7F] flex-shrink-0" />
+                    <div className="px-2 py-1 rounded-lg bg-[#4A9B7F] text-white font-mono text-[11px] font-bold shadow-xs">
+                      Box A <span className="opacity-90 text-[10px]">(3rd Tap)</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Directional takeaway */}
-              <div className="mt-3 flex items-center gap-2.5 p-2.5 rounded-lg bg-[#F0EEFB] dark:bg-[#1E2552] border border-[#6567C9]/20 text-xs text-[#474864] dark:text-slate-200">
-                <RotateCcw size={16} className="text-[#6567C9] dark:text-[#A5A6F6] flex-shrink-0" />
+              <div className="mt-2.5 flex items-center gap-2 p-2 rounded-lg bg-[#F0EEFB] dark:bg-[#1E2552] border border-[#6567C9]/20 text-xs text-[#474864] dark:text-slate-200">
+                <RotateCcw size={15} className="text-[#6567C9] dark:text-[#A5A6F6] flex-shrink-0" />
                 <span>
                   <strong>Directional Rule:</strong> Think <em>"Last In, First Out"</em>. The last block to illuminate must always be your first tap.
                 </span>
@@ -733,8 +755,8 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
             </div>
 
             {/* Practice overview note */}
-            <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-700/50 rounded-xl p-3.5 mb-6 text-xs text-amber-900 dark:text-amber-200 flex items-center gap-2.5 text-left">
-              <Sparkles size={18} className="text-amber-600 dark:text-amber-400 flex-shrink-0" />
+            <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-700/50 rounded-xl p-3 mb-4 text-xs text-amber-900 dark:text-amber-200 flex items-center gap-2 text-left">
+              <Sparkles size={16} className="text-amber-600 dark:text-amber-400 flex-shrink-0" />
               <span>
                 You will complete <strong>3 practice trials</strong> (gradually increasing from 2 to 4 blocks) with feedback before the real assessment starts. Practice trials are <strong>not scored</strong> for research.
               </span>
@@ -745,31 +767,57 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
                 setPracticeIndex(0);
                 startPracticeTrial(0);
               }}
-              className="btn-primary px-8 sm:px-10 py-3 sm:py-3.5 text-sm sm:text-base w-full sm:w-auto justify-center font-bold"
+              className="btn-primary px-8 sm:px-10 py-2.5 sm:py-3 text-sm sm:text-base w-full sm:w-auto justify-center font-bold"
             >
               Begin Practice (3 Trials)
-              <ArrowRight size={18} />
+              <ArrowRight size={17} />
             </button>
           </div>
         )}
 
         {/* 2. PRACTICE PHASE (Watching / Recall / Feedback) */}
         {isPracticeMode && (
-          <div className="flex flex-col items-center gap-4 sm:gap-5 animate-fade-in w-full max-w-lg">
-            {/* Practice trial banner */}
-            <div className="flex items-center justify-between w-full px-4 py-2 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-700/50 rounded-xl text-xs text-amber-800 dark:text-amber-300 font-semibold">
-              <div className="flex items-center gap-1.5">
+          <div className="flex flex-col items-center gap-2.5 sm:gap-3.5 animate-fade-in w-full max-w-md">
+            {/* Top row: Practice banner and sequence length side-by-side */}
+            <div className="flex items-center justify-between w-full px-1">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-700/50 rounded-lg text-xs text-amber-800 dark:text-amber-300 font-semibold">
                 <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                <span>Practice Trial {practiceIndex + 1} of 3</span>
+                <span>Practice {practiceIndex + 1}/3</span>
               </div>
-              <span className="text-[11px] font-normal opacity-90">
-                {currentPracticeConfig.title}
-              </span>
+
+              {/* Prominent Sequence Number Text */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-white dark:bg-[#15193B] border border-[#E9E8F2] dark:border-[#252E63] shadow-xs">
+                {phase === 'practiceWatching' ? (
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[#474864] dark:text-slate-300">
+                    <span className="font-bold uppercase tracking-wider text-[#73758C] dark:text-slate-400 text-[11px]">
+                      Length:
+                    </span>
+                    <span className="text-base sm:text-lg font-black font-['JetBrains_Mono',monospace] text-[#6567C9] dark:text-[#A5A6F6]">
+                      {currentPracticeConfig.sequenceLength}
+                    </span>
+                    <span className="font-bold text-[#474864] dark:text-slate-300 text-[11px]">blocks</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[#474864] dark:text-slate-300">
+                    <span className="font-bold uppercase tracking-wider text-[#73758C] dark:text-slate-400 text-[11px]">
+                      Selected:
+                    </span>
+                    <span className="text-base sm:text-lg font-black font-['JetBrains_Mono',monospace] text-[#69AFA8] dark:text-[#5EEAD4]">
+                      {practicePlayerResponse.length}
+                    </span>
+                    <span className="text-xs font-bold text-[#9597AB]">/</span>
+                    <span className="text-base sm:text-lg font-black font-['JetBrains_Mono',monospace] text-[#252640] dark:text-white">
+                      {currentPracticeConfig.sequenceLength}
+                    </span>
+                    <span className="font-bold text-[#474864] dark:text-slate-300 text-[11px]">blocks</span>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Phase pill */}
             <div
-              className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold font-['Plus_Jakarta_Sans',sans-serif] transition-all text-center ${
+              className={`flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold font-['Plus_Jakarta_Sans',sans-serif] transition-all text-center ${
                 phase === 'practiceWatching'
                   ? 'bg-[#EDEAF8] text-[#6567C9] dark:bg-[#1E2552] dark:text-[#A5A6F6]'
                   : phase === 'practiceRecall'
@@ -781,131 +829,110 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
             >
               {phase === 'practiceWatching' && (
                 <>
-                  <Eye size={15} />
+                  <Eye size={14} />
                   Watching sequence — do not tap
                 </>
               )}
               {phase === 'practiceRecall' && (
                 <>
-                  <MousePointerClick size={15} />
+                  <MousePointerClick size={14} />
                   Now tap the blocks in REVERSE order
                 </>
               )}
               {phase === 'practiceFeedback' && practiceLastResult === 'correct' && (
                 <>
-                  <CheckCircle size={15} />
+                  <CheckCircle size={14} />
                   Practice Trial Correct!
                 </>
               )}
               {phase === 'practiceFeedback' && practiceLastResult === 'incorrect' && (
                 <>
-                  <X size={15} />
+                  <X size={14} />
                   Practice Trial Incorrect
                 </>
               )}
             </div>
 
-            {/* Prominent Sequence Number Text */}
-            <div className="flex items-center justify-center gap-2.5 px-5 py-2 rounded-xl bg-white dark:bg-[#15193B] border border-[#E9E8F2] dark:border-[#252E63] shadow-xs">
-              {phase === 'practiceWatching' ? (
-                <div className="flex items-center gap-2 text-sm sm:text-base text-[#474864] dark:text-slate-300">
-                  <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#73758C] dark:text-slate-400">
-                    Sequence Length:
-                  </span>
-                  <span className="text-xl sm:text-2xl font-black font-['JetBrains_Mono',monospace] text-[#6567C9] dark:text-[#A5A6F6] tracking-tight">
-                    {currentPracticeConfig.sequenceLength}
-                  </span>
-                  <span className="text-xs sm:text-sm font-bold text-[#474864] dark:text-slate-300">
-                    blocks
-                  </span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2 text-sm sm:text-base text-[#474864] dark:text-slate-300">
-                  <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#73758C] dark:text-slate-400">
-                    Selected:
-                  </span>
-                  <span className="text-xl sm:text-2xl font-black font-['JetBrains_Mono',monospace] text-[#69AFA8] dark:text-[#5EEAD4] tracking-tight">
-                    {practicePlayerResponse.length}
-                  </span>
-                  <span className="text-base sm:text-lg font-bold text-[#9597AB]">/</span>
-                  <span className="text-xl sm:text-2xl font-black font-['JetBrains_Mono',monospace] text-[#252640] dark:text-white tracking-tight">
-                    {currentPracticeConfig.sequenceLength}
-                  </span>
-                  <span className="text-xs sm:text-sm font-bold text-[#474864] dark:text-slate-300">
-                    blocks
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Slightly Smaller Corsi Grid Container */}
-            <div className="bg-white dark:bg-[#15193B] rounded-2xl border border-[#E9E8F2] dark:border-[#252E63] shadow-sm p-3.5 sm:p-7 max-w-full overflow-hidden transition-colors">
+            {/* Unified Practice Board & Actions Card (Zero-Scroll Layout) */}
+            <div className="bg-white dark:bg-[#15193B] rounded-2xl border border-[#E9E8F2] dark:border-[#252E63] shadow-sm p-3 sm:p-5 pt-3.5 sm:pt-4 max-w-full overflow-hidden transition-colors flex flex-col items-center">
               <CorsiBoard
                 highlighted={phase === 'practiceWatching' ? highlightedBlock : null}
                 flashBlock={flashingBlock}
                 playerResponse={practicePlayerResponse}
+                showSelectionIndicators={true}
                 disabled={phase !== 'practiceRecall'}
                 onBlockClick={handlePracticeBlockClick}
               />
-            </div>
 
-            {/* Practice Recall Controls */}
-            {phase === 'practiceRecall' && (
-              <div className="flex gap-2.5 sm:gap-3">
-                <button
-                  onClick={handlePracticeClear}
-                  disabled={practicePlayerResponse.length === 0}
-                  className="btn-secondary text-xs sm:text-sm py-2 px-4 disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  Clear response
-                </button>
-                <button
-                  onClick={handlePracticeDone}
-                  disabled={practicePlayerResponse.length === 0}
-                  className="btn-primary text-xs sm:text-sm py-2 px-6 sm:px-7 disabled:opacity-50 disabled:cursor-not-allowed font-bold"
-                >
-                  Done
-                  <CheckCircle size={15} />
-                </button>
+              {/* Action Controls directly below the grid in the same viewport */}
+              <div className="w-full mt-3 sm:mt-3.5 pt-2 border-t border-[#F0EEFB] dark:border-[#1E2552] flex items-center justify-center min-h-[40px]">
+                {phase === 'practiceRecall' ? (
+                  <div className="flex gap-2.5 sm:gap-3 items-center">
+                    <button
+                      onClick={handlePracticeClear}
+                      disabled={practicePlayerResponse.length === 0}
+                      className="btn-secondary text-xs sm:text-sm py-1.5 px-3 sm:px-4 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      Clear
+                    </button>
+                    <button
+                      onClick={handlePracticeDone}
+                      disabled={practicePlayerResponse.length === 0}
+                      className="btn-primary text-xs sm:text-sm py-1.5 px-5 sm:px-6 disabled:opacity-50 disabled:cursor-not-allowed font-bold"
+                    >
+                      Done
+                      <CheckCircle size={14} />
+                    </button>
+                  </div>
+                ) : phase === 'practiceWatching' ? (
+                  <span className="text-xs text-[#73758C] dark:text-slate-400 font-medium flex items-center gap-1.5 animate-pulse">
+                    <Eye size={13} className="text-[#6567C9]" />
+                    Watch practice sequence...
+                  </span>
+                ) : (
+                  <span className="text-xs text-[#73758C] dark:text-slate-400 font-medium">
+                    Review practice feedback below
+                  </span>
+                )}
               </div>
-            )}
+            </div>
 
             {/* Detailed Practice Feedback Card */}
             {phase === 'practiceFeedback' && (
               <div
-                className={`w-full rounded-2xl border p-4 sm:p-5 text-center shadow-sm animate-fade-in ${
+                className={`w-full rounded-2xl border p-3.5 sm:p-4 text-center shadow-sm animate-fade-in ${
                   practiceLastResult === 'correct'
                     ? 'bg-[#EAF7F3] dark:bg-emerald-950/40 border-[#4A9B7F]/30 dark:border-emerald-700/50'
                     : 'bg-[#FFF8EE] dark:bg-amber-950/40 border-amber-300 dark:border-amber-700/50'
                 }`}
               >
-                <h3 className="text-base sm:text-lg font-bold text-[#252640] dark:text-white mb-1 font-['Plus_Jakarta_Sans',sans-serif]">
+                <h3 className="text-sm sm:text-base font-bold text-[#252640] dark:text-white mb-1 font-['Plus_Jakarta_Sans',sans-serif]">
                   {practiceLastResult === 'correct'
                     ? `Practice Trial ${practiceIndex + 1} of 3 — Correct!`
                     : `Practice Trial ${practiceIndex + 1} of 3 — Incorrect`}
                 </h3>
 
-                <p className="text-xs text-[#73758C] dark:text-slate-300 mb-3 leading-relaxed">
+                <p className="text-xs text-[#73758C] dark:text-slate-300 mb-2.5 leading-relaxed">
                   {practiceLastResult === 'correct'
                     ? 'Well done! You correctly recalled the sequence in reverse order.'
                     : 'Remember: Tap the blocks in reverse order. The LAST block that lit up must be tapped first.'}
                 </p>
 
                 {/* Sequence Comparison */}
-                <div className="bg-white dark:bg-[#15193B] rounded-xl border border-[#E9E8F2] dark:border-[#252E63] p-3 text-xs text-left space-y-1.5 mb-3.5">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[#73758C] dark:text-slate-400">
+                <div className="bg-white dark:bg-[#15193B] rounded-xl border border-[#E9E8F2] dark:border-[#252E63] p-2.5 text-xs text-left space-y-1 mb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-0.5 text-[#73758C] dark:text-slate-400">
                     <span className="font-semibold text-[#252640] dark:text-slate-200">Sequence Presented:</span>
                     <span className="font-mono font-bold text-[#6567C9] dark:text-[#A5A6F6]">
                       {practiceSequence.map(b => `Block ${b + 1}`).join(' → ')}
                     </span>
                   </div>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[#73758C] dark:text-slate-400 border-t border-[#E9E8F2] dark:border-[#252E63] pt-1.5">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-0.5 text-[#73758C] dark:text-slate-400 border-t border-[#E9E8F2] dark:border-[#252E63] pt-1">
                     <span className="font-semibold text-[#252640] dark:text-slate-200">Correct Reverse Order:</span>
                     <span className="font-mono font-bold text-[#4A9B7F] dark:text-emerald-400">
                       {[...practiceSequence].reverse().map(b => `Block ${b + 1}`).join(' → ')}
                     </span>
                   </div>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[#73758C] dark:text-slate-400 border-t border-[#E9E8F2] dark:border-[#252E63] pt-1.5">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-0.5 text-[#73758C] dark:text-slate-400 border-t border-[#E9E8F2] dark:border-[#252E63] pt-1">
                     <span className="font-semibold text-[#252640] dark:text-slate-200">Your Selection:</span>
                     <span
                       className={`font-mono font-bold ${
@@ -919,24 +946,24 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-2.5 justify-center">
+                <div className="flex flex-col sm:flex-row gap-2 justify-center">
                   {practiceLastResult === 'incorrect' && (
                     <button
                       onClick={handleRetryPracticeTrial}
-                      className="btn-secondary text-xs py-2 px-4 justify-center"
+                      className="btn-secondary text-xs py-1.5 px-3.5 justify-center"
                     >
-                      <RotateCcw size={14} />
+                      <RotateCcw size={13} />
                       Retry Practice Trial
                     </button>
                   )}
                   <button
                     onClick={handleAdvancePractice}
-                    className="btn-primary text-xs py-2 px-5 justify-center font-bold"
+                    className="btn-primary text-xs py-1.5 px-4 justify-center font-bold"
                   >
                     {practiceIndex < PRACTICE_TRIALS.length - 1
                       ? `Next Practice Trial (${practiceIndex + 2} of 3)`
                       : 'Proceed to Pre-Experiment Briefing'}
-                    <ArrowRight size={15} />
+                    <ArrowRight size={14} />
                   </button>
                 </div>
               </div>
@@ -947,203 +974,196 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
         {/* 3. PRE-EXPERIMENT WARNING SECTION */}
         {phase === 'preExperiment' && (
           <div className="text-center max-w-lg w-full animate-fade-in-up p-2 sm:p-4">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-amber-100 dark:bg-amber-950/60 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-amber-300 dark:border-amber-700">
-              <AlertTriangle size={30} className="text-amber-600 dark:text-amber-400" />
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-amber-100 dark:bg-amber-950/60 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-amber-300 dark:border-amber-700">
+              <AlertTriangle size={26} className="text-amber-600 dark:text-amber-400" />
             </div>
 
-            <div className="inline-block px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">
+            <div className="inline-block px-3 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">
               Practice Complete — Official Study Session
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-bold text-[#252640] dark:text-white mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
+            <h2 className="text-lg sm:text-2xl font-bold text-[#252640] dark:text-white mb-1.5 font-['Plus_Jakarta_Sans',sans-serif]">
               Pre-Experiment Briefing
             </h2>
 
-            <p className="text-xs sm:text-sm text-[#73758C] dark:text-slate-300 leading-relaxed mb-4">
+            <p className="text-xs sm:text-sm text-[#73758C] dark:text-slate-300 leading-relaxed mb-3.5">
               You have completed all 3 practice trials. Please read the following requirement carefully before starting the official research session.
             </p>
 
-            {/* Prominent Warning Callout */}
-            <div className="bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400 dark:border-amber-500 rounded-2xl p-4 sm:p-6 mb-5 shadow-sm text-center">
-              <div className="flex items-center justify-center gap-1.5 mb-2 text-amber-800 dark:text-amber-300">
+            {/* Prominent Warning Callout - Exact requirement wording with "trials" */}
+            <div className="bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400 dark:border-amber-500 rounded-2xl p-4 sm:p-5 mb-4 shadow-sm text-center">
+              <div className="flex items-center justify-center gap-1.5 mb-1.5 text-amber-800 dark:text-amber-300">
                 <AlertTriangle size={18} className="flex-shrink-0" />
                 <span className="text-xs font-black uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                   Critical Assessment Rule
                 </span>
               </div>
               <p className="text-sm sm:text-base text-amber-950 dark:text-amber-100 leading-snug">
-                <strong>Important: You must correctly recall at least 4 blocks to proceed to the next level.</strong>
+                <strong>Important: You must correctly complete at least 4 trials to proceed to the next level.</strong>
               </p>
             </div>
 
             {/* Protocol Summary Card */}
-            <div className="bg-white dark:bg-[#15193B] rounded-xl border border-[#E9E8F2] dark:border-[#252E63] p-4 text-left text-xs sm:text-sm text-[#474864] dark:text-slate-300 space-y-2.5 mb-6">
-              <div className="flex items-start gap-2.5">
-                <CheckCircle size={16} className="text-[#4A9B7F] flex-shrink-0 mt-0.5" />
-                <span><strong>6 trials per level:</strong> Each level contains 6 sequences of the same length.</span>
+            <div className="bg-white dark:bg-[#15193B] rounded-xl border border-[#E9E8F2] dark:border-[#252E63] p-3.5 text-left text-xs sm:text-sm text-[#474864] dark:text-slate-300 space-y-2 mb-4">
+              <div className="flex items-start gap-2">
+                <CheckCircle size={15} className="text-[#4A9B7F] flex-shrink-0 mt-0.5" />
+                <span><strong>6 trials per level:</strong> Each level presents 6 sequence trials of the same span length.</span>
               </div>
-              <div className="flex items-start gap-2.5">
-                <CheckCircle size={16} className="text-[#4A9B7F] flex-shrink-0 mt-0.5" />
-                <span><strong>Advancement threshold:</strong> You must correctly recall at least 4 out of 6 trials (4/6) to advance to the next level.</span>
+              <div className="flex items-start gap-2">
+                <CheckCircle size={15} className="text-[#4A9B7F] flex-shrink-0 mt-0.5" />
+                <span><strong>Advancement threshold:</strong> You must correctly complete at least 4 out of 6 trials (4/6) to advance to the next level.</span>
               </div>
-              <div className="flex items-start gap-2.5">
-                <CheckCircle size={16} className="text-[#6567C9] flex-shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2">
+                <CheckCircle size={15} className="text-[#6567C9] flex-shrink-0 mt-0.5" />
                 <span><strong>Official research records:</strong> All responses in this phase will be recorded in the research database.</span>
               </div>
             </div>
 
             <button
               onClick={handleStartOfficialExperiment}
-              className="btn-primary w-full justify-center py-3.5 sm:py-4 text-sm sm:text-base shadow-md font-bold"
+              className="btn-primary w-full justify-center py-3 sm:py-3.5 text-sm sm:text-base shadow-md font-bold"
               style={{ background: 'linear-gradient(135deg, #6567C9, #4B4DAA)' }}
             >
               Begin Official Experiment
-              <ArrowRight size={18} />
+              <ArrowRight size={17} />
             </button>
           </div>
         )}
 
-        {/* 4. OFFICIAL EXPERIMENT (Watching / Recall / Feedback) */}
+        {/* 4. OFFICIAL EXPERIMENT (Watching / Recall / Feedback) - ZERO SCROLL LAYOUT */}
         {isOfficialMode && (
-          <div className="flex flex-col items-center gap-4 sm:gap-5 animate-fade-in w-full max-w-lg">
-            {/* Phase pill */}
-            <div
-              className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold font-['Plus_Jakarta_Sans',sans-serif] transition-all text-center ${
-                phase === 'watching'
-                  ? 'bg-[#EDEAF8] text-[#6567C9] dark:bg-[#1E2552] dark:text-[#A5A6F6]'
-                  : phase === 'recall'
-                  ? 'bg-[#E4F2F0] text-[#69AFA8] dark:bg-teal-950/60 dark:text-teal-300'
-                  : lastResult === 'correct'
-                  ? 'bg-[#D1EDE5] text-[#4A9B7F] dark:bg-emerald-950/60 dark:text-emerald-300'
-                  : 'bg-[#FCEFD9] text-[#D4813A] dark:bg-amber-950/60 dark:text-amber-300'
-              }`}
-            >
-              {phase === 'watching' && (
-                <>
-                  <Eye size={15} />
-                  Watching sequence — do not tap
-                </>
-              )}
-              {phase === 'recall' && (
-                <>
-                  <MousePointerClick size={15} />
-                  Now tap the blocks in reverse order
-                </>
-              )}
-              {phase === 'feedback' && lastResult === 'correct' && (
-                <>
-                  <CheckCircle size={15} />
-                  Correct!
-                </>
-              )}
-              {phase === 'feedback' && lastResult === 'incorrect' && (
-                <>
-                  <X size={15} />
-                  Incorrect — continue to the next trial
-                </>
-              )}
+          <div className="flex flex-col items-center gap-2 sm:gap-3 animate-fade-in w-full max-w-md">
+            {/* Top row: Phase pill and Sequence Length indicator in one single row to eliminate vertical height */}
+            <div className="flex items-center justify-between w-full px-1">
+              <div
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold font-['Plus_Jakarta_Sans',sans-serif] transition-all text-center ${
+                  phase === 'watching'
+                    ? 'bg-[#EDEAF8] text-[#6567C9] dark:bg-[#1E2552] dark:text-[#A5A6F6]'
+                    : phase === 'recall'
+                    ? 'bg-[#E4F2F0] text-[#69AFA8] dark:bg-teal-950/60 dark:text-teal-300'
+                    : lastResult === 'correct'
+                    ? 'bg-[#D1EDE5] text-[#4A9B7F] dark:bg-emerald-950/60 dark:text-emerald-300'
+                    : 'bg-[#FCEFD9] text-[#D4813A] dark:bg-amber-950/60 dark:text-amber-300'
+                }`}
+              >
+                {phase === 'watching' && (
+                  <>
+                    <Eye size={14} />
+                    <span>Watch sequence</span>
+                  </>
+                )}
+                {phase === 'recall' && (
+                  <>
+                    <MousePointerClick size={14} />
+                    <span>Tap in reverse order</span>
+                  </>
+                )}
+                {phase === 'feedback' && lastResult === 'correct' && (
+                  <>
+                    <CheckCircle size={14} />
+                    <span>Correct sequence!</span>
+                  </>
+                )}
+                {phase === 'feedback' && lastResult === 'incorrect' && (
+                  <>
+                    <X size={14} />
+                    <span>Incorrect sequence</span>
+                  </>
+                )}
+              </div>
+
+              {/* Prominent Sequence Number Text */}
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-[#15193B] border border-[#E9E8F2] dark:border-[#252E63] shadow-xs">
+                {phase === 'watching' ? (
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[#474864] dark:text-slate-300">
+                    <span className="font-bold uppercase tracking-wider text-[#73758C] dark:text-slate-400 text-[11px]">
+                      Length:
+                    </span>
+                    <span className="text-base sm:text-lg font-black font-['JetBrains_Mono',monospace] text-[#6567C9] dark:text-[#A5A6F6]">
+                      {seqLen}
+                    </span>
+                    <span className="font-bold text-[#474864] dark:text-slate-300 text-[11px]">blocks</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[#474864] dark:text-slate-300">
+                    <span className="font-bold uppercase tracking-wider text-[#73758C] dark:text-slate-400 text-[11px]">
+                      Selected:
+                    </span>
+                    <span className="text-base sm:text-lg font-black font-['JetBrains_Mono',monospace] text-[#69AFA8] dark:text-[#5EEAD4]">
+                      {playerResponse.length}
+                    </span>
+                    <span className="text-xs font-bold text-[#9597AB]">/</span>
+                    <span className="text-base sm:text-lg font-black font-['JetBrains_Mono',monospace] text-[#252640] dark:text-white">
+                      {seqLen}
+                    </span>
+                    <span className="font-bold text-[#474864] dark:text-slate-300 text-[11px]">blocks</span>
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Prominent Sequence Number Text */}
-            <div className="flex items-center justify-center gap-2.5 px-5 py-2 rounded-xl bg-white dark:bg-[#15193B] border border-[#E9E8F2] dark:border-[#252E63] shadow-xs">
-              {phase === 'watching' ? (
-                <div className="flex items-center gap-2 text-sm sm:text-base text-[#474864] dark:text-slate-300">
-                  <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#73758C] dark:text-slate-400">
-                    Sequence Length:
-                  </span>
-                  <span className="text-xl sm:text-2xl font-black font-['JetBrains_Mono',monospace] text-[#6567C9] dark:text-[#A5A6F6] tracking-tight">
-                    {seqLen}
-                  </span>
-                  <span className="text-xs sm:text-sm font-bold text-[#474864] dark:text-slate-300">
-                    blocks
-                  </span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2 text-sm sm:text-base text-[#474864] dark:text-slate-300">
-                  <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#73758C] dark:text-slate-400">
-                    Selected:
-                  </span>
-                  <span className="text-xl sm:text-2xl font-black font-['JetBrains_Mono',monospace] text-[#69AFA8] dark:text-[#5EEAD4] tracking-tight">
-                    {playerResponse.length}
-                  </span>
-                  <span className="text-base sm:text-lg font-bold text-[#9597AB]">/</span>
-                  <span className="text-xl sm:text-2xl font-black font-['JetBrains_Mono',monospace] text-[#252640] dark:text-white tracking-tight">
-                    {seqLen}
-                  </span>
-                  <span className="text-xs sm:text-sm font-bold text-[#474864] dark:text-slate-300">
-                    blocks
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Slightly Smaller Corsi Grid Container */}
-            <div className="bg-white dark:bg-[#15193B] rounded-2xl border border-[#E9E8F2] dark:border-[#252E63] shadow-sm p-3.5 sm:p-7 max-w-full overflow-hidden transition-colors">
+            {/* Unified Corsi Grid & Action Button Card (Zero-scroll: Done is right under the grid in same viewport) */}
+            <div className="bg-white dark:bg-[#15193B] rounded-2xl border border-[#E9E8F2] dark:border-[#252E63] shadow-sm p-3 sm:p-5 pt-3.5 sm:pt-4 max-w-full overflow-hidden transition-colors flex flex-col items-center">
+              {/* CorsiBoard with showSelectionIndicators={false}: No numbers, no persistent markings during official trials */}
               <CorsiBoard
                 highlighted={phase === 'watching' ? highlightedBlock : null}
                 flashBlock={flashingBlock}
                 playerResponse={playerResponse}
+                showSelectionIndicators={false}
                 disabled={phase !== 'recall'}
                 onBlockClick={handleBlockClick}
               />
+
+              {/* Action Area directly below the grid in the same card (No Scrolling Needed!) */}
+              <div className="w-full mt-3 sm:mt-3.5 pt-2 border-t border-[#F0EEFB] dark:border-[#1E2552] flex items-center justify-center min-h-[40px]">
+                {phase === 'recall' ? (
+                  <div className="flex gap-2.5 sm:gap-3 items-center">
+                    <button
+                      onClick={handleClearResponse}
+                      disabled={playerResponse.length === 0}
+                      className="btn-secondary text-xs sm:text-sm py-1.5 px-3 sm:px-4 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      Clear
+                    </button>
+                    <button
+                      onClick={handleDone}
+                      disabled={playerResponse.length === 0}
+                      className="btn-primary text-xs sm:text-sm py-1.5 px-6 sm:px-7 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none font-bold"
+                    >
+                      Done
+                      <CheckCircle size={15} />
+                    </button>
+                  </div>
+                ) : phase === 'watching' ? (
+                  <span className="text-xs text-[#73758C] dark:text-slate-400 font-medium flex items-center gap-1.5 animate-pulse">
+                    <Eye size={13} className="text-[#6567C9]" />
+                    Observing pattern... Please wait
+                  </span>
+                ) : (
+                  <span className="text-xs text-[#73758C] dark:text-slate-400 font-medium">
+                    {trialNumber < TRIALS_PER_LEVEL
+                      ? `Next trial starting shortly... (${correctTrials}/${trialNumber} correct so far)`
+                      : 'Level complete — calculating result...'}
+                  </span>
+                )}
+              </div>
             </div>
-
-            {/* Recall controls */}
-            {phase === 'recall' && (
-              <div className="flex gap-2.5 sm:gap-3">
-                <button
-                  onClick={handleClearResponse}
-                  disabled={playerResponse.length === 0}
-                  className="btn-secondary text-xs sm:text-sm py-2.5 px-4 disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  Clear response
-                </button>
-                <button
-                  onClick={handleDone}
-                  disabled={playerResponse.length === 0}
-                  className="btn-primary text-xs sm:text-sm py-2.5 px-6 sm:px-7 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none font-bold"
-                >
-                  Done
-                  <CheckCircle size={15} />
-                </button>
-              </div>
-            )}
-
-            {/* Trial Feedback */}
-            {phase === 'feedback' && (
-              <div
-                className={`rounded-xl border p-4 sm:p-5 w-full max-w-sm text-center ${
-                  lastResult === 'correct'
-                    ? 'bg-[#D1EDE5] dark:bg-emerald-950/60 border-[#4A9B7F]/20'
-                    : 'bg-[#FCEFD9] dark:bg-amber-950/60 border-[#F0CFA0]'
-                }`}
-              >
-                <p className="text-xs sm:text-sm font-semibold text-[#252640] dark:text-white mb-1 font-['Plus_Jakarta_Sans',sans-serif]">
-                  {lastResult === 'correct' ? 'Correct sequence!' : 'Incorrect sequence'}
-                </p>
-                <p className="text-xs text-[#73758C] dark:text-slate-300">
-                  {trialNumber < TRIALS_PER_LEVEL
-                    ? `Next trial starting shortly... (${correctTrials}/${trialNumber} correct so far)`
-                    : 'Level complete — calculating result...'}
-                </p>
-              </div>
-            )}
           </div>
         )}
 
         {/* 5. LEVEL COMPLETE */}
         {phase === 'levelComplete' && (
-          <div className="text-center max-w-sm w-full animate-pop-in p-4">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#D1EDE5] dark:bg-emerald-950/60 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5">
-              <CheckCircle size={28} className="text-[#4A9B7F] sm:w-8 sm:h-8" />
+          <div className="text-center max-w-sm w-full animate-pop-in p-3">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#D1EDE5] dark:bg-emerald-950/60 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+              <CheckCircle size={26} className="text-[#4A9B7F] sm:w-7 sm:h-7" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#252640] dark:text-white mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
+            <h2 className="text-lg sm:text-2xl font-bold text-[#252640] dark:text-white mb-1.5 font-['Plus_Jakarta_Sans',sans-serif]">
               Level completed
             </h2>
-            <p className="text-xs sm:text-sm text-[#73758C] dark:text-slate-300 mb-2.5 sm:mb-3">
+            <p className="text-xs sm:text-sm text-[#73758C] dark:text-slate-300 mb-2">
               You answered {correctTrials} of {TRIALS_PER_LEVEL} trials correctly (threshold: 4/6).
             </p>
-            <p className="text-xs sm:text-sm text-[#9597AB] mb-6 sm:mb-8">
+            <p className="text-xs sm:text-sm text-[#9597AB] mb-4 sm:mb-6">
               You're ready for the next sequence length.
               <br />
               Sequences will now contain{' '}
@@ -1152,17 +1172,17 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
               </strong>{' '}
               blocks.
             </p>
-            <div className="bg-white dark:bg-[#15193B] rounded-xl border border-[#E9E8F2] dark:border-[#252E63] p-4 mb-6 sm:mb-8">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="text-center p-2.5 sm:p-3 bg-[#F8F8FC] dark:bg-[#1A2248] rounded-lg">
-                  <div className="text-xs text-[#73758C] dark:text-slate-400 mb-1">Level Reached</div>
-                  <div className="text-lg sm:text-xl font-bold text-[#252640] dark:text-white font-['JetBrains_Mono',monospace]">
+            <div className="bg-white dark:bg-[#15193B] rounded-xl border border-[#E9E8F2] dark:border-[#252E63] p-3 mb-5">
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="text-center p-2 bg-[#F8F8FC] dark:bg-[#1A2248] rounded-lg">
+                  <div className="text-xs text-[#73758C] dark:text-slate-400 mb-0.5">Level Reached</div>
+                  <div className="text-base sm:text-lg font-bold text-[#252640] dark:text-white font-['JetBrains_Mono',monospace]">
                     {level}
                   </div>
                 </div>
-                <div className="text-center p-2.5 sm:p-3 bg-[#F8F8FC] dark:bg-[#1A2248] rounded-lg">
-                  <div className="text-xs text-[#73758C] dark:text-slate-400 mb-1">Level Accuracy</div>
-                  <div className="text-lg sm:text-xl font-bold text-[#4A9B7F] font-['JetBrains_Mono',monospace]">
+                <div className="text-center p-2 bg-[#F8F8FC] dark:bg-[#1A2248] rounded-lg">
+                  <div className="text-xs text-[#73758C] dark:text-slate-400 mb-0.5">Level Accuracy</div>
+                  <div className="text-base sm:text-lg font-bold text-[#4A9B7F] font-['JetBrains_Mono',monospace]">
                     {Math.round((correctTrials / TRIALS_PER_LEVEL) * 100)}%
                   </div>
                 </div>
@@ -1170,30 +1190,30 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
             </div>
             <button
               onClick={handleNextLevel}
-              className="btn-primary w-full justify-center py-3 sm:py-3.5 text-xs sm:text-sm font-bold"
+              className="btn-primary w-full justify-center py-2.5 sm:py-3 text-xs sm:text-sm font-bold"
             >
               Begin Level {level + 1}
-              <ArrowRight size={16} />
+              <ArrowRight size={15} />
             </button>
           </div>
         )}
 
         {/* 6. TASK COMPLETE */}
         {phase === 'taskComplete' && (
-          <div className="text-center max-w-sm w-full animate-pop-in p-4">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#D1EDE5] dark:bg-emerald-950/60 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5">
-              <CheckCircle size={28} className="text-[#4A9B7F] sm:w-8 sm:h-8" />
+          <div className="text-center max-w-sm w-full animate-pop-in p-3">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#D1EDE5] dark:bg-emerald-950/60 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+              <CheckCircle size={26} className="text-[#4A9B7F] sm:w-7 sm:h-7" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#252640] dark:text-white mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
+            <h2 className="text-lg sm:text-2xl font-bold text-[#252640] dark:text-white mb-1 font-['Plus_Jakarta_Sans',sans-serif]">
               Activity Completed
             </h2>
-            <p className="text-xs sm:text-sm text-[#73758C] dark:text-slate-300 mb-6 sm:mb-8">
+            <p className="text-xs sm:text-sm text-[#73758C] dark:text-slate-300 mb-5 sm:mb-6">
               Thank you for completing the Backward Corsi Block Task.
             </p>
 
             <button
               onClick={handleFinish}
-              className="btn-primary w-full justify-center py-3 sm:py-3.5 text-xs sm:text-sm shadow-md font-bold"
+              className="btn-primary w-full justify-center py-3 text-xs sm:text-sm shadow-md font-bold"
               style={{ background: 'linear-gradient(135deg, #69AFA8, #4A9B7F)' }}
             >
               Return to Dashboard →
