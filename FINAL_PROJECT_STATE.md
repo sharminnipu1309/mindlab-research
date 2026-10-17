@@ -90,6 +90,14 @@ Do not modify established experiment UI, stimulus generation, task scoring formu
 - **Refined Grid Dimensions & Typography**: Grid reduced by ~20% for superior mobile/desktop fit; sequence number text styled with bold JetBrains Mono (larger, prominent, and distinct).
 - **Deployment Status**: Production build verified and deployed live to `https://mindlab-research.vercel.app`.
 
+### 4. Stroop Color-Word Task Improvements (October 18, 2026)
+- **Example Box Visual Alignment**: Restructured the intro example card to match reference design exactly: uppercase "EXAMPLE" section header, prominent centered "GREEN" in red ink, centered explanatory text directly below ("The word says \"GREEN\", but the ink is RED."), and a separate centered line for "Correct response = R (Red)".
+- **Non-Consecutive Ink Color Constraint**: Implemented a randomized constraint-satisfaction algorithm with lookahead in `generateExperimentalTrials()`, guaranteeing that no two consecutive experimental trials share the same ink color across the entire sequence. Verified across 100 consecutive generation cycles with 0 violations.
+- **Research Protocol & Trial Counts**: Maintained exactly 80 experimental trials (40 congruent, 40 incongruent; 20 trials per ink color) and 20 practice trials.
+- **Bold Desktop/PC Recommendation**: Prominently integrated **"For the best experience, please complete this task on a desktop or PC."** in bold on the pre-task introduction card.
+- **Practice-Only Feedback Isolation**: Correct/incorrect visual banners are shown exclusively during the 20 practice trials. During the 80 experimental trials, trials transition smoothly via a neutral 150ms inter-trial interval without revealing correctness, while reaction times, participant keystrokes, and accuracy continue to be recorded internally and saved to Supabase (`stroop_trials`).
+- **Research Integrity & Other Tasks**: No modification to historical research data; all other tasks (Tower of Hanoi, Backward Corsi, Task Switching) remain intact and untouched.
+
 ---
 
 ## 4. Local Quality Assurance Record (October 18, 2026)
@@ -97,10 +105,12 @@ Do not modify established experiment UI, stimulus generation, task scoring formu
 | Verification Step | Command | Status | Result |
 |---|---|---|---|
 | **TypeScript Typecheck** | `npx tsc --noEmit` | **PASSED** | 0 errors |
-| **Production Build** | `npm run build` | **PASSED** | Built in 2.00s (`dist/assets/index-DPx3b-7m.js`) |
+| **Production Build** | `npm run build` | **PASSED** | Built in 4.66s clean production bundle |
+| **Stroop Automated Test Suite** | `node scripts/test_stroop_corrections.mjs` | **PASSED** | All 5 checks passed (100 runs, 0 consecutive ink repeats) |
 | **Environment Variable Security** | Inspection | **PASSED** | `.env.local` contains only publishable anon key; ignored by Git |
 | **SPA Route Handling** | `vercel.json` | **PASSED** | Rewrites `/(.*)` to `/index.html` configured |
 | **Local Server Status** | `npm run dev` | **ACTIVE** | Running on port 8443 |
+
 
 ---
 
