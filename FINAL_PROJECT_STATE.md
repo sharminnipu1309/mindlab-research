@@ -80,9 +80,17 @@ Do not modify established experiment UI, stimulus generation, task scoring formu
   - Added chart CSV export functionality for all 4 tabs.
   - Added live data refresh button and status badge.
 
+### 3. Backward Corsi Block Task Improvements (October 18, 2026)
+- **Interactive Tutorial with Visual Directional Indicators**: Visual breakdown with step-by-step presentation vs reverse recall flows and "Last In, First Out" directional rules.
+- **3 Staged Practice Trials**: 2-block, 3-block, and 4-block sequences with dedicated educational feedback and retry capability.
+- **Research Data Isolation**: Practice trials strictly excluded from research telemetry and Supabase database tables (`corsi_trials`).
+- **Prominent Pre-Experiment Warning Screen**: Added mandatory briefing card with bold rule: **"Important: You must correctly recall at least 4 blocks to proceed to the next level."**
+- **Refined Grid Dimensions & Typography**: Grid reduced by ~20% for superior mobile/desktop fit; sequence number text styled with bold JetBrains Mono (larger, prominent, and distinct).
+- **Deployment Status**: Production build verified and deployed live to `https://mindlab-research.vercel.app`.
+
 ---
 
-## 4. Local Quality Assurance Record (October 10, 2026)
+## 4. Local Quality Assurance Record (October 18, 2026)
 
 | Verification Step | Command | Status | Result |
 |---|---|---|---|
