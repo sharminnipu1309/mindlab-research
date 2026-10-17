@@ -156,8 +156,9 @@ function CorsiBoard({
 }
 
 export default function CorsiRoom({ navigate, participant, sessionId, onComplete }: Props) {
-  // Main phase state starts with tutorial introduction
-  const [phase, setPhase] = useState<Phase>('tutorialIntro');
+  // Main phase state starts with tutorial introduction or preExperiment if resuming
+  const isResuming = (participant?.corsiProgressCount || 0) > 0 || participant?.corsiStatus === 'in_progress';
+  const [phase, setPhase] = useState<Phase>(() => isResuming ? 'preExperiment' : 'tutorialIntro');
 
   // Practice state (strictly separated from research dataset)
   const [practiceIndex, setPracticeIndex] = useState(0); // 0, 1, 2
@@ -166,8 +167,18 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
   const [practiceSequence, setPracticeSequence] = useState<number[]>([]);
 
   // Experimental state (official research trials)
-  const [level, setLevel] = useState(1);
-  const [trialNumber, setTrialNumber] = useState(1);
+  const [level, setLevel] = useState(() => {
+    if ((participant?.corsiProgressCount || 0) > 0) {
+      return Math.min(TOTAL_LEVELS, Math.floor((participant.corsiProgressCount || 0) / TRIALS_PER_LEVEL) + 1);
+    }
+    return 1;
+  });
+  const [trialNumber, setTrialNumber] = useState(() => {
+    if ((participant?.corsiProgressCount || 0) > 0) {
+      return ((participant.corsiProgressCount || 0) % TRIALS_PER_LEVEL) + 1;
+    }
+    return 1;
+  });
   const [correctTrials, setCorrectTrials] = useState(0);
   const [sequence, setSequence] = useState<number[]>([]);
   const [playerResponse, setPlayerResponse] = useState<number[]>([]);
@@ -499,13 +510,19 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
   };
 
   const handleStartOfficialExperiment = () => {
-    setLevel(1);
-    setTrialNumber(1);
+    const startLvl = (participant?.corsiProgressCount || 0) > 0
+      ? Math.min(TOTAL_LEVELS, Math.floor((participant.corsiProgressCount || 0) / TRIALS_PER_LEVEL) + 1)
+      : 1;
+    const startTrialNum = (participant?.corsiProgressCount || 0) > 0
+      ? ((participant.corsiProgressCount || 0) % TRIALS_PER_LEVEL) + 1
+      : 1;
+    setLevel(startLvl);
+    setTrialNumber(startTrialNum);
     setCorrectTrials(0);
     allTrialsRef.current = [];
-    highestCompletedLevelRef.current = 0;
+    highestCompletedLevelRef.current = Math.max(0, startLvl - 1);
     correctAtHighestCompletedLevelRef.current = 0;
-    startTrial(1);
+    startTrial(startLvl);
   };
 
   const handleNextLevel = () => {

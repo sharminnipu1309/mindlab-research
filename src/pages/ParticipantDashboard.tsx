@@ -29,12 +29,6 @@ interface Props {
   participant: ParticipantSession;
 }
 
-interface InterruptedModalData {
-  id: string;
-  title: string;
-  roomPage: Page;
-  recordedTrials: number;
-}
 
 function formatRemainingDetailed(seconds: number): string {
   if (seconds <= 0) return 'Available now';
@@ -59,7 +53,6 @@ function formatRemainingShort(seconds: number): string {
 
 export default function ParticipantDashboard({ navigate, participant }: Props) {
   const [currentParticipant, setCurrentParticipant] = useState<ParticipantSession>(participant);
-  const [interruptedModalTask, setInterruptedModalTask] = useState<InterruptedModalData | null>(null);
 
   // Sync latest session status and trial counts directly from Supabase on mount
   useEffect(() => {
@@ -117,7 +110,17 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
   const progressPct = (completedActivities / totalActivities) * 100;
   const allDone = completedActivities === totalActivities;
 
-  const challengeStages = [
+  const challengeStages: Array<{
+    id: string;
+    label: string;
+    title: string;
+    status: ExperimentStatus;
+    progressCount: number;
+    color: string;
+    bg: string;
+    locked: boolean;
+    roomPage: Page;
+  }> = [
     {
       id: 'hanoi',
       label: 'STRATEGY',
@@ -127,6 +130,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
       color: '#6D5AE6',
       bg: '#EDEAF8',
       locked: false,
+      roomPage: 'hanoi-room',
     },
     {
       id: 'corsi',
@@ -137,6 +141,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
       color: '#0D9488',
       bg: '#E4F5F2',
       locked: false,
+      roomPage: 'corsi-room',
     },
     {
       id: 'stroop',
@@ -147,6 +152,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
       color: '#EF4444',
       bg: '#FDF0EE',
       locked: false,
+      roomPage: 'stroop-room',
     },
     {
       id: 'task-switching',
@@ -157,6 +163,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
       color: '#2563EB',
       bg: '#EEF4FF',
       locked: false,
+      roomPage: 'task-switching-room',
     },
   ];
 
@@ -241,11 +248,32 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
               return (
                 <div
                   key={stage.id}
-                  className={`p-3 sm:p-4 rounded-xl border transition-all duration-200 flex items-center gap-2.5 sm:gap-3.5 ${
+                  onClick={() => {
+                    if (isInProgress) {
+                      navigate(stage.roomPage);
+                    }
+                  }}
+                  onKeyDown={e => {
+                    if (isInProgress && (e.key === 'Enter' || e.key === ' ')) {
+                      e.preventDefault();
+                      navigate(stage.roomPage);
+                    }
+                  }}
+                  role={isInProgress ? 'button' : undefined}
+                  tabIndex={isInProgress ? 0 : undefined}
+                  aria-label={
+                    isInProgress
+                      ? `Resume ${stage.title} challenge`
+                      : isCompleted
+                      ? `${stage.title} completed`
+                      : `${stage.title} (${stage.label})`
+                  }
+                  title={isInProgress ? `Click to resume ${stage.title}` : undefined}
+                  className={`p-3 sm:p-4 rounded-xl border transition-all duration-200 flex items-center gap-2.5 sm:gap-3.5 select-none ${
                     isCompleted
-                      ? 'border-[#A7F3D0] bg-[#F0FDF4] shadow-xs'
+                      ? 'border-[#A7F3D0] bg-[#F0FDF4] shadow-xs cursor-default'
                       : isInProgress
-                      ? 'border-[#FDE68A] bg-[#FEFDF2] shadow-xs'
+                      ? 'border-[#FDE68A] bg-[#FEFDF2] shadow-xs cursor-pointer hover:border-[#D97706] hover:bg-[#FEF3C7]/40 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] active:bg-[#FEF3C7]/60 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-[#D97706] focus:ring-offset-2'
                       : 'border-[#E2E8F0] bg-[#F8FAFC]'
                   }`}
                 >
@@ -388,14 +416,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                   </button>
                 ) : hanoiStatus === 'in_progress' ? (
                   <button
-                    onClick={() =>
-                      setInterruptedModalTask({
-                        id: 'hanoi',
-                        title: 'Tower of Hanoi',
-                        roomPage: 'hanoi-room',
-                        recordedTrials: currentParticipant.hanoiProgressCount || 0,
-                      })
-                    }
+                    onClick={() => navigate('hanoi-room')}
                     className="w-full py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl font-bold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-[#D97706] hover:bg-[#B45309] text-white flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(217,119,6,0.35)] transition-all cursor-pointer"
                   >
                     <RotateCcw size={15} />
@@ -508,14 +529,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                   </button>
                 ) : corsiStatus === 'in_progress' ? (
                   <button
-                    onClick={() =>
-                      setInterruptedModalTask({
-                        id: 'corsi',
-                        title: 'Backward Corsi Block',
-                        roomPage: 'corsi-room',
-                        recordedTrials: currentParticipant.corsiProgressCount || 0,
-                      })
-                    }
+                    onClick={() => navigate('corsi-room')}
                     className="w-full py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl font-bold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-[#D97706] hover:bg-[#B45309] text-white flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(217,119,6,0.35)] transition-all cursor-pointer"
                   >
                     <RotateCcw size={15} />
@@ -628,14 +642,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                   </button>
                 ) : stroopStatus === 'in_progress' ? (
                   <button
-                    onClick={() =>
-                      setInterruptedModalTask({
-                        id: 'stroop',
-                        title: 'Stroop Task',
-                        roomPage: 'stroop-room',
-                        recordedTrials: currentParticipant.stroopProgressCount || 0,
-                      })
-                    }
+                    onClick={() => navigate('stroop-room')}
                     className="w-full py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl font-bold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-[#D97706] hover:bg-[#B45309] text-white flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(217,119,6,0.35)] transition-all cursor-pointer"
                   >
                     <RotateCcw size={15} />
@@ -748,14 +755,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                   </button>
                 ) : taskSwitchingStatus === 'in_progress' ? (
                   <button
-                    onClick={() =>
-                      setInterruptedModalTask({
-                        id: 'task-switching',
-                        title: 'Task Switching',
-                        roomPage: 'task-switching-room',
-                        recordedTrials: currentParticipant.taskSwitchingProgressCount || 0,
-                      })
-                    }
+                    onClick={() => navigate('task-switching-room')}
                     className="w-full py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl font-bold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-[#D97706] hover:bg-[#B45309] text-white flex items-center justify-center gap-2 shadow-[0_4px_16px_rgba(217,119,6,0.35)] transition-all cursor-pointer"
                   >
                     <RotateCcw size={15} />
@@ -812,63 +812,6 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
         </div>
       </div>
 
-      {/* ─── INTERRUPTED SESSION PROTOCOL MODAL ───────────────────────── */}
-      {interruptedModalTask && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#11152F]/60 backdrop-blur-xs animate-fade-in">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-[#E2E8F0] text-center animate-slide-up">
-            <div className="w-14 h-14 rounded-2xl bg-[#FEF3C7] text-[#D97706] flex items-center justify-center mx-auto mb-4 border border-[#FDE68A]">
-              <RotateCcw size={28} />
-            </div>
-            <div className="text-[11px] font-bold text-[#D97706] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif] mb-1">
-              Interrupted Session Notice
-            </div>
-            <h3 className="text-xl sm:text-2xl font-extrabold text-[#11152F] font-['Plus_Jakarta_Sans',sans-serif] mb-2">
-              {interruptedModalTask.title}
-            </h3>
-            <p className="text-xs sm:text-sm text-[#475569] leading-relaxed mb-4">
-              You previously recorded{' '}
-              <strong className="text-[#11152F]">
-                {interruptedModalTask.recordedTrials} {interruptedModalTask.id === 'hanoi' ? 'puzzle(s)' : 'trial(s)'}
-              </strong>{' '}
-              in this challenge.
-            </p>
-
-            <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-2xl p-4 text-left mb-6">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#11152F] mb-1.5 font-['Plus_Jakarta_Sans',sans-serif]">
-                <Info size={14} className="text-[#6D5AE6]" />
-                Cognitive Measurement Protocol
-              </div>
-              <p className="text-[11px] sm:text-xs text-[#64748B] leading-relaxed">
-                Empirical cognitive metrics (working memory span, sequence recall, and task-switching reaction times) require continuous focus in an unbroken sitting. Resuming mid-sequence would compromise metric reliability.
-              </p>
-              <div className="mt-2 text-[11px] text-[#0D9488] font-medium flex items-center gap-1.5">
-                <CheckCircle size={13} />
-                <span>Your previous trial records remain preserved in research logs.</span>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={() => setInterruptedModalTask(null)}
-                className="flex-1 py-3 px-4 rounded-xl font-bold text-xs text-[#64748B] hover:text-[#11152F] bg-[#F1F5F9] hover:bg-[#E2E8F0] transition-colors cursor-pointer"
-              >
-                Back to Dashboard
-              </button>
-              <button
-                onClick={() => {
-                  const room = interruptedModalTask.roomPage;
-                  setInterruptedModalTask(null);
-                  navigate(room);
-                }}
-                className="flex-1 py-3 px-4 rounded-xl font-bold text-xs text-white bg-[#6D5AE6] hover:bg-[#5B48D9] shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                Start Fresh Attempt
-                <ArrowRight size={15} />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

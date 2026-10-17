@@ -106,7 +106,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
 
             {/* Description */}
             <p className="text-sm sm:text-base lg:text-lg text-[#94A3B8] leading-relaxed mb-6 sm:mb-10 max-w-xl">
-              Take part in four interactive research challenges designed to explore planning, memory, attention, and cognitive flexibility.
+              Try four brain games that show how well you plan, remember, pay attention, and switch between ideas.
             </p>
 
             {/* CTA Buttons */}
@@ -171,7 +171,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
               Explore Four Cognitive Domains
             </h2>
             <p className="text-xs sm:text-base text-[#94A3B8] max-w-2xl mx-auto leading-relaxed">
-              Each challenge isolates a specific cognitive process through structured research paradigms adapted for web interaction.
+              Each challenge focuses on one brain skill at a time, using research-style games made for the web.
             </p>
           </div>
 
@@ -291,10 +291,10 @@ export default function LandingPage({ navigate, onResume }: Props) {
               Rigorous Cognitive Science on the Modern Web
             </h2>
             <p className="text-xs sm:text-sm text-[#94A3B8] leading-relaxed mb-4 sm:mb-6">
-              MindLab provides calibrated behavioral paradigms in psychology and cognitive neuroscience. Every interaction is recorded with millisecond timestamping to evaluate accuracy, reaction time distributions, and switch costs.
+              MindLab has brain tests built to measure how the mind works. Every click and answer is timed to the millisecond. The tests check how often you get things right, how fast you respond, and how long it takes to switch from one task to another.
             </p>
             <p className="text-xs sm:text-sm text-[#94A3B8] leading-relaxed mb-6 sm:mb-8">
-              Participation is voluntary, anonymous, and strictly non-diagnostic. Results are aggregated for empirical behavioral research.
+              Participation is voluntary, anonymous, and strictly non-diagnostic. Results are recorded for empirical behavioral research.
             </p>
             <button
               onClick={() => navigate('research-info')}

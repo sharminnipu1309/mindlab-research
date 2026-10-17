@@ -341,7 +341,18 @@ function generateBlockTrials(blockType: TaskSwitchingBlockType): TrialItem[] {
 
 
 export default function TaskSwitchingRoom({ navigate, participant, sessionId, onComplete }: Props) {
-  const [phase, setPhase] = useState<Phase>('tutorial');
+  const isResuming = (participant?.taskSwitchingProgressCount || 0) > 0 || participant?.taskSwitchingStatus === 'in_progress';
+  const startBlockIdx = (() => {
+    const count = participant?.taskSwitchingProgressCount || 0;
+    if (count >= 64) return 2;
+    if (count >= 32) return 1;
+    return 0;
+  })();
+
+  const [phase, setPhase] = useState<Phase>(() => {
+    if (!isResuming) return 'tutorial';
+    return startBlockIdx > 0 ? 'blockIntro' : 'practiceComplete';
+  });
   const [tutorialStep, setTutorialStep] = useState<number>(0);
   const [tutorialFeedback, setTutorialFeedback] = useState<{
     step: number;
@@ -387,7 +398,7 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
     });
   };
 
-  const [currentBlockIndex, setCurrentBlockIndex] = useState<number>(0);
+  const [currentBlockIndex, setCurrentBlockIndex] = useState<number>(startBlockIdx);
   const [trialIndexInBlock, setTrialIndexInBlock] = useState<number>(0);
   const [trialStage, setTrialStage] = useState<TrialStage>('fixation');
   const [showExit, setShowExit] = useState<boolean>(false);

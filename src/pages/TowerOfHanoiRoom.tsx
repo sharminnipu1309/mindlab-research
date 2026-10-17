@@ -294,10 +294,16 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
     const loaded = getHanoiPuzzlesConfig().filter(p => p.enabled);
     return loaded.length > 0 ? loaded : DEFAULT_HANOI_PUZZLES;
   });
-  const [puzzleIdx, setPuzzleIdx] = useState(0);
+  const [puzzleIdx, setPuzzleIdx] = useState(() => {
+    const startIdx = participant?.hanoiProgressCount || 0;
+    return Math.min(startIdx, 5);
+  });
   const [attemptNumber, setAttemptNumber] = useState(1);
   const [rods, setRods] = useState<number[][]>(() => {
-    const initialPuzzle = getHanoiPuzzlesConfig().filter(p => p.enabled)[0] || DEFAULT_HANOI_PUZZLES[0];
+    const loaded = getHanoiPuzzlesConfig().filter(p => p.enabled);
+    const list = loaded.length > 0 ? loaded : DEFAULT_HANOI_PUZZLES;
+    const startIdx = Math.min(participant?.hanoiProgressCount || 0, Math.max(list.length - 1, 0));
+    const initialPuzzle = list[startIdx] || DEFAULT_HANOI_PUZZLES[0];
     return initialPuzzle.initialState.map(r => [...r]);
   });
   const [selectedRod, setSelectedRod] = useState<number | null>(null);
