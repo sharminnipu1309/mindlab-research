@@ -1506,7 +1506,7 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             </div>
 
             {/* Practice Educational Feedback Area */}
-            <div className="min-h-[2.5rem] flex items-center justify-center w-full px-2">
+            <div className={`${phase === 'practice' ? 'min-h-[2.5rem]' : 'hidden'} flex items-center justify-center w-full px-2`}>
               {phase === 'practice' && trialStage === 'feedback' && feedback && (
                 <div
                   className={`flex items-center gap-2 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold animate-pop-in border shadow-xs text-center ${
@@ -1537,11 +1537,13 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
 
             {/* Alternating-Runs 2×2 Quadrant Grid */}
             <div className="w-full max-w-sm sm:max-w-md flex flex-col items-center">
-              {/* Top row guide (visible in practice or subtle indicator) */}
-              <div className="w-full flex justify-between px-3 mb-1 text-[11px] font-bold tracking-wider uppercase text-[#6D5AE6]">
-                <span>Top Row: Letter Task</span>
-                <span className="text-[10px] text-[#94A3B8] font-normal font-mono">B = Vowel · N = Consonant</span>
-              </div>
+              {/* Top row guide (visible exclusively during practice phase) */}
+              {phase === 'practice' && (
+                <div className="w-full flex justify-between px-3 mb-1 text-[11px] font-bold tracking-wider uppercase text-[#6D5AE6]">
+                  <span>Top Row: Letter Task</span>
+                  <span className="text-[10px] text-[#94A3B8] font-normal font-mono">B = Vowel · N = Consonant</span>
+                </div>
+              )}
 
               {/* 2×2 Quadrant Grid Frame */}
               <div className="w-full aspect-square max-h-[280px] sm:max-h-[320px] bg-white rounded-3xl border-2 border-[#CBD5E1] shadow-sm relative overflow-hidden select-none grid grid-cols-2 grid-rows-2">
@@ -1599,11 +1601,13 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                 </div>
               </div>
 
-              {/* Bottom row guide */}
-              <div className="w-full flex justify-between px-3 mt-1 text-[11px] font-bold tracking-wider uppercase text-[#0D9488]">
-                <span>Bottom Row: Number Task</span>
-                <span className="text-[10px] text-[#94A3B8] font-normal font-mono">B = Odd · N = Even</span>
-              </div>
+              {/* Bottom row guide (visible exclusively during practice phase) */}
+              {phase === 'practice' && (
+                <div className="w-full flex justify-between px-3 mt-1 text-[11px] font-bold tracking-wider uppercase text-[#0D9488]">
+                  <span>Bottom Row: Number Task</span>
+                  <span className="text-[10px] text-[#94A3B8] font-normal font-mono">B = Odd · N = Even</span>
+                </div>
+              )}
             </div>
 
             {/* Response key buttons */}

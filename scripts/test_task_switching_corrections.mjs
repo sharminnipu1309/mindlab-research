@@ -250,10 +250,25 @@ for (let run = 1; run <= 100; run++) {
   }
 }
 
+// Test 7: Row Guide Hints Hidden During Experimental Phase
+console.log('\n7. Verifying Row Guide Hints are Removed from Experimental Phase...');
+const topGuidePracticeCheck = /\{phase === 'practice' && \(\s*<div[^>]*>\s*<span>Top Row: Letter Task<\/span>/;
+const bottomGuidePracticeCheck = /\{phase === 'practice' && \(\s*<div[^>]*>\s*<span>Bottom Row: Number Task<\/span>/;
+
+if (!topGuidePracticeCheck.test(tsRoomCode)) {
+  console.error('❌ Top Row: Letter Task guide is not properly restricted to practice phase only');
+  errors++;
+} else if (!bottomGuidePracticeCheck.test(tsRoomCode)) {
+  console.error('❌ Bottom Row: Number Task guide is not properly restricted to practice phase only');
+  errors++;
+} else {
+  console.log('   ✓ Top and bottom row guide banners are strictly restricted to practice phase and absent in experimental phase.');
+}
+
 if (errors === 0) {
-  console.log('   ✓ 100 simulated runs passed with exactly 32 (Block 1), 32 (Block 2), 64 (Block 3) = 128 Total experimental trials.');
   console.log('\n🎉 ALL TASK SWITCHING VERIFICATION CHECKS PASSED SUCCESSFULLY!\n');
 } else {
   console.error(`\n❌ VERIFICATION FAILED WITH ${errors} ERRORS.\n`);
   process.exit(1);
 }
+
