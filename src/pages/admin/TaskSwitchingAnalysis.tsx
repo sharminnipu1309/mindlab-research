@@ -339,7 +339,7 @@ export default function TaskSwitchingAnalysis({ navigate, onLogout, currentPage 
               <strong className="text-[#252640]">Spatial Shift Cost</strong> = Mean RT (Inconsistent) − Mean RT (Consistent) on correct trials in the randomized mixed block. Classifies row consistency: Consistent (both in top row or both in bottom row) vs. Inconsistent (top-to-bottom or bottom-to-top transition). The first randomized trial is unclassified. Practice and pure-task blocks are excluded.
             </p>
             <p>
-              <strong className="text-[#252640]">Trial Structure:</strong> 8 Practice Trials (excluded from research metrics) + 64 Experimental Trials (16 Pure Letter, 16 Pure Number, 32 Mixed Alternating-Runs: 1 neutral, 16 repeat, 15 switch).
+              <strong className="text-[#252640]">Trial Structure:</strong> 8 Practice Trials (excluded from research metrics) + 128 Experimental Trials (32 Pure Letter, 32 Pure Number, 64 Mixed Alternating-Runs: 1 neutral, 32 repeat, 31 switch).
             </p>
             <p>
               <strong className="text-[#252640]">Keys Mapping:</strong> Letter Task: B = Vowel, N = Consonant · Number Task: B = Odd, N = Even.

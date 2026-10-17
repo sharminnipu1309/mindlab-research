@@ -98,6 +98,14 @@ Do not modify established experiment UI, stimulus generation, task scoring formu
 - **Practice-Only Feedback Isolation**: Correct/incorrect visual banners are shown exclusively during the 20 practice trials. During the 80 experimental trials, trials transition smoothly via a neutral 150ms inter-trial interval without revealing correctness, while reaction times, participant keystrokes, and accuracy continue to be recorded internally and saved to Supabase (`stroop_trials`).
 - **Research Integrity & Other Tasks**: No modification to historical research data; all other tasks (Tower of Hanoi, Backward Corsi, Task Switching) remain intact and untouched.
 
+### 5. Task Switching Improvements (October 18, 2026)
+- **Interactive Beginner-Friendly Tutorial**: Implemented a 4-step interactive tutorial before experimental trials explaining the 2×2 grid layout, the letter rule (top row), the number rule (bottom row), and mixed alternating-runs switching (clockwise rotation). Features live interactive mini-stimuli with instant friendly feedback without storing tutorial responses in research tables.
+- **Prominent & Bold Speed Instruction**: Standardized and highlighted the speed instruction across all screens (tutorial, intro, during trials, practice complete, and block intros) in larger bold typography: **"Respond as quickly and accurately as possible."**
+- **Simplified Instructions & Grammar Corrections**: Corrected grammatical errors ("when in the" $\to$ "when the stimulus is in the..."), replaced difficult terminology ("classify" $\to$ "respond according to the..."), and streamlined task explanations.
+- **Practice-Only Feedback Isolation**: Practice trials (8) retain detailed educational feedback. Experimental trials show zero visible correctness cues and transition smoothly via a 150ms neutral inter-trial interval directly to fixation.
+- **Exact Experimental Trial Counts (128 Total)**: Block 1 = 32 Pure Letter trials; Block 2 = 32 Pure Number trials; Block 3 = 64 Mixed Task Switching trials. Total = 128 trials. Verified via programmatic simulation across 100 runs.
+- **Admin & Analytics Alignment**: Updated `adminService.ts` and `TaskSwitchingAnalysis.tsx` to recognize $\ge 128$ completion while preserving historical 64-trial participant records.
+
 ---
 
 ## 4. Local Quality Assurance Record (October 18, 2026)
@@ -105,11 +113,13 @@ Do not modify established experiment UI, stimulus generation, task scoring formu
 | Verification Step | Command | Status | Result |
 |---|---|---|---|
 | **TypeScript Typecheck** | `npx tsc --noEmit` | **PASSED** | 0 errors |
-| **Production Build** | `npm run build` | **PASSED** | Built in 4.66s clean production bundle |
+| **Production Build** | `npm run build` | **PASSED** | Built in 4.69s clean production bundle |
+| **Task Switching Test Suite** | `node scripts/test_task_switching_corrections.mjs` | **PASSED** | All 6 checks passed (100 runs, 32/32/64 balance) |
 | **Stroop Automated Test Suite** | `node scripts/test_stroop_corrections.mjs` | **PASSED** | All 5 checks passed (100 runs, 0 consecutive ink repeats) |
 | **Environment Variable Security** | Inspection | **PASSED** | `.env.local` contains only publishable anon key; ignored by Git |
 | **SPA Route Handling** | `vercel.json` | **PASSED** | Rewrites `/(.*)` to `/index.html` configured |
 | **Local Server Status** | `npm run dev` | **ACTIVE** | Running on port 8443 |
+
 
 
 ---

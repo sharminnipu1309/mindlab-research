@@ -192,7 +192,7 @@ export async function fetchParticipantsList() {
           const sessionTS = (tsTrials || []).filter((t: any) => t.session_id === s.id);
           const taskSwitchingExpCount = sessionTS.filter((t: any) => t.phase === 'experimental').length;
           const taskSwitchingPracticeCount = sessionTS.filter((t: any) => t.phase === 'practice').length;
-          const taskSwitchingDone = Boolean(taskSwitchingExpCount >= 64);
+          const taskSwitchingDone = Boolean(taskSwitchingExpCount >= 128 || (taskSwitchingExpCount >= 64 && s.task_switching_completed));
 
           // 5. Overall 4-Experiment Battery Status
           const hasAnyData = hanoiAttempts > 0 || corsiTrialsCount > 0 || stroopExpCount > 0 || stroopPracticeCount > 0 || taskSwitchingExpCount > 0 || taskSwitchingPracticeCount > 0;
