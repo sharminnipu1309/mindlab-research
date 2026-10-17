@@ -22,8 +22,7 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
     age: string;
     gender: string;
     adhdDiagnosis: ADHDDiagnosisOption | '';
-    email: string;
-  }>({ name: '', age: '', gender: '', adhdDiagnosis: '', email: '' });
+  }>({ name: '', age: '', gender: '', adhdDiagnosis: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [generatedId] = useState(generateId);
 
@@ -36,11 +35,6 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
       errs.age = 'Please enter a valid age (16–100)';
     if (!form.gender) errs.gender = 'Please select a gender option';
     if (!form.adhdDiagnosis) errs.adhdDiagnosis = 'Please select an option';
-    if (!form.email || !form.email.trim()) {
-      errs.email = 'Email address is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      errs.email = 'Please enter a valid email address';
-    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -59,7 +53,6 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
       age: Number(form.age),
       gender: form.gender,
       adhdDiagnosis: form.adhdDiagnosis as ADHDDiagnosisOption,
-      email: form.email.trim().toLowerCase(),
       hanoiCompleted: false,
       corsiCompleted: false,
       stroopCompleted: false,
@@ -284,29 +277,6 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
                     <AlertCircle size={12} /> {errors.adhdDiagnosis}
                   </p>
                 )}
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="block text-xs sm:text-sm font-semibold text-[#11152F] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
-                  Email address
-                  <span className="text-[#EF4444] ml-1">*</span>
-                </label>
-                <input
-                  type="email"
-                  placeholder="your.email@example.com"
-                  value={form.email}
-                  onChange={e => { setForm(f => ({ ...f, email: e.target.value })); setErrors(err => ({ ...err, email: '' })); }}
-                  className={`ml-input ${errors.email ? 'error' : ''}`}
-                />
-                {errors.email && (
-                  <p className="flex items-center gap-1.5 text-xs text-[#EF4444] mt-1.5">
-                    <AlertCircle size={12} /> {errors.email}
-                  </p>
-                )}
-                <p className="text-[11px] sm:text-xs text-[#9597AB] mt-1.5">
-                  Required. We will email you exactly when Rooms 3 &amp; 4 unlock (24 hours after starting Room 2).
-                </p>
               </div>
             </div>
 

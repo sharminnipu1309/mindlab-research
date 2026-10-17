@@ -191,11 +191,13 @@ export async function registerParticipantSession(
         dbParticipantId = pData.id;
       }
 
-      // 2. Insert or upsert active study session idempotently
+      // 2. Insert or upsert active study session idempotently (immediately unlocked for Rooms 3 & 4)
       const sessionPayload = {
         id: generatedSessionId,
         participant_id: dbParticipantId,
         session_status: 'in_progress',
+        room_2_started_at: new Date().toISOString(),
+        rooms_3_4_unlock_at: new Date(Date.now() - 1000).toISOString(),
       };
 
       const { data: sData, error: sError } = await supabase
@@ -777,10 +779,8 @@ export async function finalizeStudySession(sessionId: string): Promise<void> {
 }
 
 /**
- * Records authoritative server-side timestamp when a participant starts Room 2 (Backward Corsi).
- * Sets rooms_3_4_unlock_at to 1 minute (60 seconds) for immediate verification,
- * while study protocol descriptions on the website show 24 hours.
- * Idempotent: Never overwrites an established timestamp.
+ * Records Room 2 start in the database (or marks session active).
+ * Rooms 3 and 4 are immediately accessible without 24-hour waiting.
  */
 export async function recordRoom2Start(
   sessionId?: string
@@ -788,242 +788,57 @@ export async function recordRoom2Start(
   const stored = getStoredSessionContext();
   const activeSid = sessionId || stored?.sessionId;
 
-  if (!activeSid) {
-    console.warn('[recordRoom2Start] No active session ID available.');
-    return null;
-  }
-
-  // 1. Try serverless endpoint first (runs with administrative privileges on Vercel)
-  try {
-    const resp = await fetch('/api/record-room-2', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId: activeSid }),
-    });
-    if (resp.ok) {
-      const result = await resp.json();
-      if (result.success) {
-        const status: RoomUnlockStatus = {
-          unlocked: Boolean(result.unlocked),
-          room2Started: true,
-          room2StartedAt: result.room_2_started_at || null,
-          unlockAt: result.rooms_3_4_unlock_at || null,
-          serverNow: result.server_now || new Date().toISOString(),
-          remainingSeconds: Number(result.remaining_seconds) || 0,
-        };
-
-        if (stored && stored.participantData) {
-          stored.participantData.room2StartedAt = status.room2StartedAt;
-          stored.participantData.rooms3And4UnlockAt = status.unlockAt;
-          stored.participantData.rooms3And4Unlocked = status.unlocked;
-          try {
-            sessionStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(stored));
-            localStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(stored));
-          } catch {}
-        }
-
-        return status;
-      }
-    }
-  } catch (apiErr) {
-    console.warn('[recordRoom2Start] /api/record-room-2 fetch error, trying RPC:', apiErr);
-  }
-
-  // 2. Direct Supabase RPC fallback
-  if (isSupabaseConfigured() && supabase) {
+  if (isSupabaseConfigured() && supabase && activeSid) {
     try {
       await ensureAnonymousAuth(false);
-      const { data, error } = await supabase.rpc('record_room_2_start', {
-        p_session_id: activeSid,
-      });
-
-      if (!error && data && data.success) {
-        let effectiveUnlockAt = data.rooms_3_4_unlock_at;
-        let remaining = Number(data.remaining_seconds) || 0;
-
-        if (effectiveUnlockAt) {
-          remaining = Math.max(0, Math.floor((new Date(effectiveUnlockAt).getTime() - Date.now()) / 1000));
-        }
-
-        const status: RoomUnlockStatus = {
-          unlocked: remaining <= 0,
-          room2Started: true,
-          room2StartedAt: data.room_2_started_at || null,
-          unlockAt: effectiveUnlockAt || null,
-          serverNow: data.server_now || new Date().toISOString(),
-          remainingSeconds: remaining,
-        };
-
-        if (stored && stored.participantData) {
-          stored.participantData.room2StartedAt = status.room2StartedAt;
-          stored.participantData.rooms3And4UnlockAt = status.unlockAt;
-          stored.participantData.rooms3And4Unlocked = status.unlocked;
-          try {
-            sessionStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(stored));
-            localStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(stored));
-          } catch {}
-        }
-
-        return status;
-      } else if (error) {
-        console.warn('[recordRoom2Start] RPC error, attempting fallback update:', error.message);
-      }
-    } catch (err) {
-      console.warn('[recordRoom2Start] Exception calling RPC:', err);
-    }
-
-    // Direct fallback if RPC is unavailable
-    try {
-      const { data: sRow } = await supabase
+      await supabase
         .from('sessions')
-        .select('room_2_started_at, rooms_3_4_unlock_at')
-        .eq('id', activeSid)
-        .maybeSingle();
-
-      if (sRow) {
-        let room2StartedAt = sRow.room_2_started_at;
-        let unlockAt = sRow.rooms_3_4_unlock_at;
-
-        if (!room2StartedAt) {
-          const nowStr = new Date().toISOString();
-          const unlockDate = new Date(Date.now() + 60 * 1000).toISOString();
-          const { error: upErr } = await supabase
-            .from('sessions')
-            .update({
-              room_2_started_at: nowStr,
-              rooms_3_4_unlock_at: unlockDate,
-              unlock_email_status: 'pending',
-            })
-            .eq('id', activeSid);
-
-          if (!upErr) {
-            room2StartedAt = nowStr;
-            unlockAt = unlockDate;
-          }
-        }
-
-        const unlocked = Boolean(unlockAt && new Date() >= new Date(unlockAt));
-        const rem = unlockAt ? Math.max(0, Math.floor((new Date(unlockAt).getTime() - Date.now()) / 1000)) : 60;
-
-        return {
-          unlocked,
-          room2Started: Boolean(room2StartedAt),
-          room2StartedAt: room2StartedAt || null,
-          unlockAt: unlockAt || null,
-          serverNow: new Date().toISOString(),
-          remainingSeconds: rem,
-        };
-      }
-    } catch (fallbackErr) {
-      console.error('[recordRoom2Start] Direct update fallback error:', fallbackErr);
+        .update({
+          room_2_started_at: new Date().toISOString(),
+          rooms_3_4_unlock_at: new Date(Date.now() - 1000).toISOString(),
+        })
+        .eq('id', activeSid);
+    } catch (err) {
+      console.warn('[recordRoom2Start] Session update error:', err);
     }
   }
 
-  // Local-only fallback (1-minute timer)
-  const now = new Date();
-  const unlock = new Date(now.getTime() + 60 * 1000);
-  return {
-    unlocked: false,
+  const status: RoomUnlockStatus = {
+    unlocked: true,
     room2Started: true,
-    room2StartedAt: now.toISOString(),
-    unlockAt: unlock.toISOString(),
-    serverNow: now.toISOString(),
-    remainingSeconds: 60,
+    room2StartedAt: new Date().toISOString(),
+    unlockAt: null,
+    serverNow: new Date().toISOString(),
+    remainingSeconds: 0,
   };
+
+  if (stored && stored.participantData) {
+    stored.participantData.room2StartedAt = status.room2StartedAt;
+    stored.participantData.rooms3And4UnlockAt = status.unlockAt;
+    stored.participantData.rooms3And4Unlocked = true;
+    try {
+      sessionStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(stored));
+      localStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(stored));
+    } catch {}
+  }
+
+  return status;
 }
 
 /**
- * Checks authoritative server access status for Room 3 (Stroop) and Room 4 (Task Switching).
+ * Checks authoritative access status for Room 3 (Stroop) and Room 4 (Task Switching).
+ * Returns immediately unlocked with 0 remaining seconds.
  */
 export async function checkRooms3And4Access(
-  sessionId?: string
+  _sessionId?: string
 ): Promise<RoomUnlockStatus> {
-  const stored = getStoredSessionContext();
-  const activeSid = sessionId || stored?.sessionId;
-
-  if (!activeSid) {
-    return {
-      unlocked: false,
-      room2Started: false,
-      room2StartedAt: null,
-      unlockAt: null,
-      serverNow: new Date().toISOString(),
-      remainingSeconds: 60,
-    };
-  }
-
-  if (isSupabaseConfigured() && supabase) {
-    try {
-      await ensureAnonymousAuth(false);
-      const { data, error } = await supabase.rpc('check_rooms_3_4_access', {
-        p_session_id: activeSid,
-      });
-
-      if (!error && data && data.success) {
-        return {
-          unlocked: Boolean(data.unlocked),
-          room2Started: Boolean(data.room_2_started),
-          room2StartedAt: data.room_2_started_at || null,
-          unlockAt: data.rooms_3_4_unlock_at || null,
-          serverNow: data.server_now || new Date().toISOString(),
-          remainingSeconds: Number(data.remaining_seconds) || 0,
-        };
-      }
-    } catch (rpcErr) {
-      console.warn('[checkRooms3And4Access] RPC error, using direct query:', rpcErr);
-    }
-
-    // Direct fallback query
-    try {
-      const { data: sRow } = await supabase
-        .from('sessions')
-        .select('room_2_started_at, rooms_3_4_unlock_at')
-        .eq('id', activeSid)
-        .maybeSingle();
-
-      if (sRow) {
-        const room2Started = Boolean(sRow.room_2_started_at);
-        const unlockAt = sRow.rooms_3_4_unlock_at;
-        const unlocked = Boolean(room2Started && unlockAt && new Date() >= new Date(unlockAt));
-        const rem = (room2Started && unlockAt)
-          ? Math.max(0, Math.floor((new Date(unlockAt).getTime() - Date.now()) / 1000))
-          : 60;
-
-        return {
-          unlocked,
-          room2Started,
-          room2StartedAt: sRow.room_2_started_at || null,
-          unlockAt: sRow.rooms_3_4_unlock_at || null,
-          serverNow: new Date().toISOString(),
-          remainingSeconds: rem,
-        };
-      }
-    } catch (qErr) {
-      console.warn('[checkRooms3And4Access] Direct fallback query error:', qErr);
-    }
-  }
-
-  // Check stored context
-  if (stored?.participantData?.room2StartedAt && stored?.participantData?.rooms3And4UnlockAt) {
-    const unlockTime = new Date(stored.participantData.rooms3And4UnlockAt).getTime();
-    const unlocked = Date.now() >= unlockTime;
-    return {
-      unlocked,
-      room2Started: true,
-      room2StartedAt: stored.participantData.room2StartedAt,
-      unlockAt: stored.participantData.rooms3And4UnlockAt,
-      serverNow: new Date().toISOString(),
-      remainingSeconds: Math.max(0, Math.floor((unlockTime - Date.now()) / 1000)),
-    };
-  }
-
   return {
-    unlocked: false,
-    room2Started: false,
-    room2StartedAt: null,
+    unlocked: true,
+    room2Started: true,
+    room2StartedAt: new Date().toISOString(),
     unlockAt: null,
     serverNow: new Date().toISOString(),
-    remainingSeconds: 60,
+    remainingSeconds: 0,
   };
 }
 
@@ -1264,44 +1079,25 @@ export async function resumeParticipantSession(
     };
   }
 
-  // Normalize inputs: allow (name, email) or legacy (code, name, email)
-  let name = '';
-  let email = '';
-  if (maybeEmail) {
-    name = (emailOrName || '').trim();
-    email = maybeEmail.trim().toLowerCase();
-  } else if (emailOrName && emailOrName.includes('@')) {
-    name = (nameOrCode || '').trim();
-    email = emailOrName.trim().toLowerCase();
-  } else if (nameOrCode && nameOrCode.includes('@')) {
-    email = nameOrCode.trim().toLowerCase();
-    name = (emailOrName || '').trim();
-  } else {
-    name = (nameOrCode || '').trim();
-    email = (emailOrName || '').trim().toLowerCase();
-  }
-
-  if (!name) {
-    return { success: false, error: 'Please enter your Name.' };
-  }
-  if (!email || !email.includes('@')) {
-    return { success: false, error: 'Please enter your registered Email address.' };
+  const query = (nameOrCode || emailOrName || maybeEmail || '').trim();
+  if (!query) {
+    return { success: false, error: 'Please enter your Participant ID or Full Name.' };
   }
 
   // 1. Check local session context on this device
   const localCtx = getStoredSessionContext();
   if (localCtx && localCtx.participantData) {
     const localP = localCtx.participantData;
-    const localEmail = (localP.email || '').trim().toLowerCase();
+    const localId = (localP.id || localCtx.participantCode || '').trim().toLowerCase();
     const localName = (localP.name || '').trim().toLowerCase();
-    const inputName = name.toLowerCase();
+    const qLower = query.toLowerCase();
 
     if (
-      localEmail === email &&
-      (localName === inputName ||
-        localName.split(' ')[0] === inputName.split(' ')[0] ||
-        localName.includes(inputName) ||
-        inputName.includes(localName.split(' ')[0]))
+      localId === qLower ||
+      localName === qLower ||
+      localName.split(' ')[0] === qLower.split(' ')[0] ||
+      localName.includes(qLower) ||
+      qLower.includes(localName.split(' ')[0])
     ) {
       resetResumeRateLimit();
       return {
@@ -1317,7 +1113,7 @@ export async function resumeParticipantSession(
     const apiRes = await fetch('/api/resume-session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email }),
+      body: JSON.stringify({ identifier: query, name: query, code: query }),
     });
 
     const result = await apiRes.json().catch(() => ({}));
@@ -1348,66 +1144,93 @@ export async function resumeParticipantSession(
     console.warn('[Resume] /api/resume-session error, trying direct Supabase lookup:', apiErr);
   }
 
-  // 3. Fallback: Query Supabase RPC or direct lookup
+  // 3. Fallback: Query Supabase directly
   if (isSupabaseConfigured() && supabase) {
     try {
       await ensureAnonymousAuth(false);
-      const { data, error } = await supabase.rpc('resume_participant_by_name_and_email', {
-        p_name: name,
-        p_email: email,
-      });
+      let pQuery = supabase
+        .from('participants')
+        .select('id, participant_code, name, email, age, gender, adhd_diagnosis, created_at');
 
-      if (!error && data && data.success && data.participant && data.session) {
-        resetResumeRateLimit();
-        const p = data.participant;
-        const sess = data.session;
-        const participantData: ParticipantSession = {
-          id: p.id,
-          dbId: p.dbId,
-          name: p.name,
-          email: p.email,
-          age: p.age || 0,
-          gender: p.gender || 'unspecified',
-          adhdDiagnosis: p.adhdDiagnosis || 'none',
-          hanoiCompleted: p.hanoiCompleted,
-          corsiCompleted: p.corsiCompleted,
-          stroopCompleted: p.stroopCompleted,
-          taskSwitchingCompleted: p.taskSwitchingCompleted,
-          hanoiStatus: p.hanoiCompleted ? 'completed' : ((p.hanoiCount || 0) > 0 ? 'in_progress' : 'not_started'),
-          corsiStatus: p.corsiCompleted ? 'completed' : ((p.corsiCount || 0) > 0 ? 'in_progress' : 'not_started'),
-          stroopStatus: p.stroopCompleted ? 'completed' : ((p.stroopCount || 0) > 0 ? 'in_progress' : 'not_started'),
-          taskSwitchingStatus: p.taskSwitchingCompleted ? 'completed' : ((p.tsCount || 0) > 0 ? 'in_progress' : 'not_started'),
-          hanoiProgressCount: p.hanoiCount || 0,
-          corsiProgressCount: p.corsiCount || 0,
-          stroopProgressCount: p.stroopCount || 0,
-          taskSwitchingProgressCount: p.tsCount || 0,
-          room2StartedAt: sess.room2StartedAt || null,
-          rooms3And4UnlockAt: sess.rooms3And4UnlockAt || null,
-          rooms3And4Unlocked: sess.rooms3And4Unlocked,
-        };
+      if (/^ML-\d+/i.test(query) || /^P-\d+/i.test(query)) {
+        pQuery = pQuery.ilike('participant_code', query);
+      } else {
+        pQuery = pQuery.or(`participant_code.ilike.${query},name.ilike.%${query}%`);
+      }
 
-        const ctx: StoredSessionContext = {
-          participantId: p.dbId,
-          sessionId: sess.id,
-          participantCode: p.id,
-          participantData,
-        };
-        try {
-          sessionStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(ctx));
-          localStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(ctx));
-        } catch {}
+      const { data: matchedParticipants, error: pErr } = await pQuery
+        .order('created_at', { ascending: false })
+        .limit(1);
 
-        return { success: true, participant: participantData, sessionId: sess.id };
+      if (!pErr && matchedParticipants && matchedParticipants.length > 0) {
+        const p = matchedParticipants[0];
+
+        const { data: sessions, error: sErr } = await supabase
+          .from('sessions')
+          .select('id, session_status, hanoi_completed, corsi_completed, stroop_completed, task_switching_completed, room_2_started_at, rooms_3_4_unlock_at, created_at')
+          .eq('participant_id', p.id)
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (!sErr && sessions && sessions.length > 0) {
+          const sess = sessions[0];
+          resetResumeRateLimit();
+
+          const [hanoiRes, corsiRes, stroopRes, tsRes] = await Promise.all([
+            supabase.from('hanoi_puzzles').select('*', { count: 'exact', head: true }).eq('session_id', sess.id),
+            supabase.from('corsi_trials').select('*', { count: 'exact', head: true }).eq('session_id', sess.id),
+            supabase.from('stroop_trials').select('*', { count: 'exact', head: true }).eq('session_id', sess.id),
+            supabase.from('task_switching_trials').select('*', { count: 'exact', head: true }).eq('session_id', sess.id),
+          ]);
+
+          const participantData: ParticipantSession = {
+            id: p.participant_code,
+            dbId: p.id,
+            name: p.name,
+            email: p.email || undefined,
+            age: p.age || 0,
+            gender: p.gender || 'unspecified',
+            adhdDiagnosis: p.adhd_diagnosis || 'none',
+            hanoiCompleted: Boolean(sess.hanoi_completed),
+            corsiCompleted: Boolean(sess.corsi_completed),
+            stroopCompleted: Boolean(sess.stroop_completed),
+            taskSwitchingCompleted: Boolean(sess.task_switching_completed),
+            hanoiStatus: sess.hanoi_completed ? 'completed' : ((hanoiRes.count || 0) > 0 ? 'in_progress' : 'not_started'),
+            corsiStatus: sess.corsi_completed ? 'completed' : ((corsiRes.count || 0) > 0 ? 'in_progress' : 'not_started'),
+            stroopStatus: sess.stroop_completed ? 'completed' : ((stroopRes.count || 0) > 0 ? 'in_progress' : 'not_started'),
+            taskSwitchingStatus: sess.task_switching_completed ? 'completed' : ((tsRes.count || 0) > 0 ? 'in_progress' : 'not_started'),
+            hanoiProgressCount: hanoiRes.count || 0,
+            corsiProgressCount: corsiRes.count || 0,
+            stroopProgressCount: stroopRes.count || 0,
+            taskSwitchingProgressCount: tsRes.count || 0,
+            room2StartedAt: sess.room_2_started_at || new Date().toISOString(),
+            rooms3And4UnlockAt: null,
+            rooms3And4Unlocked: true,
+          };
+
+          const ctx: StoredSessionContext = {
+            participantId: p.id,
+            sessionId: sess.id,
+            participantCode: p.participant_code,
+            participantData,
+          };
+          try {
+            sessionStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(ctx));
+            localStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(ctx));
+          } catch {}
+
+          return { success: true, participant: participantData, sessionId: sess.id };
+        }
       }
     } catch (rpcErr) {
-      console.warn('[Resume] Supabase RPC lookup error:', rpcErr);
+      console.warn('[Resume] Supabase lookup error:', rpcErr);
     }
   }
 
   recordFailedResumeAttempt();
   return {
     success: false,
-    error: 'No active session found matching this Name and Email address. Please verify your details.',
+    error: 'No active session found matching this Participant ID or Name. Please verify your details.',
   };
 }
 

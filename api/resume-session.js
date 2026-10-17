@@ -1,6 +1,6 @@
 // api/resume-session.js
-// Vercel Serverless Function: Resume Research Session by Participant Name and Email
-// Allows returning participants to resume on any device using only their Name and Email address.
+// Vercel Serverless Function: Resume Research Session by Participant ID or Name
+// Allows returning participants to resume on any device using their Participant ID or Name.
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -39,20 +39,15 @@ export default async function handler(req, res) {
     }
     body = body || {};
 
+    const identifier = (body.identifier || body.code || body.id || '').trim();
     const name = (body.name || '').trim();
     const email = (body.email || '').trim().toLowerCase();
 
-    if (!name) {
+    const searchTerm = identifier || name || email;
+    if (!searchTerm) {
       return res.status(400).json({
         success: false,
-        error: 'Please enter your Name.',
-      });
-    }
-
-    if (!email || !email.includes('@')) {
-      return res.status(400).json({
-        success: false,
-        error: 'Please enter a valid registered Email address.',
+        error: 'Please enter your Participant ID or Name.',
       });
     }
 
@@ -66,48 +61,59 @@ export default async function handler(req, res) {
       });
     }
 
-    // 1. Look up participant by registered email address
-    const { data: participants, error: pErr } = await supabase
-      .from('participants')
-      .select('id, participant_code, name, email, age, gender, adhd_diagnosis, created_at')
-      .ilike('email', email)
-      .order('created_at', { ascending: false });
+    // 1. Search for participant
+    let participants = [];
 
-    if (pErr) {
-      console.error('[API /resume-session] Database error finding participant:', pErr);
-      return res.status(500).json({ success: false, error: 'Database error searching for participant.' });
+    // Search by participant code first if identifier resembles a code
+    if (identifier) {
+      const { data: byCode, error: cErr } = await supabase
+        .from('participants')
+        .select('id, participant_code, name, email, age, gender, adhd_diagnosis, created_at')
+        .ilike('participant_code', identifier)
+        .order('created_at', { ascending: false });
+
+      if (!cErr && byCode && byCode.length > 0) {
+        participants = byCode;
+      }
+    }
+
+    // If not found yet and name provided or identifier could be a name
+    if (participants.length === 0 && (name || identifier)) {
+      const queryName = name || identifier;
+      const { data: byName, error: nErr } = await supabase
+        .from('participants')
+        .select('id, participant_code, name, email, age, gender, adhd_diagnosis, created_at')
+        .ilike('name', `%${queryName}%`)
+        .order('created_at', { ascending: false });
+
+      if (!nErr && byName && byName.length > 0) {
+        participants = byName;
+      }
+    }
+
+    // Backwards compatibility fallback if email provided
+    if (participants.length === 0 && email && email.includes('@')) {
+      const { data: byEmail } = await supabase
+        .from('participants')
+        .select('id, participant_code, name, email, age, gender, adhd_diagnosis, created_at')
+        .ilike('email', email)
+        .order('created_at', { ascending: false });
+
+      if (byEmail && byEmail.length > 0) {
+        participants = byEmail;
+      }
     }
 
     if (!participants || participants.length === 0) {
       return res.status(404).json({
         success: false,
-        error: 'No participant record found with this email address. Please check your spelling or register a new session.',
+        error: 'No participant record found matching this Participant ID or Name. Please check your spelling.',
       });
     }
 
-    // 2. Verify Name matches (compare first name or full name, case-insensitive)
-    const cleanInputName = name.toLowerCase();
-    const inputFirstName = cleanInputName.split(' ')[0];
+    const matchedParticipant = participants[0];
 
-    const matchedParticipant = participants.find(p => {
-      const pCleanName = (p.name || '').trim().toLowerCase();
-      const pFirstName = pCleanName.split(' ')[0];
-      return (
-        pCleanName === cleanInputName ||
-        pFirstName === inputFirstName ||
-        pCleanName.includes(inputFirstName) ||
-        cleanInputName.includes(pFirstName)
-      );
-    });
-
-    if (!matchedParticipant) {
-      return res.status(403).json({
-        success: false,
-        error: 'The name entered does not match the name registered for this email address.',
-      });
-    }
-
-    // 3. Find active session for this participant
+    // 2. Find active session for this participant
     const { data: sessions, error: sErr } = await supabase
       .from('sessions')
       .select('id, session_status, hanoi_completed, corsi_completed, stroop_completed, task_switching_completed, room_2_started_at, rooms_3_4_unlock_at, created_at')
@@ -128,25 +134,7 @@ export default async function handler(req, res) {
 
     const sess = sessions[0];
 
-    // 4. Calculate unlock status (1-minute timer for testing)
-    const now = new Date();
-    let isUnlocked = false;
-    let remainingSeconds = 60; // 1-minute timer (website copy displays 24-hour protocol)
-
-    if (sess.room_2_started_at) {
-      if (sess.rooms_3_4_unlock_at) {
-        const unlockDate = new Date(sess.rooms_3_4_unlock_at);
-        isUnlocked = now >= unlockDate;
-        remainingSeconds = Math.max(0, Math.floor((unlockDate.getTime() - now.getTime()) / 1000));
-      } else {
-        // Fallback: 1 minute after room_2_started_at
-        const unlockDate = new Date(new Date(sess.room_2_started_at).getTime() + 60 * 1000);
-        isUnlocked = now >= unlockDate;
-        remainingSeconds = Math.max(0, Math.floor((unlockDate.getTime() - now.getTime()) / 1000));
-      }
-    }
-
-    // 5. Count completed tasks & trials
+    // 3. Count completed tasks & trials
     const [hanoiRes, corsiRes, stroopRes, tsRes] = await Promise.all([
       supabase.from('hanoi_puzzles').select('*', { count: 'exact', head: true }).eq('session_id', sess.id),
       supabase.from('corsi_trials').select('*', { count: 'exact', head: true }).eq('session_id', sess.id),
@@ -158,7 +146,7 @@ export default async function handler(req, res) {
       id: matchedParticipant.participant_code,
       dbId: matchedParticipant.id,
       name: matchedParticipant.name,
-      email: matchedParticipant.email,
+      email: matchedParticipant.email || undefined,
       age: matchedParticipant.age || 0,
       gender: matchedParticipant.gender || 'unspecified',
       adhdDiagnosis: matchedParticipant.adhd_diagnosis || 'none',
@@ -174,16 +162,16 @@ export default async function handler(req, res) {
       corsiProgressCount: corsiRes.count || 0,
       stroopProgressCount: stroopRes.count || 0,
       taskSwitchingProgressCount: tsRes.count || 0,
-      room2StartedAt: sess.room_2_started_at || null,
-      rooms3And4UnlockAt: sess.rooms_3_4_unlock_at || null,
-      rooms3And4Unlocked: isUnlocked,
+      room2StartedAt: sess.room_2_started_at || new Date().toISOString(),
+      rooms3And4UnlockAt: null,
+      rooms3And4Unlocked: true,
     };
 
     return res.status(200).json({
       success: true,
       participant: participantData,
       sessionId: sess.id,
-      remainingSeconds,
+      remainingSeconds: 0,
     });
   } catch (err) {
     console.error('[API /resume-session] Unexpected error:', err);

@@ -23,7 +23,6 @@ import {
   persistTaskSwitchingResults,
   getStoredSessionContext,
   getExperimentSessionOptions,
-  checkRooms3And4Access,
 } from '../services/participantService';
 
 interface Props {
@@ -341,25 +340,7 @@ function generateBlockTrials(blockType: TaskSwitchingBlockType): TrialItem[] {
 }
 
 
-function formatRemainingDetailed(seconds: number): string {
-  if (seconds <= 0) return 'Available now';
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = seconds % 60;
-  if (hours > 0) {
-    return `${hours}h ${minutes}m ${secs}s`;
-  }
-  return `${minutes}m ${secs}s`;
-}
-
 export default function TaskSwitchingRoom({ navigate, participant, sessionId, onComplete }: Props) {
-  const [accessChecking, setAccessChecking] = useState<boolean>(true);
-  const [isLocked, setIsLocked] = useState<boolean>(false);
-  const [room2Started, setRoom2Started] = useState<boolean>(false);
-  const [remainingSeconds, setRemainingSeconds] = useState<number>(0);
-  const [unlockAt, setUnlockAt] = useState<string | null>(null);
-  const lastSyncRef = useRef<{ serverRemaining: number; syncPerfTime: number } | null>(null);
-
   const [phase, setPhase] = useState<Phase>('tutorial');
   const [tutorialStep, setTutorialStep] = useState<number>(0);
   const [tutorialFeedback, setTutorialFeedback] = useState<{
@@ -412,60 +393,6 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
   const [showExit, setShowExit] = useState<boolean>(false);
   const sessionOptionsRef = useRef(getExperimentSessionOptions());
   const sessionOptions = sessionOptionsRef.current;
-
-  // Authoritatively verify room access status against database
-  useEffect(() => {
-    const activeSid = sessionId || getStoredSessionContext()?.sessionId;
-    if (activeSid) {
-      checkRooms3And4Access(activeSid).then(res => {
-        setAccessChecking(false);
-        if (!res.unlocked) {
-          setIsLocked(true);
-          setRoom2Started(res.room2Started);
-          setRemainingSeconds(res.remainingSeconds);
-          setUnlockAt(res.unlockAt);
-          lastSyncRef.current = {
-            serverRemaining: res.remainingSeconds,
-            syncPerfTime: performance.now(),
-          };
-        } else {
-          setIsLocked(false);
-        }
-      }).catch(err => {
-        console.error('[TaskSwitchingRoom] Error verifying room access:', err);
-        setAccessChecking(false);
-      });
-    } else {
-      setAccessChecking(false);
-    }
-  }, [sessionId]);
-
-  // Monotonic timer for locked countdown
-  useEffect(() => {
-    if (!isLocked || remainingSeconds <= 0) return;
-
-    const interval = setInterval(() => {
-      if (!lastSyncRef.current) return;
-      const elapsedSec = Math.floor((performance.now() - lastSyncRef.current.syncPerfTime) / 1000);
-      const updatedRemaining = Math.max(0, lastSyncRef.current.serverRemaining - elapsedSec);
-      setRemainingSeconds(updatedRemaining);
-
-      if (updatedRemaining <= 0) {
-        const activeSid = sessionId || getStoredSessionContext()?.sessionId;
-        if (activeSid) {
-          checkRooms3And4Access(activeSid).then(res => {
-            if (res.unlocked) {
-              setIsLocked(false);
-            } else {
-              setRemainingSeconds(res.remainingSeconds);
-            }
-          });
-        }
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isLocked, remainingSeconds, sessionId]);
 
   // Response feedback state (used exclusively for practice educational guidance)
   const [feedback, setFeedback] = useState<{
@@ -784,7 +711,6 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
 
   // Global keyboard listener for 'b' / 'B' and 'n' / 'N'
   useEffect(() => {
-    if (isLocked || accessChecking) return;
     if (phase !== 'practice' && phase !== 'experiment' && phase !== 'tutorial') return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -809,7 +735,7 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [phase, tutorialStep, handleResponse, isLocked, accessChecking]);
+  }, [phase, tutorialStep, handleResponse]);
 
   const handleFinish = () => {
     const result = computeTaskSwitchingResult();
@@ -883,64 +809,6 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-6 sm:py-10">
-        {accessChecking ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-8">
-            <div className="w-10 h-10 border-4 border-[#8B5CF6] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-xs font-semibold text-[#73758C] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
-              Verifying room access...
-            </p>
-          </div>
-        ) : isLocked ? (
-          <div className="max-w-lg w-full bg-white rounded-3xl border-2 border-[#FECACA] p-6 sm:p-8 text-center shadow-lg animate-fade-in my-auto">
-            <div className="w-16 h-16 rounded-2xl bg-[#FEF2F2] text-[#DC2626] mx-auto flex items-center justify-center mb-5 border border-[#FECACA] shadow-xs">
-              <Lock size={32} />
-            </div>
-            <div className="text-[11px] font-bold text-[#DC2626] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif] mb-1">
-              Access Restricted · Research Protocol
-            </div>
-            <h2 className="text-2xl font-extrabold text-[#11152F] font-['Plus_Jakarta_Sans',sans-serif] mb-3">
-              Room 04 is Currently Locked
-            </h2>
-            <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed mb-6">
-              {room2Started
-                ? 'Under the study design, Room 3 (Stroop) and Room 4 (Task Switching) unlock exactly 24 hours after you start Room 2. Your waiting interval is currently in progress.'
-                : 'Room 2 (Backward Corsi) must be started before Rooms 3 and 4 unlock. Rooms 3 and 4 will become accessible exactly 24 hours after starting Room 2.'}
-            </p>
-
-            {room2Started && (
-              <div className="bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0] p-4 mb-6 text-center">
-                <div className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-1">
-                  Time Remaining Until Unlock
-                </div>
-                <div className="text-xl sm:text-2xl font-black text-[#DC2626] font-['JetBrains_Mono',monospace]">
-                  {formatRemainingDetailed(remainingSeconds)}
-                </div>
-                {unlockAt && (
-                  <div className="text-xs text-[#94A3B8] mt-1 font-medium">
-                    Unlocks at {new Date(unlockAt).toLocaleString(undefined, {
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </div>
-                )}
-                <p className="text-[11px] text-[#64748B] mt-2.5 pt-2.5 border-t border-[#E2E8F0]">
-                  An automated notification will be sent to your registered email when this activity unlocks.
-                </p>
-              </div>
-            )}
-
-            <button
-              onClick={() => navigate('participant-dashboard')}
-              className="btn-primary w-full justify-center py-3 text-sm font-bold"
-            >
-              Return to Dashboard
-              <ArrowRight size={16} />
-            </button>
-          </div>
-        ) : (
-          <>
 
         {/* 1. INTERACTIVE TUTORIAL PHASE */}
         {phase === 'tutorial' && (
@@ -1825,8 +1693,6 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
               Return to Dashboard →
             </button>
           </div>
-        )}
-          </>
         )}
       </div>
     </div>

@@ -17,7 +17,6 @@ import {
   persistStroopResults,
   getStoredSessionContext,
   getExperimentSessionOptions,
-  checkRooms3And4Access,
 } from '../services/participantService';
 
 interface Props {
@@ -162,85 +161,13 @@ function generateExperimentalTrials(): TrialItem[] {
   return pool;
 }
 
-function formatRemainingDetailed(seconds: number): string {
-  if (seconds <= 0) return 'Available now';
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = seconds % 60;
-  if (hours > 0) {
-    return `${hours}h ${minutes}m ${secs}s`;
-  }
-  return `${minutes}m ${secs}s`;
-}
-
 export default function StroopRoom({ navigate, participant, sessionId, onComplete }: Props) {
-  const [accessChecking, setAccessChecking] = useState<boolean>(true);
-  const [isLocked, setIsLocked] = useState<boolean>(false);
-  const [room2Started, setRoom2Started] = useState<boolean>(false);
-  const [remainingSeconds, setRemainingSeconds] = useState<number>(0);
-  const [unlockAt, setUnlockAt] = useState<string | null>(null);
-  const lastSyncRef = useRef<{ serverRemaining: number; syncPerfTime: number } | null>(null);
-
   const [phase, setPhase] = useState<Phase>('intro');
   const [trialIndex, setTrialIndex] = useState<number>(0);
   const [trialStage, setTrialStage] = useState<TrialStage>('fixation');
   const [showExit, setShowExit] = useState<boolean>(false);
   const sessionOptionsRef = useRef(getExperimentSessionOptions());
   const sessionOptions = sessionOptionsRef.current;
-
-  // Authoritatively verify room access status against database
-  useEffect(() => {
-    const activeSid = sessionId || getStoredSessionContext()?.sessionId;
-    if (activeSid) {
-      checkRooms3And4Access(activeSid).then(res => {
-        setAccessChecking(false);
-        if (!res.unlocked) {
-          setIsLocked(true);
-          setRoom2Started(res.room2Started);
-          setRemainingSeconds(res.remainingSeconds);
-          setUnlockAt(res.unlockAt);
-          lastSyncRef.current = {
-            serverRemaining: res.remainingSeconds,
-            syncPerfTime: performance.now(),
-          };
-        } else {
-          setIsLocked(false);
-        }
-      }).catch(err => {
-        console.error('[StroopRoom] Error verifying room access:', err);
-        setAccessChecking(false);
-      });
-    } else {
-      setAccessChecking(false);
-    }
-  }, [sessionId]);
-
-  // Monotonic timer for locked countdown
-  useEffect(() => {
-    if (!isLocked || remainingSeconds <= 0) return;
-
-    const interval = setInterval(() => {
-      if (!lastSyncRef.current) return;
-      const elapsedSec = Math.floor((performance.now() - lastSyncRef.current.syncPerfTime) / 1000);
-      const updatedRemaining = Math.max(0, lastSyncRef.current.serverRemaining - elapsedSec);
-      setRemainingSeconds(updatedRemaining);
-
-      if (updatedRemaining <= 0) {
-        const activeSid = sessionId || getStoredSessionContext()?.sessionId;
-        if (activeSid) {
-          checkRooms3And4Access(activeSid).then(res => {
-            if (res.unlocked) {
-              setIsLocked(false);
-            } else {
-              setRemainingSeconds(res.remainingSeconds);
-            }
-          });
-        }
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [isLocked, remainingSeconds, sessionId]);
 
   // Response feedback state (only used during practice)
   const [feedback, setFeedback] = useState<{
@@ -446,7 +373,7 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
 
   // Global keyboard listener
   useEffect(() => {
-    if (isLocked || accessChecking || (phase !== 'practice' && phase !== 'experiment')) return;
+    if (phase !== 'practice' && phase !== 'experiment') return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.repeat) return;
@@ -459,7 +386,7 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [phase, handleResponse, isLocked, accessChecking]);
+  }, [phase, handleResponse]);
 
   const handleFinish = () => {
     const result = computeStroopResult();
@@ -533,65 +460,7 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-6 sm:py-10">
-        {accessChecking ? (
-          <div className="text-center p-8 animate-fade-in">
-            <div className="w-10 h-10 border-4 border-[#E11D48] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-xs font-semibold text-[#73758C] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
-              Verifying room access...
-            </p>
-          </div>
-        ) : isLocked ? (
-          <div className="max-w-lg w-full bg-white dark:bg-[#15193B] rounded-3xl border-2 border-[#FECACA] dark:border-rose-900/60 p-6 sm:p-8 text-center shadow-lg animate-fade-in my-auto">
-            <div className="w-16 h-16 rounded-2xl bg-[#FEF2F2] dark:bg-rose-950/60 text-[#DC2626] mx-auto flex items-center justify-center mb-5 border border-[#FECACA] dark:border-rose-800 shadow-xs">
-              <Lock size={32} />
-            </div>
-            <div className="text-[11px] font-bold text-[#DC2626] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif] mb-1">
-              Access Restricted · Research Protocol
-            </div>
-            <h2 className="text-2xl font-extrabold text-[#11152F] dark:text-white font-['Plus_Jakarta_Sans',sans-serif] mb-3">
-              Room 03 is Currently Locked
-            </h2>
-            <p className="text-xs sm:text-sm text-[#64748B] dark:text-slate-300 leading-relaxed mb-6">
-              {room2Started
-                ? 'Under the study design, Room 3 (Stroop) and Room 4 (Task Switching) unlock exactly 24 hours after you start Room 2. Your waiting interval is currently in progress.'
-                : 'Room 2 (Backward Corsi) must be started before Rooms 3 and 4 unlock. Rooms 3 and 4 will become accessible exactly 24 hours after starting Room 2.'}
-            </p>
-
-            {room2Started && (
-              <div className="bg-[#F8FAFC] dark:bg-[#1A2248] rounded-2xl border border-[#E2E8F0] dark:border-[#252E63] p-4 mb-6 text-center">
-                <div className="text-[10px] font-bold text-[#64748B] dark:text-slate-400 uppercase tracking-wider mb-1">
-                  Time Remaining Until Unlock
-                </div>
-                <div className="text-xl sm:text-2xl font-black text-[#DC2626] font-['JetBrains_Mono',monospace]">
-                  {formatRemainingDetailed(remainingSeconds)}
-                </div>
-                {unlockAt && (
-                  <div className="text-xs text-[#94A3B8] mt-1 font-medium">
-                    Unlocks at {new Date(unlockAt).toLocaleString(undefined, {
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </div>
-                )}
-                <p className="text-[11px] text-[#64748B] dark:text-slate-400 mt-2.5 pt-2.5 border-t border-[#E2E8F0] dark:border-[#252E63]">
-                  An automated notification will be sent to your registered email when this activity unlocks.
-                </p>
-              </div>
-            )}
-
-            <button
-              onClick={() => navigate('participant-dashboard')}
-              className="btn-primary w-full justify-center py-3 text-sm font-bold"
-            >
-              Return to Dashboard
-              <ArrowRight size={16} />
-            </button>
-          </div>
-        ) : (
-          <>
-            {/* 1. INTRO PHASE */}
+        {/* 1. INTRO PHASE */}
             {phase === 'intro' && (
               <div className="text-center max-w-xl w-full animate-fade-in-up">
                 <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#FCE8EB] dark:bg-rose-950/60 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
@@ -823,8 +692,6 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
                 </button>
               </div>
             )}
-          </>
-        )}
       </div>
     </div>
   );

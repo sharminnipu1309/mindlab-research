@@ -142,7 +142,6 @@ export default function ResearchInfoPage({ navigate }: Props) {
               {[
                 'Task responses and performance will be recorded (move sequences, timing, accuracy)',
                 'Basic demographic information will be collected (age, gender, ADHD diagnosis) for research purposes',
-                'Your email address is required to receive notification when Rooms 3 and 4 become available after 24 hours',
                 'You will be assigned an anonymous participant ID — your name is not linked to your task data in research outputs',
                 'Data is handled in accordance with ethical research guidelines',
               ].map((item, i) => (

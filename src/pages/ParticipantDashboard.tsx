@@ -17,10 +17,10 @@ import {
   RotateCcw,
   Info,
   AlertTriangle,
+  Home,
 } from 'lucide-react';
 import {
   refreshParticipantSessionStatus,
-  checkRooms3And4Access,
   getStoredSessionContext,
 } from '../services/participantService';
 
@@ -60,74 +60,13 @@ function formatRemainingShort(seconds: number): string {
 export default function ParticipantDashboard({ navigate, participant }: Props) {
   const [currentParticipant, setCurrentParticipant] = useState<ParticipantSession>(participant);
   const [interruptedModalTask, setInterruptedModalTask] = useState<InterruptedModalData | null>(null);
-  const [showUnlockAlertModal, setShowUnlockAlertModal] = useState<boolean>(false);
-  const [unlockStatus, setUnlockStatus] = useState<RoomUnlockStatus | null>(null);
-  const [remainingSeconds, setRemainingSeconds] = useState<number>(60);
-  const lastSyncRef = useRef<{ serverRemaining: number; syncPerfTime: number } | null>(null);
-  const hasTriggeredAlertRef = useRef<boolean>(false);
-  const timerWasRunningRef = useRef<boolean>(false);
 
   // Sync latest session status and trial counts directly from Supabase on mount
   useEffect(() => {
     refreshParticipantSessionStatus(participant).then(updated => {
       setCurrentParticipant(updated);
     });
-    const sid = participant.sessionId || currentParticipant.sessionId || getStoredSessionContext()?.sessionId;
-    if (sid) {
-      checkRooms3And4Access(sid).then(st => {
-        setUnlockStatus(st);
-        setRemainingSeconds(st.remainingSeconds);
-        lastSyncRef.current = {
-          serverRemaining: st.remainingSeconds,
-          syncPerfTime: performance.now(),
-        };
-        // DO NOT show popup on mount. Popup should strictly only appear after the 1-minute timer finishes.
-      });
-    }
   }, [participant]);
-
-  // Monotonic ticker unaffected by OS date/clock alteration
-  useEffect(() => {
-    // Only run ticker if Room 2 has started and is not yet unlocked
-    if (!unlockStatus || !unlockStatus.room2Started || unlockStatus.unlocked || remainingSeconds <= 0) {
-      return;
-    }
-
-    timerWasRunningRef.current = true;
-
-    const interval = setInterval(() => {
-      if (!lastSyncRef.current) return;
-      const elapsedSec = Math.floor((performance.now() - lastSyncRef.current.syncPerfTime) / 1000);
-      const updatedRemaining = Math.max(0, lastSyncRef.current.serverRemaining - elapsedSec);
-      setRemainingSeconds(updatedRemaining);
-
-      if (updatedRemaining <= 0) {
-        clearInterval(interval);
-        // Countdown elapsed: trigger unlock state and show celebration alert ONLY once when timer finishes
-        setUnlockStatus(prev => prev ? { ...prev, unlocked: true, remainingSeconds: 0 } : null);
-        setCurrentParticipant(prev => ({ ...prev, rooms3And4Unlocked: true }));
-
-        if (timerWasRunningRef.current && !hasTriggeredAlertRef.current) {
-          hasTriggeredAlertRef.current = true;
-          timerWasRunningRef.current = false;
-          setShowUnlockAlertModal(true);
-        }
-
-        const sid = currentParticipant.sessionId || participant.sessionId || getStoredSessionContext()?.sessionId;
-        if (sid) {
-          checkRooms3And4Access(sid).then(st => {
-            setUnlockStatus(st);
-            setRemainingSeconds(st.remainingSeconds);
-            if (st.unlocked) {
-              setCurrentParticipant(prev => ({ ...prev, rooms3And4Unlocked: true }));
-            }
-          });
-        }
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [unlockStatus, remainingSeconds, currentParticipant.sessionId, participant.sessionId]);
 
   // Compute 3-state experiment status for each of the 4 cognitive tasks
   const hanoiStatus: ExperimentStatus =
@@ -178,21 +117,6 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
   const progressPct = (completedActivities / totalActivities) * 100;
   const allDone = completedActivities === totalActivities;
 
-  const isRoom2Started = Boolean(
-    unlockStatus?.room2Started ||
-    currentParticipant.room2StartedAt ||
-    (currentParticipant.corsiProgressCount || 0) > 0 ||
-    currentParticipant.corsiCompleted
-  );
-
-  const areRooms3And4Unlocked = Boolean(
-    isRoom2Started && (
-      unlockStatus
-        ? unlockStatus.unlocked
-        : Boolean(currentParticipant.rooms3And4Unlocked)
-    )
-  );
-
   const challengeStages = [
     {
       id: 'hanoi',
@@ -222,7 +146,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
       progressCount: currentParticipant.stroopProgressCount || 0,
       color: '#EF4444',
       bg: '#FDF0EE',
-      locked: !areRooms3And4Unlocked && stroopStatus !== 'completed',
+      locked: false,
     },
     {
       id: 'task-switching',
@@ -232,7 +156,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
       progressCount: currentParticipant.taskSwitchingProgressCount || 0,
       color: '#2563EB',
       bg: '#EEF4FF',
-      locked: !areRooms3And4Unlocked && taskSwitchingStatus !== 'completed',
+      locked: false,
     },
   ];
 
@@ -249,14 +173,25 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
               Active Research Session
             </div>
             <h1 className="text-2xl sm:text-4xl font-extrabold text-[#11152F] font-['Plus_Jakarta_Sans',sans-serif] tracking-tight">
-              Welcome, {currentParticipant.name.split(' ')[0]}
+              {completedActivities > 0 || hasInterrupted
+                ? 'Welcome back!'
+                : `Welcome, ${currentParticipant.name.split(' ')[0]}`}
             </h1>
             <p className="text-xs sm:text-sm text-[#64748B] mt-1 font-medium">
-              Choose your cognitive challenge. Rooms 3 &amp; 4 unlock 24 hours after Room 2 is started.
+              Choose your cognitive challenge to begin or continue your session.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              onClick={() => navigate('landing')}
+              className="flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-white border border-[#E2E8F0] shadow-xs text-xs sm:text-sm font-bold text-[#11152F] hover:bg-[#F8FAFC] transition-all cursor-pointer"
+              title="Return to application homepage"
+            >
+              <Home size={15} className="text-[#6D5AE6]" />
+              <span>Back to Home</span>
+            </button>
+
             <div className="bg-white border border-[#E2E8F0] shadow-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
               <span className="text-xs font-semibold text-[#64748B]">ID:</span>
@@ -266,102 +201,6 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             </div>
           </div>
         </div>
-
-        {/* ─── 24-HOUR WAITING INTERVAL BANNER ────────────────────────── */}
-        {isRoom2Started && !areRooms3And4Unlocked && (
-          <div className="mb-6 sm:mb-8 bg-gradient-to-r from-[#EDEAF8] via-[#EEF4FF] to-[#EDEAF8] border-2 border-[#C5C1F1] rounded-2xl p-4 sm:p-6 shadow-sm animate-fade-in">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-xl bg-white text-[#6D5AE6] flex items-center justify-center flex-shrink-0 shadow-xs border border-[#C5C1F1]">
-                  <Clock size={22} />
-                </div>
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#6D5AE6] font-['Plus_Jakarta_Sans',sans-serif]">
-                      Study Protocol 24-Hour Interval Active
-                    </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] flex items-center gap-1 font-['Plus_Jakarta_Sans',sans-serif]">
-                      <Lock size={10} /> Rooms 3 &amp; 4 Locked
-                    </span>
-                  </div>
-                  <h2 className="text-base sm:text-lg font-bold text-[#11152F] mt-1 font-['Plus_Jakarta_Sans',sans-serif]">
-                    Unlocks in <span className="font-['JetBrains_Mono',monospace] text-[#6D5AE6]">{formatRemainingDetailed(remainingSeconds)}</span>
-                  </h2>
-                  <p className="text-xs sm:text-sm text-[#64748B] dark:text-[#94A3B8] mt-1 max-w-2xl leading-relaxed">
-                    Under our research design, Room 3 (Stroop) and Room 4 (Task Switching) unlock exactly 24 hours after you start Room 2. An on-screen notification will appear right here when your next levels are unlocked. You may safely exit and resume anytime using your Name and Email.
-                  </p>
-                </div>
-              </div>
-              {unlockStatus?.unlockAt && (
-                <div className="bg-white dark:bg-[#162036] px-4 py-2.5 rounded-xl border border-[#C5C1F1] dark:border-[#2A374F] text-left sm:text-right flex-shrink-0 shadow-xs">
-                  <div className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
-                    Target Unlock Time
-                  </div>
-                  <div className="text-xs sm:text-sm font-bold text-[#11152F] dark:text-white font-['JetBrains_Mono',monospace] mt-0.5">
-                    {new Date(unlockStatus.unlockAt).toLocaleString(undefined, {
-                      month: 'short',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* ─── ROOMS 3 & 4 UNLOCKED NOTIFICATION BANNER ────────────────── */}
-        {isRoom2Started && areRooms3And4Unlocked && (
-          <div className="mb-6 sm:mb-8 bg-gradient-to-r from-[#D1EDE5] via-[#E4F5F2] to-[#D1EDE5] dark:from-[#064E3B]/40 dark:via-[#065F46]/30 dark:to-[#064E3B]/40 border-2 border-[#10B981] dark:border-[#059669] rounded-2xl p-4 sm:p-6 shadow-sm animate-pop-in">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex items-start gap-3.5">
-                <div className="w-11 h-11 rounded-2xl bg-[#10B981] text-white flex items-center justify-center flex-shrink-0 shadow-md">
-                  <Sparkles size={22} />
-                </div>
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#059669] dark:text-[#34D399] font-['Plus_Jakarta_Sans',sans-serif]">
-                      Study Protocol Update
-                    </span>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#10B981]/20 text-[#065F46] dark:text-[#6EE7B7] border border-[#10B981]/40 flex items-center gap-1 font-['Plus_Jakarta_Sans',sans-serif]">
-                      <Unlock size={10} /> Rooms 3 &amp; 4 Unlocked!
-                    </span>
-                  </div>
-                  <h2 className="text-base sm:text-xl font-bold text-[#11152F] dark:text-white mt-1 font-['Plus_Jakarta_Sans',sans-serif]">
-                    🎉 Room 3 &amp; Room 4 are now officially unlocked and ready to solve!
-                  </h2>
-                  <p className="text-xs sm:text-sm text-[#475569] dark:text-[#94A3B8] mt-1 max-w-2xl leading-relaxed">
-                    The 24-hour interval has elapsed. You can now proceed with <strong>Room 03 (Stroop Attention Task)</strong> and <strong>Room 04 (Task Switching Flexibility)</strong> below.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ─── RETURNING PARTICIPANT RECOGNITION BANNER ───────────────── */}
-        {(completedActivities > 0 || hasInterrupted) && (
-          <div className="mb-6 p-4 rounded-2xl bg-[#EDEAF8]/70 border border-[#C5C1F1]/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fade-in">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-[#6D5AE6] text-white flex items-center justify-center font-bold text-xs flex-shrink-0 shadow-sm">
-                <Sparkles size={18} />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-[#11152F] font-['Plus_Jakarta_Sans',sans-serif]">
-                  Returning Participant Session Restored
-                </div>
-                <div className="text-[11px] text-[#64748B] mt-0.5">
-                  Welcome back! Your previous progress has been safely loaded. You can launch your unfinished challenges below.
-                </div>
-              </div>
-            </div>
-            <div className="text-[11px] font-bold text-[#6D5AE6] bg-white px-3 py-1.5 rounded-lg border border-[#C5C1F1] self-start sm:self-auto flex items-center gap-1.5 font-['JetBrains_Mono',monospace]">
-              <span>ID:</span>
-              <span>{currentParticipant.id}</span>
-            </div>
-          </div>
-        )}
 
         {/* ─── COGNITIVE CHALLENGE PROGRESS TRACKER ────────────────────── */}
         <div className="bg-white rounded-2xl border border-[#E2E8F0] p-4 sm:p-7 shadow-xs mb-6 sm:mb-10">
@@ -388,7 +227,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
               </div>
             </div>
 
-            <div className="text-xs text-[#94A3B8] font-medium hidden md:block">
+            <div className="text-xs text-[#64748B] font-medium">
               Tasks can be completed in any order
             </div>
           </div>
@@ -701,15 +540,13 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             className={`rounded-3xl border overflow-hidden transition-all duration-300 flex flex-col sm:flex-row group ${
               stroopStatus === 'completed'
                 ? 'border-[#D1EDE5] bg-white shadow-sm'
-                : !areRooms3And4Unlocked
-                ? 'border-[#FECACA] bg-white opacity-95'
                 : stroopStatus === 'in_progress'
                 ? 'border-[#FDE68A] bg-white hover:border-[#D97706] hover:shadow-xl hover:-translate-y-1'
                 : 'border-[#E2E8F0] bg-white hover:border-[#EF4444] hover:shadow-xl hover:-translate-y-1'
             }`}
           >
             {/* Left Visual Panel */}
-            <div className={`sm:w-[42%] ${!areRooms3And4Unlocked ? 'bg-[#FDF2F2]' : 'bg-[#FDF0EE]'} p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden`}>
+            <div className="sm:w-[42%] bg-[#FDF0EE] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
               <div className="w-full flex items-center justify-between relative z-10">
                 <span className="text-xs font-extrabold text-[#EF4444] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
                   Room 03
@@ -717,10 +554,6 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                 {stroopStatus === 'completed' ? (
                   <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#D1EDE5] text-[#0D9488] border border-[#A7F3D0] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1">
                     <Check size={11} strokeWidth={3} /> Completed
-                  </span>
-                ) : !areRooms3And4Unlocked ? (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1">
-                    <Lock size={11} strokeWidth={2.5} /> Locked
                   </span>
                 ) : stroopStatus === 'in_progress' ? (
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#D97706] border border-[#FDE68A] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1">
@@ -751,7 +584,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                   <span className="text-[11px] sm:text-xs font-bold text-[#EF4444] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                     Attention Challenge
                   </span>
-                  {stroopStatus === 'in_progress' && areRooms3And4Unlocked && (
+                  {stroopStatus === 'in_progress' && (
                     <span className="text-[11px] font-bold text-[#D97706]">
                       {currentParticipant.stroopProgressCount || 0} recorded
                     </span>
@@ -763,18 +596,6 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                 <p className="text-xs sm:text-sm text-[#64748B] font-medium leading-relaxed mb-3 sm:mb-4">
                   Selective attention & control
                 </p>
-
-                {/* Lock Status Notice */}
-                {!areRooms3And4Unlocked && stroopStatus !== 'completed' && (
-                  <div className="mb-3 p-2.5 rounded-xl bg-[#FEF2F2] border border-[#FECACA] text-[11px] sm:text-xs text-[#DC2626] flex items-center gap-2 font-medium">
-                    <Lock size={13} className="flex-shrink-0" />
-                    <span>
-                      {isRoom2Started
-                        ? `Available in ${formatRemainingDetailed(remainingSeconds)}`
-                        : 'Unlocks 24 hours after starting Room 2'}
-                    </span>
-                  </div>
-                )}
 
                 {/* Subtitle / Description */}
                 <p className="text-xs text-[#94A3B8] leading-relaxed mb-4">
@@ -804,15 +625,6 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                   >
                     <CheckCircle size={15} className="text-[#0D9488]" />
                     Challenge Completed
-                  </button>
-                ) : !areRooms3And4Unlocked ? (
-                  <button
-                    disabled
-                    className="w-full py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl font-bold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-[#F1F5F9] text-[#94A3B8] border border-[#E2E8F0] cursor-not-allowed flex items-center justify-center gap-2 shadow-none"
-                    title={isRoom2Started ? `Locked under research protocol. Available in ${formatRemainingDetailed(remainingSeconds)}.` : 'Locked. Start Room 2 first.'}
-                  >
-                    <Lock size={15} className="text-[#94A3B8]" />
-                    {isRoom2Started ? `Locked (Available in ${formatRemainingShort(remainingSeconds)})` : 'Locked (Start Room 2 First)'}
                   </button>
                 ) : stroopStatus === 'in_progress' ? (
                   <button
@@ -848,15 +660,13 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             className={`rounded-3xl border overflow-hidden transition-all duration-300 flex flex-col sm:flex-row group ${
               taskSwitchingStatus === 'completed'
                 ? 'border-[#D1EDE5] bg-white shadow-sm'
-                : !areRooms3And4Unlocked
-                ? 'border-[#FECACA] bg-white opacity-95'
                 : taskSwitchingStatus === 'in_progress'
                 ? 'border-[#FDE68A] bg-white hover:border-[#D97706] hover:shadow-xl hover:-translate-y-1'
                 : 'border-[#E2E8F0] bg-white hover:border-[#2563EB] hover:shadow-xl hover:-translate-y-1'
             }`}
           >
             {/* Left Visual Panel */}
-            <div className={`sm:w-[42%] ${!areRooms3And4Unlocked ? 'bg-[#FDF2F2]' : 'bg-[#EEF4FF]'} p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden`}>
+            <div className="sm:w-[42%] bg-[#EEF4FF] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
               <div className="w-full flex items-center justify-between relative z-10">
                 <span className="text-xs font-extrabold text-[#2563EB] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
                   Room 04
@@ -864,10 +674,6 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                 {taskSwitchingStatus === 'completed' ? (
                   <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#D1EDE5] text-[#0D9488] border border-[#A7F3D0] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1">
                     <Check size={11} strokeWidth={3} /> Completed
-                  </span>
-                ) : !areRooms3And4Unlocked ? (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1">
-                    <Lock size={11} strokeWidth={2.5} /> Locked
                   </span>
                 ) : taskSwitchingStatus === 'in_progress' ? (
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FEF3C7] text-[#D97706] border border-[#FDE68A] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1">
@@ -898,7 +704,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                   <span className="text-[11px] sm:text-xs font-bold text-[#2563EB] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                     Flexibility Challenge
                   </span>
-                  {taskSwitchingStatus === 'in_progress' && areRooms3And4Unlocked && (
+                  {taskSwitchingStatus === 'in_progress' && (
                     <span className="text-[11px] font-bold text-[#D97706]">
                       {currentParticipant.taskSwitchingProgressCount || 0} recorded
                     </span>
@@ -911,18 +717,6 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                   Cognitive flexibility
                 </p>
 
-                {/* Lock Status Notice */}
-                {!areRooms3And4Unlocked && taskSwitchingStatus !== 'completed' && (
-                  <div className="mb-3 p-2.5 rounded-xl bg-[#FEF2F2] border border-[#FECACA] text-[11px] sm:text-xs text-[#DC2626] flex items-center gap-2 font-medium">
-                    <Lock size={13} className="flex-shrink-0" />
-                    <span>
-                      {isRoom2Started
-                        ? `Available in ${formatRemainingDetailed(remainingSeconds)}`
-                        : 'Unlocks 24 hours after starting Room 2'}
-                    </span>
-                  </div>
-                )}
-
                 {/* Subtitle / Description */}
                 <p className="text-xs text-[#94A3B8] leading-relaxed mb-4">
                   Categorize letter-number stimuli while alternating between letter and number decision rules.
@@ -934,7 +728,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                 <div className="border-t border-[#F1F3F9] pt-3 sm:pt-4 mb-4 sm:mb-5 flex items-center gap-4 sm:gap-5 text-xs text-[#64748B] font-medium font-['Plus_Jakarta_Sans',sans-serif]">
                   <div className="flex items-center gap-1.5 text-[#11152F] font-bold">
                     <Repeat size={14} className="text-[#2563EB]" />
-                    <span>64 trials</span>
+                    <span>128 trials</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Clock size={14} className="text-[#2563EB]" />
@@ -951,15 +745,6 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                   >
                     <CheckCircle size={15} className="text-[#0D9488]" />
                     Challenge Completed
-                  </button>
-                ) : !areRooms3And4Unlocked ? (
-                  <button
-                    disabled
-                    className="w-full py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl font-bold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-[#F1F5F9] text-[#94A3B8] border border-[#E2E8F0] cursor-not-allowed flex items-center justify-center gap-2 shadow-none"
-                    title={isRoom2Started ? `Locked under research protocol. Available in ${formatRemainingDetailed(remainingSeconds)}.` : 'Locked. Start Room 2 first.'}
-                  >
-                    <Lock size={15} className="text-[#94A3B8]" />
-                    {isRoom2Started ? `Locked (Available in ${formatRemainingShort(remainingSeconds)})` : 'Locked (Start Room 2 First)'}
                   </button>
                 ) : taskSwitchingStatus === 'in_progress' ? (
                   <button
@@ -1079,52 +864,6 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
               >
                 Start Fresh Attempt
                 <ArrowRight size={15} />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ─── LEVEL UNLOCKED CELEBRATION ALERT MODAL ─────────────────── */}
-      {showUnlockAlertModal && isRoom2Started && areRooms3And4Unlocked && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#11152F]/60 backdrop-blur-xs animate-fade-in">
-          <div className="bg-white dark:bg-[#162036] rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border-2 border-[#10B981] dark:border-[#059669] text-center animate-scale-up relative">
-            <button
-              onClick={() => setShowUnlockAlertModal(false)}
-              className="absolute top-4 right-4 text-[#94A3B8] hover:text-[#11152F] dark:hover:text-white p-1 rounded-lg transition-colors cursor-pointer"
-              aria-label="Close alert"
-            >
-              ✕
-            </button>
-            <div className="w-16 h-16 rounded-2xl bg-[#D1EDE5] dark:bg-[#064E3B]/60 text-[#0D9488] dark:text-[#34D399] flex items-center justify-center mx-auto mb-4 border border-[#A7F3D0] dark:border-[#059669] shadow-sm">
-              <Sparkles size={32} />
-            </div>
-            <div className="text-[11px] font-extrabold text-[#0D9488] dark:text-[#34D399] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif] mb-1">
-              Study Protocol Update
-            </div>
-            <h3 className="text-xl sm:text-2xl font-extrabold text-[#11152F] dark:text-white font-['Plus_Jakarta_Sans',sans-serif] mb-2">
-              🎉 Room 3 &amp; Room 4 Unlocked!
-            </h3>
-            <p className="text-xs sm:text-sm text-[#475569] dark:text-[#94A3B8] leading-relaxed mb-6 font-medium">
-              The required interval has elapsed under our research protocol. You may now continue with <strong>Room 03 (Stroop Attention Task)</strong> and <strong>Room 04 (Task Switching Flexibility)</strong>!
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={() => {
-                  setShowUnlockAlertModal(false);
-                  navigate('stroop-room');
-                }}
-                className="flex-1 py-3 px-5 rounded-xl font-bold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-[#EF4444] hover:bg-[#DC2626] text-white shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <span>Start Room 03</span>
-                <ArrowRight size={16} />
-              </button>
-              <button
-                onClick={() => setShowUnlockAlertModal(false)}
-                className="flex-1 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] text-[#64748B] dark:text-[#94A3B8] hover:text-[#11152F] dark:hover:text-white bg-[#F1F5F9] dark:bg-[#1E293B] hover:bg-[#E2E8F0] dark:hover:bg-[#334155] transition-colors cursor-pointer"
-              >
-                View Dashboard
               </button>
             </div>
           </div>

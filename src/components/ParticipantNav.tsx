@@ -1,5 +1,5 @@
 import Logo from './Logo';
-import { X, LogOut } from 'lucide-react';
+import { X, LogOut, Home } from 'lucide-react';
 import { Page } from '../types';
 import ThemeToggle from './ThemeToggle';
 
@@ -62,6 +62,15 @@ export default function ParticipantNav({
         {/* Right side */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <ThemeToggle />
+          <button
+            onClick={() => navigate('landing')}
+            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-[#F8F8FC] hover:bg-[#EDEAF8] text-[#11152F] text-xs font-bold border border-[#E9E8F2] transition-colors cursor-pointer"
+            title="Return to application homepage"
+          >
+            <Home size={14} className="text-[#6D5AE6]" />
+            <span className="hidden xs:inline">Back to Home</span>
+            <span className="xs:hidden">Home</span>
+          </button>
           {participantId && (
             <span className="text-xs sm:text-sm font-['JetBrains_Mono',monospace] text-[#73758C] bg-[#F8F8FC] px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-[#E9E8F2] truncate max-w-[120px] sm:max-w-none">
               {participantId}
