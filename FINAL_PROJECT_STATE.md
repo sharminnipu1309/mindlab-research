@@ -84,7 +84,9 @@ Do not modify established experiment UI, stimulus generation, task scoring formu
 - **Interactive Tutorial with Visual Directional Indicators**: Visual breakdown with step-by-step presentation vs reverse recall flows and "Last In, First Out" directional rules.
 - **3 Staged Practice Trials**: 2-block, 3-block, and 4-block sequences with dedicated educational feedback and retry capability.
 - **Research Data Isolation**: Practice trials strictly excluded from research telemetry and Supabase database tables (`corsi_trials`).
-- **Prominent Pre-Experiment Warning Screen**: Added mandatory briefing card with bold rule: **"Important: You must correctly recall at least 4 blocks to proceed to the next level."**
+- **Prominent Pre-Experiment Warning Screen**: Added mandatory briefing card with bold rule: **"Important: You must correctly complete at least 4 trials to proceed to the next level."**
+- **Clean Grid During Official Trials**: Removed persistent selection markings and selection numbers (1, 2, 3) from the official experimental phase so previous picks are not visually revealed; tactile 200ms flash response preserved. Guidance numbers preserved in practice mode.
+- **Zero-Scroll Viewport Layout**: Unified Done and Clear response buttons directly underneath the 3×3 grid inside the board card, eliminating the need to scroll after picking blocks on desktop, laptop, or mobile.
 - **Refined Grid Dimensions & Typography**: Grid reduced by ~20% for superior mobile/desktop fit; sequence number text styled with bold JetBrains Mono (larger, prominent, and distinct).
 - **Deployment Status**: Production build verified and deployed live to `https://mindlab-research.vercel.app`.
 
