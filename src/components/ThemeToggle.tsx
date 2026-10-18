@@ -25,20 +25,20 @@ export default function ThemeToggle({ className = '', variant = 'nav' }: Props) 
         onClick={handleToggle}
         aria-label="Toggle dark mode"
         title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer ${
           theme === 'dark'
-            ? 'bg-[#171B3A] border-[#2D356D] text-[#A5B4FC] hover:bg-[#1E2452]'
-            : 'bg-white border-[#E2E8F0] text-[#64748B] hover:text-[#11152F] hover:bg-[#F8F9FD]'
+            ? 'bg-[#354238] border-[#445448] text-[#D7E0D8] hover:bg-[#3F4F43]'
+            : 'bg-white border-[#BAC8BD] text-[#282E28] hover:bg-[#E4EBE5]'
         } ${className}`}
       >
         {theme === 'dark' ? (
           <>
-            <Sun size={14} className="text-[#FBBF24] transition-transform duration-300 rotate-0 hover:rotate-90" />
+            <Sun size={14} className="text-[#A3B9A5] transition-transform duration-300 rotate-0 hover:rotate-90" />
             <span>Light</span>
           </>
         ) : (
           <>
-            <Moon size={14} className="text-[#6D5AE6] transition-transform duration-300 -rotate-12" />
+            <Moon size={14} className="text-[#354238] transition-transform duration-300 -rotate-12" />
             <span>Dark</span>
           </>
         )}
@@ -51,16 +51,16 @@ export default function ThemeToggle({ className = '', variant = 'nav' }: Props) 
       onClick={handleToggle}
       aria-label="Toggle dark mode"
       title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-      className={`p-2 rounded-xl transition-all duration-200 border flex items-center justify-center ${
+      className={`p-2 rounded-xl transition-all duration-200 border flex items-center justify-center cursor-pointer shadow-2xs ${
         theme === 'dark'
-          ? 'bg-[#171E42] border-[#2E3C75] text-[#FBBF24] hover:bg-[#1E2756] hover:border-[#4B5EAA]'
-          : 'bg-[#F8F8FC] border-[#E2E8F0] text-[#64748B] hover:text-[#6D5AE6] hover:bg-white hover:border-[#C5C1F1]'
+          ? 'bg-[#354238] border-[#445448] text-[#D7E0D8] hover:bg-[#3F4F43] hover:text-[#A3B9A5] hover:border-[#A3B9A5]/60'
+          : 'bg-white border-[#BAC8BD] text-[#282E28] hover:text-[#354238] hover:bg-[#E4EBE5] hover:border-[#354238]'
       } ${className}`}
     >
       {theme === 'dark' ? (
-        <Sun size={17} className="transition-transform duration-300 hover:rotate-45" />
+        <Sun size={17} className="text-[#A3B9A5] transition-transform duration-300 hover:rotate-45" />
       ) : (
-        <Moon size={17} className="transition-transform duration-300 hover:-rotate-12" />
+        <Moon size={17} className="text-[#354238] transition-transform duration-300 hover:-rotate-12" />
       )}
     </button>
   );

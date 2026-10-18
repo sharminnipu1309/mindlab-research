@@ -26,8 +26,8 @@ export function HanoiVisual({ variant = 'light', size = 'md', className = '' }: 
         className="w-full h-full"
       >
         {/* Subtle background concentric rings / grid lines */}
-        <circle cx="50" cy="50" r="46" stroke={isDark ? '#6D5AE6' : '#6D5AE6'} strokeWidth="1" opacity={isDark ? '0.2' : '0.12'} />
-        <circle cx="50" cy="50" r="32" stroke={isDark ? '#8B5CF6' : '#6D5AE6'} strokeWidth="1" strokeDasharray="3 3" opacity={isDark ? '0.3' : '0.18'} />
+        <circle cx="50" cy="50" r="46" stroke={isDark ? '#A3B9A5' : '#354238'} strokeWidth="1" opacity={isDark ? '0.25' : '0.15'} />
+        <circle cx="50" cy="50" r="32" stroke={isDark ? '#D7E0D8' : '#354238'} strokeWidth="1" strokeDasharray="3 3" opacity={isDark ? '0.3' : '0.2'} />
 
         {/* Base */}
         <rect x="18" y="74" width="64" height="5" rx="2.5" fill={isDark ? '#4B5563' : '#CBD5E1'} />

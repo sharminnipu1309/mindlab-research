@@ -77,15 +77,15 @@ export default function ResumeSessionModal({ isOpen, onClose, onResume }: Props)
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-[#0B0E23]/75 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-[#1D221E]/75 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       {/* Modal Dialog */}
-      <div className="relative bg-white dark:bg-[#131B2E] rounded-3xl p-6 sm:p-8 max-w-md w-full mx-auto shadow-2xl animate-slide-up border border-[#E9E8F2] dark:border-[#22304F] max-h-[90vh] overflow-y-auto transition-colors">
+      <div className="relative bg-white dark:bg-[#354238] rounded-3xl p-6 sm:p-8 max-w-md w-full mx-auto shadow-2xl animate-slide-up border border-[#BAC8BD] dark:border-[#445448] max-h-[90vh] overflow-y-auto transition-colors">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 text-[#9597AB] hover:text-[#252640] dark:hover:text-white p-1.5 rounded-xl hover:bg-[#F8F8FC] dark:hover:bg-[#1E293B] transition-colors"
+          className="absolute top-5 right-5 text-[#47564A] hover:text-[#282E28] dark:text-[#B6C7B8] dark:hover:text-[#D7E0D8] p-1.5 rounded-xl hover:bg-[#E4EBE5] dark:hover:bg-[#282E28] transition-colors cursor-pointer"
           aria-label="Close"
         >
           <X size={18} />
@@ -93,14 +93,14 @@ export default function ResumeSessionModal({ isOpen, onClose, onResume }: Props)
 
         {/* Modal Header */}
         <div className="flex items-center gap-3.5 mb-5">
-          <div className="w-11 h-11 bg-[#EDEAF8] dark:bg-[#6D5AE6]/20 rounded-2xl flex items-center justify-center text-[#6D5AE6] dark:text-[#A5B4FC] flex-shrink-0 shadow-xs">
+          <div className="w-11 h-11 bg-[#E4EBE5] dark:bg-[#282E28] rounded-2xl flex items-center justify-center text-[#282E28] dark:text-[#A3B9A5] flex-shrink-0 shadow-2xs">
             <RotateCcw size={20} />
           </div>
           <div>
-            <h3 className="text-lg sm:text-xl font-extrabold text-[#252640] dark:text-white font-['Plus_Jakarta_Sans',sans-serif]">
+            <h3 className="text-lg sm:text-xl font-extrabold text-[#282E28] dark:text-[#D7E0D8] font-['Plus_Jakarta_Sans',sans-serif]">
               Resume Session
             </h3>
-            <p className="text-xs text-[#73758C] dark:text-[#94A3B8] font-medium">
+            <p className="text-xs text-[#47564A] dark:text-[#B6C7B8] font-medium">
               Enter your Participant ID or Name to continue
             </p>
           </div>
@@ -108,22 +108,22 @@ export default function ResumeSessionModal({ isOpen, onClose, onResume }: Props)
 
         {/* Local Session Quick Resume Card */}
         {localSession && (
-          <div className="bg-[#F8F8FC] dark:bg-[#1A243D] border border-[#E9E8F2] dark:border-[#2A374F] rounded-2xl p-3.5 sm:p-4 mb-5 flex items-center justify-between gap-3">
+          <div className="bg-[#E4EBE5] dark:bg-[#282E28] border border-[#CAD5CC] dark:border-[#445448] rounded-2xl p-3.5 sm:p-4 mb-5 flex items-center justify-between gap-3 shadow-2xs">
             <div className="min-w-0">
-              <div className="text-[10px] font-bold text-[#6D5AE6] dark:text-[#A5B4FC] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+              <div className="text-[10px] font-bold text-[#354238] dark:text-[#A3B9A5] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                 Saved on this device
               </div>
-              <div className="text-xs sm:text-sm font-bold text-[#252640] dark:text-white truncate font-['Plus_Jakarta_Sans',sans-serif]">
+              <div className="text-xs sm:text-sm font-bold text-[#282E28] dark:text-[#D7E0D8] truncate font-['Plus_Jakarta_Sans',sans-serif]">
                 {localSession.name}
               </div>
-              <div className="text-[11px] font-mono text-[#73758C] dark:text-[#94A3B8] truncate">
+              <div className="text-[11px] font-mono text-[#47564A] dark:text-[#B6C7B8] truncate">
                 ID: {localSession.id}
               </div>
             </div>
             <button
               type="button"
               onClick={handleResumeLocal}
-              className="px-3 py-2 rounded-xl text-xs font-bold font-['Plus_Jakarta_Sans',sans-serif] bg-[#6D5AE6] text-white hover:bg-[#5B48D9] flex items-center gap-1.5 flex-shrink-0 shadow-xs transition-all cursor-pointer"
+              className="px-3 py-2 rounded-xl text-xs font-bold font-['Plus_Jakarta_Sans',sans-serif] bg-[#282E28] text-[#D7E0D8] hover:bg-[#354238] dark:bg-[#A3B9A5] dark:text-[#1D221E] dark:hover:bg-[#D7E0D8] flex items-center gap-1.5 flex-shrink-0 shadow-2xs transition-all cursor-pointer"
             >
               <span>Resume</span>
               <ArrowRight size={13} />
@@ -142,7 +142,7 @@ export default function ResumeSessionModal({ isOpen, onClose, onResume }: Props)
         {/* Resume Form: Participant ID or Full Name */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-[#252640] dark:text-[#E2E8F0] font-['Plus_Jakarta_Sans',sans-serif] mb-1.5">
+            <label className="block text-xs font-bold text-[#282E28] dark:text-[#D7E0D8] font-['Plus_Jakarta_Sans',sans-serif] mb-1.5">
               Participant ID or Full Name <span className="text-[#DC2626]">*</span>
             </label>
             <input
@@ -152,17 +152,17 @@ export default function ResumeSessionModal({ isOpen, onClose, onResume }: Props)
               placeholder="e.g. ML-1234 or your Full Name"
               required
               autoFocus
-              className="w-full px-3.5 py-2.5 rounded-xl border border-[#E9E8F2] dark:border-[#2A374F] bg-white dark:bg-[#162036] focus:border-[#6D5AE6] focus:ring-2 focus:ring-[#6D5AE6]/20 text-sm text-[#252640] dark:text-white font-medium placeholder:text-[#9597AB] dark:placeholder:text-[#64748B] transition-all font-['Plus_Jakarta_Sans',sans-serif]"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#BAC8BD] dark:border-[#445448] bg-white dark:bg-[#1D221E] focus:border-[#282E28] dark:focus:border-[#A3B9A5] focus:ring-2 focus:ring-[#354238]/20 dark:focus:ring-[#A3B9A5]/20 text-sm text-[#282E28] dark:text-[#D7E0D8] font-medium placeholder:text-[#647366] dark:placeholder:text-[#8F9E91] transition-all font-['Plus_Jakarta_Sans',sans-serif] outline-none"
             />
-            <p className="text-[11px] text-[#9597AB] dark:text-[#64748B] mt-1">
+            <p className="text-[11px] text-[#47564A] dark:text-[#B6C7B8] mt-1">
               Enter your assigned Participant ID or the name you registered with.
             </p>
           </div>
 
           {/* Privacy Note */}
-          <div className="bg-[#EDEAF8]/60 dark:bg-[#1A243D] rounded-xl p-3 border border-[#C5C1F1]/40 dark:border-[#2D3A5D] flex items-start gap-2.5">
-            <ShieldCheck size={16} className="text-[#6D5AE6] dark:text-[#A5B4FC] flex-shrink-0 mt-0.5" />
-            <p className="text-[11px] text-[#555770] dark:text-[#94A3B8] leading-relaxed">
+          <div className="bg-[#E4EBE5] dark:bg-[#282E28] rounded-xl p-3 border border-[#CAD5CC] dark:border-[#445448] flex items-start gap-2.5">
+            <ShieldCheck size={16} className="text-[#354238] dark:text-[#A3B9A5] flex-shrink-0 mt-0.5" />
+            <p className="text-[11px] text-[#47564A] dark:text-[#B6C7B8] leading-relaxed">
               Resuming safely restores your active session, completed tasks, and research progress directly from the study database.
             </p>
           </div>
@@ -171,14 +171,14 @@ export default function ResumeSessionModal({ isOpen, onClose, onResume }: Props)
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2.5 px-4 rounded-xl text-xs font-bold font-['Plus_Jakarta_Sans',sans-serif] text-[#73758C] dark:text-[#94A3B8] hover:text-[#252640] dark:hover:text-white hover:bg-[#F8F8FC] dark:hover:bg-[#1E293B] border border-[#E9E8F2] dark:border-[#2A374F] transition-all cursor-pointer"
+              className="flex-1 py-2.5 px-4 rounded-xl text-xs font-bold font-['Plus_Jakarta_Sans',sans-serif] text-[#47564A] dark:text-[#B6C7B8] hover:text-[#282E28] dark:hover:text-[#D7E0D8] hover:bg-[#E4EBE5] dark:hover:bg-[#282E28] border border-[#BAC8BD] dark:border-[#445448] transition-all cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold font-['Plus_Jakarta_Sans',sans-serif] bg-[#6D5AE6] hover:bg-[#5B48D9] text-white flex items-center justify-center gap-2 shadow-sm transition-all disabled:opacity-50 cursor-pointer"
+              className="flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold font-['Plus_Jakarta_Sans',sans-serif] bg-[#282E28] hover:bg-[#354238] text-[#D7E0D8] dark:bg-[#A3B9A5] dark:hover:bg-[#D7E0D8] dark:text-[#1D221E] flex items-center justify-center gap-2 shadow-sm transition-all disabled:opacity-50 cursor-pointer"
             >
               {loading ? (
                 <>
