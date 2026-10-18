@@ -877,8 +877,8 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                   <h3 className="text-lg sm:text-xl font-bold text-[#252640] mb-1 font-['Plus_Jakarta_Sans',sans-serif]">
                     How the 2×2 Grid Works
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#73758C] max-w-lg mx-auto">
-                    On each trial, a <strong>letter</strong> and a <strong>number</strong> appear together inside a quadrant of a 2×2 grid. The <strong>location in the grid</strong> tells you which rule to follow:
+                  <p className="text-sm sm:text-base font-semibold text-[#11152F] dark:text-white max-w-lg mx-auto">
+                    You will see a letter and a number pair (e.g., 6M) presented inside a <strong>2×2 grid</strong>. Where it appears on the grid determines which task to do:
                   </p>
                 </div>
 
@@ -943,8 +943,8 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                   <h3 className="text-lg sm:text-xl font-bold text-[#252640] mb-1 font-['Plus_Jakarta_Sans',sans-serif]">
                     Rule 1 — Letter Trials
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#73758C] max-w-lg mx-auto">
-                    When the stimulus appears in the <strong>Top-Left or Top-Right</strong>, choose your response based on the <strong>LETTER</strong>:
+                  <p className="text-xs sm:text-sm font-semibold text-[#252640] dark:text-slate-200 max-w-lg mx-auto">
+                    When the number-letter pair (6M) is in the <strong>Top-Left or Top-Right</strong>, select the <strong>LETTER</strong>:
                   </p>
                 </div>
 
@@ -1267,17 +1267,17 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             <h2 className="text-xl sm:text-2xl font-bold text-[#252640] mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
               Alternating-Runs Task Switching
             </h2>
-            <p className="text-xs sm:text-sm text-[#73758C] leading-relaxed mb-6">
-              You will see a letter and a number presented inside a <strong>2×2 grid</strong>. The <strong>location in the grid</strong> tells you which rule to follow:
+            <p className="text-sm sm:text-base font-semibold text-[#11152F] dark:text-white leading-relaxed mb-6">
+              You will see a letter and a number pair (e.g., 6M) presented inside a <strong>2×2 grid</strong>. Where it appears on the grid determines which task to do:
             </p>
 
             {/* Prominent, Larger, Bold Speed Instruction Banner */}
-            <div className="bg-[#FFFBEB] rounded-2xl border border-[#FDE68A] p-4 sm:p-5 mb-6 text-center shadow-xs">
-              <div className="flex items-center justify-center gap-2 text-sm sm:text-base font-extrabold text-[#B45309]">
+            <div className="bg-[#FFFBEB] dark:bg-amber-950/40 rounded-2xl border border-[#FDE68A] dark:border-amber-700/60 p-4 sm:p-5 mb-6 text-center shadow-xs">
+              <div className="flex items-center justify-center gap-2 text-sm sm:text-base font-extrabold text-[#B45309] dark:text-amber-200">
                 <Zap size={20} className="text-[#D97706] animate-pulse flex-shrink-0" />
                 <span>Respond as quickly and accurately as possible.</span>
               </div>
-              <p className="text-xs text-[#92400E] mt-1 font-medium">
+              <p className="text-xs text-[#92400E] dark:text-amber-300 mt-1 font-medium">
                 Use the <strong>B</strong> and <strong>N</strong> keys on your keyboard.
               </p>
             </div>
@@ -1285,38 +1285,38 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             {/* Task rules comparison cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 text-left">
               {/* Top Row — Letter Task */}
-              <div className="bg-white rounded-2xl border border-[#C5C1F1]/60 p-4 sm:p-5 shadow-xs">
+              <div className="bg-white dark:bg-[#15193B] rounded-2xl border border-[#C5C1F1]/60 dark:border-[#252E63] p-4 sm:p-5 shadow-xs">
                 <div className="flex items-center gap-2 mb-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#6567C9]" />
-                  <span className="text-xs font-extrabold text-[#6567C9] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-xs font-extrabold text-[#6567C9] dark:text-[#A5A6F6] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                     TOP ROW — LETTER TASK
                   </span>
                 </div>
-                <p className="text-xs text-[#73758C] mb-3">
-                  When the stimulus is in the <strong>Top-Left or Top-Right</strong>, respond according to the <strong>LETTER</strong>:
+                <p className="text-xs sm:text-sm font-semibold text-[#252640] dark:text-slate-200 mb-3">
+                  When the number-letter pair (6M) is in the <strong>Top-Left or Top-Right</strong>, select the <strong>LETTER</strong>:
                 </p>
                 <div className="space-y-2 text-xs font-semibold">
-                  <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-[#F8F8FC] border border-[#E9E8F2]">
-                    <span className="text-[#252640]">Vowel (A, E, I, O, U)</span>
-                    <kbd className="px-2 sm:px-2.5 py-1 bg-white border border-[#C5C1F1] rounded-lg text-xs font-mono font-bold text-[#6567C9]">B</kbd>
+                  <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-[#F8F8FC] dark:bg-[#1A2248] border border-[#E9E8F2] dark:border-[#252E63]">
+                    <span className="text-[#252640] dark:text-white">Vowel (A, E, I, O, U)</span>
+                    <kbd className="px-2 sm:px-2.5 py-1 bg-white dark:bg-[#1E2552] border border-[#C5C1F1] dark:border-[#252E63] rounded-lg text-xs font-mono font-bold text-[#6567C9]">B</kbd>
                   </div>
-                  <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-[#F8F8FC] border border-[#E9E8F2]">
-                    <span className="text-[#252640]">Consonant</span>
-                    <kbd className="px-2 sm:px-2.5 py-1 bg-white border border-[#C5C1F1] rounded-lg text-xs font-mono font-bold text-[#6567C9]">N</kbd>
+                  <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-[#F8F8FC] dark:bg-[#1A2248] border border-[#E9E8F2] dark:border-[#252E63]">
+                    <span className="text-[#252640] dark:text-white">Consonant</span>
+                    <kbd className="px-2 sm:px-2.5 py-1 bg-white dark:bg-[#1E2552] border border-[#C5C1F1] dark:border-[#252E63] rounded-lg text-xs font-mono font-bold text-[#6567C9]">N</kbd>
                   </div>
                 </div>
               </div>
 
               {/* Bottom Row — Number Task */}
-              <div className="bg-white rounded-2xl border border-[#8DC4BE]/60 p-4 sm:p-5 shadow-xs">
+              <div className="bg-white dark:bg-[#15193B] rounded-2xl border border-[#8DC4BE]/60 dark:border-[#252E63] p-4 sm:p-5 shadow-xs">
                 <div className="flex items-center gap-2 mb-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#0D9488]" />
-                  <span className="text-xs font-extrabold text-[#0D9488] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-xs font-extrabold text-[#0D9488] dark:text-teal-400 uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                     BOTTOM ROW — NUMBER TASK
                   </span>
                 </div>
-                <p className="text-xs text-[#73758C] mb-3">
-                  When the stimulus is in the <strong>Bottom-Left or Bottom-Right</strong>, respond according to the <strong>NUMBER</strong>:
+                <p className="text-xs sm:text-sm font-semibold text-[#252640] dark:text-slate-200 mb-3">
+                  When the number-letter pair (6M) is in the <strong>Bottom-Left or Bottom-Right</strong>, select the <strong>NUMBER</strong>:
                 </p>
                 <div className="space-y-2 text-xs font-semibold">
                   <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-[#F8F8FC] border border-[#8DC4BE]">

@@ -708,6 +708,9 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
           <div className="text-[11px] sm:text-xs text-[#73758C] mt-0.5">
             Move one disc at a time. Never place a larger disc on a smaller disc.
           </div>
+          <div className="text-[10px] sm:text-[11px] text-[#6567C9] font-medium mt-1 pt-1 border-t border-[#F1F3F9]">
+            The dependent measure for Tower of Hanoi was the total number of moves taken to complete the last five trials, including the wrong moves.
+          </div>
         </div>
 
         {/* GOAL STATE: Small, Compact Visual Preview (Exact miniature replica) */}

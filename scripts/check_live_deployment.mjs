@@ -55,9 +55,15 @@ async function verify() {
     { label: 'Pic 1: Contains "Solve 6 disc puzzles. Each one harder than the last."', pass: jsResp.body.includes('Solve 6 disc puzzles. Each one harder than the last.') },
     { label: 'Pic 2: Contains "Tap on the disc on Pole"', pass: jsResp.body.includes('Tap on the disc on Pole') },
     { label: 'Pic 3: Contains "Watch the squares light up on a 3×3 grid."', pass: jsResp.body.includes('Watch the squares light up on a 3×3 grid.') },
-    { label: 'Pic 5: Contains "Click the button that matches the COLOR of the displayed word."', pass: jsResp.body.includes('Click the button that matches the COLOR of the displayed word.') },
     { label: 'Stroop: Contains "Time Out! Respond Faster"', pass: jsResp.body.includes('Time Out! Respond Faster') },
     { label: 'Stroop: Contains 3 stimulus conditions explanation', pass: jsResp.body.includes('3 STIMULUS TYPES IN THIS TASK') },
+    { label: 'Image 1: Stroop contains "ignoring what the word means"', pass: jsResp.body.includes('ignoring what the word means') },
+    { label: 'Image 1: Stroop does NOT contain "ignoring what the word says"', pass: !jsResp.body.includes('ignoring what the word says') },
+    { label: 'Image 2: Task Switching contains 6M grid prompt', pass: jsResp.body.includes('You will see a letter and a number pair (e.g., 6M) presented inside') },
+    { label: 'Image 2: Task Switching contains "select the LETTER:"', pass: jsResp.body.includes('select the LETTER:') },
+    { label: 'Image 3: Modal contains "These tests need you to focus without stopping."', pass: jsResp.body.includes('These tests need you to focus without stopping.') },
+    { label: 'Image 3: Modal does NOT contain "Empirical cognitive metrics (working memory span"', pass: !jsResp.body.includes('Empirical cognitive metrics (working memory span') },
+    { label: 'Image 3: Contains Hanoi dependent measure text', pass: jsResp.body.includes('The dependent measure for Tower of Hanoi was the total number of moves taken to complete the last five trials, including the wrong moves.') },
   ];
 
   let allPass = true;

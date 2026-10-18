@@ -655,8 +655,9 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
               Stroop Task
             </h2>
             <p className="text-xs sm:text-base text-[#252640] dark:text-slate-100 font-medium leading-relaxed mb-4">
-              Click the button that matches the <strong className="text-[#E11D48] font-bold">COLOR</strong> of the displayed word.{' '}
-              <strong className="text-[#252640] dark:text-white">Ignore the word&apos;s meaning</strong>, focus only on the display color.
+              You will see a color word appear on the screen. Your task is to respond to the{' '}
+              <strong className="text-[#252640] dark:text-white">INK COLOR</strong> of the word as quickly and accurately as possible, while{' '}
+              <strong className="text-[#E11D48]">ignoring what the word means</strong>.
             </p>
 
             {/* Desktop / PC Recommendation Banner */}

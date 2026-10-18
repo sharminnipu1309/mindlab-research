@@ -32,10 +32,10 @@ assert(
   'Correct response must always match the inkColor of the item'
 );
 assert(
-  stroopCode.includes('Ignore the word'),
-  'Instructions must instruct participants to ignore the word meaning and respond to color'
+  stroopCode.includes('ignoring what the word means'),
+  'Instructions must instruct participants to ignore what the word means and respond to color'
 );
-console.log('   ✓ Correct response is strictly the printed ink color.');
+console.log('   ✓ Correct response is strictly the printed ink color (ignoring what the word means).');
 
 // 5. Verify Audio Feedback (Jingle & Buzzer)
 console.log('\n3. Verifying Audio Feedback Synthesizers...');
