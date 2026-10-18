@@ -591,7 +591,7 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
   const currentTotal = isPractice ? PRACTICE_COUNT : EXPERIMENTAL_COUNT;
 
   return (
-    <div className="min-h-screen bg-[#F8F8FC] dark:bg-[#0B0D1B] flex flex-col font-['Inter',sans-serif] transition-colors">
+    <div className="min-h-screen bg-[#EAF4F8] dark:bg-[#131F27] flex flex-col font-['Inter',sans-serif] transition-colors">
       <ParticipantNav
         navigate={navigate}
         participantId={participant?.id}
@@ -607,13 +607,13 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
       )}
 
       {/* Header strip */}
-      <div className="bg-white dark:bg-[#15193B] border-b border-[#E9E8F2] dark:border-[#252E63] px-4 sm:px-8 py-3 sm:py-4 transition-colors">
+      <div className="bg-white dark:bg-[#1A2B36] border-b border-[#C5DCE4] dark:border-[#314E62] px-4 sm:px-8 py-3 sm:py-4 transition-colors">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
           <div className="text-center sm:text-left">
-            <div className="text-[10px] font-bold text-[#E11D48] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
+            <div className="text-[10px] font-black text-[#183B4A] dark:text-[#63B8C6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
               Room 03 — Stroop Color-Word Task
             </div>
-            <div className="text-xs sm:text-sm font-bold text-[#252640] dark:text-white font-['Plus_Jakarta_Sans',sans-serif] mt-0.5">
+            <div className="text-xs sm:text-sm font-bold text-[#263B46] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif] mt-0.5">
               Selective Attention & Cognitive Inhibition
             </div>
           </div>
@@ -792,9 +792,9 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
             </div>
 
             {/* Stimulus Card */}
-            <div className="w-full h-48 sm:h-56 bg-white dark:bg-[#15193B] rounded-3xl border border-[#E9E8F2] dark:border-[#252E63] shadow-sm flex flex-col items-center justify-center relative overflow-hidden select-none px-4 transition-colors">
+            <div className="w-full h-48 sm:h-56 bg-white dark:bg-[#223847] rounded-3xl border border-[#C5DCE4] dark:border-[#314E62] shadow-sm flex flex-col items-center justify-center relative overflow-hidden select-none px-4 transition-colors">
               {trialStage === 'fixation' && (
-                <div className="text-3xl sm:text-4xl font-light text-[#9597AB] font-mono select-none animate-scale-in">
+                <div className="text-3xl sm:text-4xl font-light text-[#526E7B] dark:text-[#A2C4D6] font-mono select-none animate-scale-in">
                   +
                 </div>
               )}
@@ -808,7 +808,7 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
                     {currentTrial.word}
                   </div>
                   {/* Shrinking visual countdown timer bar */}
-                  <div className="w-44 sm:w-60 h-1.5 bg-[#E9E8F2] dark:bg-[#252E63] rounded-full overflow-hidden mt-3">
+                  <div className="w-44 sm:w-60 h-1.5 bg-[#C5DCE4] dark:bg-[#314E62] rounded-full overflow-hidden mt-3">
                     <div
                       className="h-full bg-gradient-to-r from-emerald-500 via-amber-500 to-rose-500 rounded-full"
                       style={{
@@ -842,14 +842,14 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
               )}
 
               {trialStage === 'interTrial' && (
-                <div className="w-2 h-2 rounded-full bg-[#E9E8F2] dark:bg-[#252E63]" />
+                <div className="w-2 h-2 rounded-full bg-[#C5DCE4] dark:bg-[#314E62]" />
               )}
             </div>
 
             {/* Response Options Legend (Accessible on both Desktop keyboard & Mobile tap) */}
             <div className="w-full">
-              <div className="text-center text-xs text-[#9597AB] mb-2 sm:mb-2.5 font-medium">
-                Click or press the key corresponding to the <strong className="text-[#252640] dark:text-white">INK COLOR</strong>
+              <div className="text-center text-xs sm:text-sm text-[#263B46] dark:text-[#A2C4D6] mb-3 font-semibold">
+                Click or press the key corresponding to the <strong className="text-[#183B4A] dark:text-[#F1F8FB] font-extrabold underline decoration-[#4D91AD] decoration-2 underline-offset-2">INK COLOR</strong> (ignoring what the word means)
               </div>
               <div className="grid grid-cols-4 gap-2 sm:gap-3">
                 {STROOP_COLORS.map(color => {
@@ -862,12 +862,18 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
                         handleResponse(color);
                       }}
                       disabled={trialStage !== 'stimulus'}
-                      className="flex flex-col items-center justify-center p-2 sm:p-2.5 rounded-2xl bg-white dark:bg-[#15193B] border-2 border-[#E9E8F2] dark:border-[#252E63] shadow-xs hover:border-[#C5C1F1] hover:bg-[#F8F8FC] dark:hover:bg-[#1E2552] active:scale-95 transition-all disabled:opacity-60 disabled:cursor-default"
+                      className={`flex flex-col items-center justify-center p-2.5 sm:p-3.5 rounded-2xl bg-white dark:bg-[#223847] border-2 border-[#C5DCE4] dark:border-[#314E62] shadow-xs hover:border-[#4D91AD] dark:hover:border-[#63B8C6] hover:bg-[#EAF4F8] dark:hover:bg-[#1A2B36] active:scale-95 transition-all ${
+                        trialStage === 'stimulus' ? 'cursor-pointer hover:shadow-md' : 'opacity-85 cursor-default'
+                      }`}
                     >
-                      <kbd className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-[#F8F8FC] dark:bg-[#1E2552] border border-[#E9E8F2] dark:border-[#252E63] rounded text-xs font-bold font-['JetBrains_Mono',monospace] text-[#252640] dark:text-white mb-0.5 sm:mb-1">
+                      <kbd className="px-2.5 py-1 bg-[#EAF4F8] dark:bg-[#1A2B36] border border-[#B8D7E3] dark:border-[#314E62] rounded-lg text-xs sm:text-sm font-black font-['JetBrains_Mono',monospace] text-[#183B4A] dark:text-[#F1F8FB] mb-1.5 shadow-2xs">
                         {meta.key}
                       </kbd>
-                      <span className="text-[11px] sm:text-xs font-semibold text-[#252640] dark:text-white font-['Plus_Jakarta_Sans',sans-serif]">
+                      <div
+                        className="w-3.5 h-3.5 rounded-full mb-1 ring-2 ring-black/10 dark:ring-white/20 shadow-xs"
+                        style={{ backgroundColor: STROOP_COLOR_HEX[color] }}
+                      />
+                      <span className="text-xs sm:text-sm font-bold text-[#183B4A] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif]">
                         {meta.label}
                       </span>
                     </button>

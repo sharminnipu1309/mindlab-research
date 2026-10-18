@@ -183,7 +183,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
                 <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#D5E8EF] border border-[#C5DCE4] dark:bg-[#192831] dark:border-[#2D4654] flex items-center justify-center p-2 mb-4 sm:mb-6 transition-colors">
                   <HanoiVisual size="md" variant="dark" />
                 </div>
-                <div className="text-[10px] font-bold text-[#4D91AD] dark:text-[#63B8C6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif] mb-1">
+                <div className="text-[10px] font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif] mb-1">
                   Room 01 · Strategy
                 </div>
                 <h3 className="text-base sm:text-lg font-bold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
@@ -205,7 +205,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
                 <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#D5E8EF] border border-[#C5DCE4] dark:bg-[#192831] dark:border-[#2D4654] flex items-center justify-center p-2 mb-4 sm:mb-6 transition-colors">
                   <CorsiVisual size="md" variant="dark" />
                 </div>
-                <div className="text-[10px] font-bold text-[#4D91AD] dark:text-[#63B8C6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif] mb-1">
+                <div className="text-[10px] font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif] mb-1">
                   Room 02 · Memory
                 </div>
                 <h3 className="text-base sm:text-lg font-bold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
@@ -227,7 +227,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
                 <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#D5E8EF] border border-[#C5DCE4] dark:bg-[#192831] dark:border-[#2D4654] flex items-center justify-center p-2 mb-4 sm:mb-6 transition-colors">
                   <StroopVisual size="md" variant="dark" />
                 </div>
-                <div className="text-[10px] font-bold text-[#4D91AD] dark:text-[#63B8C6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif] mb-1">
+                <div className="text-[10px] font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif] mb-1">
                   Room 03 · Attention
                 </div>
                 <h3 className="text-base sm:text-lg font-bold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
@@ -249,7 +249,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
                 <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#D5E8EF] border border-[#C5DCE4] dark:bg-[#192831] dark:border-[#2D4654] flex items-center justify-center p-1.5 mb-4 sm:mb-6 transition-colors">
                   <TaskSwitchingVisual size="md" variant="dark" />
                 </div>
-                <div className="text-[10px] font-bold text-[#4D91AD] dark:text-[#63B8C6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif] mb-1">
+                <div className="text-[10px] font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif] mb-1">
                   Room 04 · Flexibility
                 </div>
                 <h3 className="text-base sm:text-lg font-bold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">

@@ -380,13 +380,13 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             }`}
           >
             {/* Left Visual Panel */}
-            <div className="sm:w-[40%] bg-[#D5E8EF] dark:bg-[#192831] border-b sm:border-b-0 sm:border-r border-[#C5DCE4]/60 dark:border-[#2D4654] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
+            <div className="sm:w-[40%] bg-[#D5E8EF] dark:bg-[#1A2B36] border-b sm:border-b-0 sm:border-r border-[#C5DCE4] dark:border-[#314E62] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
               <div className="w-full flex items-center justify-between relative z-10">
-                <span className="text-xs font-extrabold text-[#4D91AD] dark:text-[#63B8C6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
+                <span className="text-xs font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
                   Room 01
                 </span>
                 {hanoiStatus === 'completed' ? (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF4F8] dark:bg-[#203541] text-[#2B7F8C] dark:text-[#63B8C6] border border-[#63B8C6]/50 dark:border-[#2D4654] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF4F8] dark:bg-[#223847] text-[#183B4A] dark:text-[#63B8C6] border border-[#63B8C6]/50 dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1 shadow-2xs">
                     <Check size={11} strokeWidth={3} /> Completed
                   </span>
                 ) : hanoiStatus === 'in_progress' ? (
@@ -394,28 +394,28 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                     <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] dark:bg-[#FDE68A] animate-pulse" /> In Progress
                   </span>
                 ) : (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white/90 dark:bg-[#203541] text-[#526E7B] dark:text-[#9BB5C4] border border-[#C5DCE4] dark:border-[#2D4654] font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#1A2B36] text-[#183B4A] dark:text-[#F1F8FB] border border-[#A7CBD9] dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
                     Not Started
                   </span>
                 )}
               </div>
 
               {/* Elevated Circular Badge with Miniature Visual */}
-              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#203541] shadow-sm border border-[#C5DCE4]/70 dark:border-[#2D4654] flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
+              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#223847] shadow-sm border border-[#A7CBD9] dark:border-[#314E62] flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
                 <HanoiVisual size="md" variant="card" />
               </div>
 
               {/* Bottom Pill Badge */}
-              <div className="relative z-10 px-3 py-1 rounded-full bg-white/95 dark:bg-[#203541]/95 border border-[#C5DCE4]/70 dark:border-[#2D4654] text-[#263B46] dark:text-[#EAF4F8] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-xs">
+              <div className="relative z-10 px-3 py-1 rounded-full bg-white dark:bg-[#1A2B36] border border-[#A7CBD9] dark:border-[#314E62] text-[#183B4A] dark:text-[#F1F8FB] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
                 Strategy Challenge
               </div>
             </div>
 
             {/* Right Details Panel */}
-            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-[#203541]">
+            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-[#223847]">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] sm:text-xs font-bold text-[#4D91AD] dark:text-[#63B8C6] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-[11px] sm:text-xs font-extrabold text-[#245D72] dark:text-[#63B8C6] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                     Strategy Challenge
                   </span>
                   {hanoiStatus === 'in_progress' && (
@@ -424,15 +424,15 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                     </span>
                   )}
                 </div>
-                <h3 className="text-xl sm:text-2xl font-extrabold text-[#263B46] dark:text-[#EAF4F8] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-extrabold text-[#263B46] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
                   Tower of Hanoi
                 </h3>
-                <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#9BB5C4] font-semibold leading-relaxed mb-2.5">
+                <p className="text-xs sm:text-sm text-[#385563] dark:text-[#A2C4D6] font-semibold leading-relaxed mb-2.5">
                   Planning & problem-solving
                 </p>
 
                 {/* Subtitle / Description */}
-                <p className="text-xs text-[#526E7B] dark:text-[#9BB5C4] leading-relaxed mb-4">
+                <p className="text-xs text-[#526E7B] dark:text-[#A2C4D6] leading-relaxed mb-4">
                   Solve 6 disc puzzles. Each one harder than the last. Rules need to be followed exactly.
                 </p>
               </div>
@@ -524,13 +524,13 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             }`}
           >
             {/* Left Visual Panel */}
-            <div className="sm:w-[40%] bg-[#D5E8EF] dark:bg-[#192831] border-b sm:border-b-0 sm:border-r border-[#C5DCE4]/60 dark:border-[#2D4654] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
+            <div className="sm:w-[40%] bg-[#D5E8EF] dark:bg-[#1A2B36] border-b sm:border-b-0 sm:border-r border-[#C5DCE4] dark:border-[#314E62] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
               <div className="w-full flex items-center justify-between relative z-10">
-                <span className="text-xs font-extrabold text-[#4D91AD] dark:text-[#63B8C6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
+                <span className="text-xs font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
                   Room 02
                 </span>
                 {corsiStatus === 'completed' ? (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF4F8] dark:bg-[#203541] text-[#2B7F8C] dark:text-[#63B8C6] border border-[#63B8C6]/50 dark:border-[#2D4654] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF4F8] dark:bg-[#223847] text-[#183B4A] dark:text-[#63B8C6] border border-[#63B8C6]/50 dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1 shadow-2xs">
                     <Check size={11} strokeWidth={3} /> Completed
                   </span>
                 ) : corsiStatus === 'in_progress' ? (
@@ -538,28 +538,28 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                     <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] dark:bg-[#FDE68A] animate-pulse" /> In Progress
                   </span>
                 ) : (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white/90 dark:bg-[#203541] text-[#526E7B] dark:text-[#9BB5C4] border border-[#C5DCE4] dark:border-[#2D4654] font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#1A2B36] text-[#183B4A] dark:text-[#F1F8FB] border border-[#A7CBD9] dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
                     Not Started
                   </span>
                 )}
               </div>
 
               {/* Elevated Circular Badge with Miniature Visual */}
-              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#203541] shadow-sm border border-[#C5DCE4]/70 dark:border-[#2D4654] flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
+              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#223847] shadow-sm border border-[#A7CBD9] dark:border-[#314E62] flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
                 <CorsiVisual size="md" variant="card" />
               </div>
 
               {/* Bottom Pill Badge */}
-              <div className="relative z-10 px-3 py-1 rounded-full bg-white/95 dark:bg-[#203541]/95 border border-[#C5DCE4]/70 dark:border-[#2D4654] text-[#263B46] dark:text-[#EAF4F8] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-xs">
+              <div className="relative z-10 px-3 py-1 rounded-full bg-white dark:bg-[#1A2B36] border border-[#A7CBD9] dark:border-[#314E62] text-[#183B4A] dark:text-[#F1F8FB] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
                 Memory Challenge
               </div>
             </div>
 
             {/* Right Details Panel */}
-            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-[#203541]">
+            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-[#223847]">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] sm:text-xs font-bold text-[#4D91AD] dark:text-[#63B8C6] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-[11px] sm:text-xs font-extrabold text-[#245D72] dark:text-[#63B8C6] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                     Memory Challenge
                   </span>
                   {corsiStatus === 'in_progress' && (
@@ -568,15 +568,15 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                     </span>
                   )}
                 </div>
-                <h3 className="text-xl sm:text-2xl font-extrabold text-[#263B46] dark:text-[#EAF4F8] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-extrabold text-[#263B46] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
                   Backward Corsi Block
                 </h3>
-                <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#9BB5C4] font-semibold leading-relaxed mb-2.5">
+                <p className="text-xs sm:text-sm text-[#385563] dark:text-[#A2C4D6] font-semibold leading-relaxed mb-2.5">
                   Spatial working memory
                 </p>
 
                 {/* Subtitle / Description */}
-                <p className="text-xs text-[#526E7B] dark:text-[#9BB5C4] leading-relaxed mb-4">
+                <p className="text-xs text-[#526E7B] dark:text-[#A2C4D6] leading-relaxed mb-4">
                   Watch the squares light up on a 3×3 grid. Then tap them back in the opposite order.
                 </p>
               </div>
@@ -668,13 +668,13 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             }`}
           >
             {/* Left Visual Panel */}
-            <div className="sm:w-[40%] bg-[#D5E8EF] dark:bg-[#192831] border-b sm:border-b-0 sm:border-r border-[#C5DCE4]/60 dark:border-[#2D4654] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
+            <div className="sm:w-[40%] bg-[#D5E8EF] dark:bg-[#1A2B36] border-b sm:border-b-0 sm:border-r border-[#C5DCE4] dark:border-[#314E62] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
               <div className="w-full flex items-center justify-between relative z-10">
-                <span className="text-xs font-extrabold text-[#4D91AD] dark:text-[#63B8C6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
+                <span className="text-xs font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
                   Room 03
                 </span>
                 {stroopStatus === 'completed' ? (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF4F8] dark:bg-[#203541] text-[#2B7F8C] dark:text-[#63B8C6] border border-[#63B8C6]/50 dark:border-[#2D4654] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF4F8] dark:bg-[#223847] text-[#183B4A] dark:text-[#63B8C6] border border-[#63B8C6]/50 dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1 shadow-2xs">
                     <Check size={11} strokeWidth={3} /> Completed
                   </span>
                 ) : stroopStatus === 'in_progress' ? (
@@ -682,28 +682,28 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                     <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] dark:bg-[#FDE68A] animate-pulse" /> In Progress
                   </span>
                 ) : (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white/90 dark:bg-[#203541] text-[#526E7B] dark:text-[#9BB5C4] border border-[#C5DCE4] dark:border-[#2D4654] font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#1A2B36] text-[#183B4A] dark:text-[#F1F8FB] border border-[#A7CBD9] dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
                     Not Started
                   </span>
                 )}
               </div>
 
               {/* Elevated Circular Badge with Miniature Visual */}
-              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#203541] shadow-sm border border-[#C5DCE4]/70 dark:border-[#2D4654] flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
+              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#223847] shadow-sm border border-[#A7CBD9] dark:border-[#314E62] flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
                 <StroopVisual size="md" variant="card" />
               </div>
 
               {/* Bottom Pill Badge */}
-              <div className="relative z-10 px-3 py-1 rounded-full bg-white/95 dark:bg-[#203541]/95 border border-[#C5DCE4]/70 dark:border-[#2D4654] text-[#263B46] dark:text-[#EAF4F8] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-xs">
+              <div className="relative z-10 px-3 py-1 rounded-full bg-white dark:bg-[#1A2B36] border border-[#A7CBD9] dark:border-[#314E62] text-[#183B4A] dark:text-[#F1F8FB] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
                 Attention Challenge
               </div>
             </div>
 
             {/* Right Details Panel */}
-            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-[#203541]">
+            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-[#223847]">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] sm:text-xs font-bold text-[#4D91AD] dark:text-[#63B8C6] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-[11px] sm:text-xs font-extrabold text-[#245D72] dark:text-[#63B8C6] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                     Attention Challenge
                   </span>
                   {stroopStatus === 'in_progress' && (
@@ -712,15 +712,15 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                     </span>
                   )}
                 </div>
-                <h3 className="text-xl sm:text-2xl font-extrabold text-[#263B46] dark:text-[#EAF4F8] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-extrabold text-[#263B46] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
                   Stroop Task
                 </h3>
-                <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#9BB5C4] font-semibold leading-relaxed mb-2.5">
+                <p className="text-xs sm:text-sm text-[#385563] dark:text-[#A2C4D6] font-semibold leading-relaxed mb-2.5">
                   Selective attention & control
                 </p>
 
                 {/* Subtitle / Description */}
-                <p className="text-xs text-[#526E7B] dark:text-[#9BB5C4] leading-relaxed mb-4">
+                <p className="text-xs text-[#526E7B] dark:text-[#A2C4D6] leading-relaxed mb-4">
                   Click the button that matches the COLOR of the displayed word. Ignore the word's meaning, focus only on the display color.
                 </p>
               </div>
@@ -812,13 +812,13 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             }`}
           >
             {/* Left Visual Panel */}
-            <div className="sm:w-[40%] bg-[#D5E8EF] dark:bg-[#192831] border-b sm:border-b-0 sm:border-r border-[#C5DCE4]/60 dark:border-[#2D4654] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
+            <div className="sm:w-[40%] bg-[#D5E8EF] dark:bg-[#1A2B36] border-b sm:border-b-0 sm:border-r border-[#C5DCE4] dark:border-[#314E62] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
               <div className="w-full flex items-center justify-between relative z-10">
-                <span className="text-xs font-extrabold text-[#4D91AD] dark:text-[#63B8C6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
+                <span className="text-xs font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
                   Room 04
                 </span>
                 {taskSwitchingStatus === 'completed' ? (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF4F8] dark:bg-[#203541] text-[#2B7F8C] dark:text-[#63B8C6] border border-[#63B8C6]/50 dark:border-[#2D4654] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF4F8] dark:bg-[#223847] text-[#183B4A] dark:text-[#63B8C6] border border-[#63B8C6]/50 dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1 shadow-2xs">
                     <Check size={11} strokeWidth={3} /> Completed
                   </span>
                 ) : taskSwitchingStatus === 'in_progress' ? (
@@ -826,28 +826,28 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                     <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] dark:bg-[#FDE68A] animate-pulse" /> In Progress
                   </span>
                 ) : (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white/90 dark:bg-[#203541] text-[#526E7B] dark:text-[#9BB5C4] border border-[#C5DCE4] dark:border-[#2D4654] font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#1A2B36] text-[#183B4A] dark:text-[#F1F8FB] border border-[#A7CBD9] dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
                     Not Started
                   </span>
                 )}
               </div>
 
               {/* Elevated Circular Badge with Miniature Visual */}
-              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#203541] shadow-sm border border-[#C5DCE4]/70 dark:border-[#2D4654] flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
+              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#223847] shadow-sm border border-[#A7CBD9] dark:border-[#314E62] flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
                 <TaskSwitchingVisual size="md" variant="card" />
               </div>
 
               {/* Bottom Pill Badge */}
-              <div className="relative z-10 px-3 py-1 rounded-full bg-white/95 dark:bg-[#203541]/95 border border-[#C5DCE4]/70 dark:border-[#2D4654] text-[#263B46] dark:text-[#EAF4F8] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-xs">
+              <div className="relative z-10 px-3 py-1 rounded-full bg-white dark:bg-[#1A2B36] border border-[#A7CBD9] dark:border-[#314E62] text-[#183B4A] dark:text-[#F1F8FB] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
                 Flexibility Challenge
               </div>
             </div>
 
             {/* Right Details Panel */}
-            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-[#203541]">
+            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-[#223847]">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] sm:text-xs font-bold text-[#4D91AD] dark:text-[#63B8C6] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-[11px] sm:text-xs font-extrabold text-[#245D72] dark:text-[#63B8C6] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                     Flexibility Challenge
                   </span>
                   {taskSwitchingStatus === 'in_progress' && (
@@ -856,15 +856,15 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                     </span>
                   )}
                 </div>
-                <h3 className="text-xl sm:text-2xl font-extrabold text-[#263B46] dark:text-[#EAF4F8] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-extrabold text-[#263B46] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
                   Task Switching
                 </h3>
-                <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#9BB5C4] font-semibold leading-relaxed mb-2.5">
+                <p className="text-xs sm:text-sm text-[#385563] dark:text-[#A2C4D6] font-semibold leading-relaxed mb-2.5">
                   Cognitive flexibility
                 </p>
 
                 {/* Subtitle / Description */}
-                <p className="text-xs text-[#526E7B] dark:text-[#9BB5C4] leading-relaxed mb-4">
+                <p className="text-xs text-[#526E7B] dark:text-[#A2C4D6] leading-relaxed mb-4">
                   Categorize letter-number stimuli while alternating between letter and number decision rules.
                 </p>
               </div>
