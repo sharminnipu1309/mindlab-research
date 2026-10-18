@@ -18,6 +18,7 @@ async function verify() {
   console.log('Live page HTTP status:', page.status);
 
   const jsMatches = page.body.match(/\/assets\/index-[a-zA-Z0-9_\-]+\.js/g);
+  const cssMatches = page.body.match(/\/assets\/index-[a-zA-Z0-9_\-]+\.css/g);
   if (!jsMatches || jsMatches.length === 0) {
     console.error('Could not find main JS bundle in live HTML.');
     return false;
@@ -28,8 +29,22 @@ async function verify() {
   const jsResp = await fetchUrl(jsUrl);
   console.log('Live JS bundle status:', jsResp.status, 'size:', jsResp.body.length);
 
+  let cssBody = '';
+  if (cssMatches && cssMatches.length > 0) {
+    const cssUrl = 'https://mindlab-research.vercel.app' + cssMatches[0];
+    console.log('Fetching live CSS bundle:', cssUrl);
+    const cssResp = await fetchUrl(cssUrl);
+    console.log('Live CSS bundle status:', cssResp.status, 'size:', cssResp.body.length);
+    cssBody = cssResp.body;
+  }
+
   // Check for newly added strings and removed old strings
   const checks = [
+    { label: 'Theme CSS contains Dark forest charcoal (#282E28)', pass: cssBody.includes('#282E28') || jsResp.body.includes('#282E28') },
+    { label: 'Theme CSS contains Soft sage white (#D7E0D8)', pass: cssBody.includes('#D7E0D8') || jsResp.body.includes('#D7E0D8') },
+    { label: 'Theme CSS contains Deep background (#1D221E)', pass: cssBody.includes('#1D221E') || jsResp.body.includes('#1D221E') },
+    { label: 'Theme CSS contains Deep sage surface (#354238)', pass: cssBody.includes('#354238') || jsResp.body.includes('#354238') },
+    { label: 'Theme CSS contains Soft sage accent (#A3B9A5)', pass: cssBody.includes('#A3B9A5') || jsResp.body.includes('#A3B9A5') },
     { label: 'Contains "Back to Home"', pass: jsResp.body.includes('Back to Home') },
     { label: 'Contains "Tasks can be completed in any order"', pass: jsResp.body.includes('Tasks can be completed in any order') },
     { label: 'Contains new Hero description: "Try four brain games that show how well you plan, remember, pay attention, and switch between ideas."', pass: jsResp.body.includes('Try four brain games that show how well you plan, remember, pay attention, and switch between ideas.') },
