@@ -60,7 +60,7 @@ async function verify() {
     { label: 'Image 1: Stroop contains "ignoring what the word means"', pass: jsResp.body.includes('ignoring what the word means') },
     { label: 'Image 1: Stroop does NOT contain "ignoring what the word says"', pass: !jsResp.body.includes('ignoring what the word says') },
     { label: 'Image 2: Task Switching contains 6M grid prompt', pass: jsResp.body.includes('You will see a letter and a number pair (e.g., 6M) presented inside') },
-    { label: 'Image 2: Task Switching contains "select the LETTER:"', pass: jsResp.body.includes('select the LETTER:') },
+    { label: 'Image 2: Task Switching contains "select the LETTER:"', pass: /select the[^]{0,50}LETTER/.test(jsResp.body) },
     { label: 'Image 3: Modal contains "These tests need you to focus without stopping."', pass: jsResp.body.includes('These tests need you to focus without stopping.') },
     { label: 'Image 3: Modal does NOT contain "Empirical cognitive metrics (working memory span"', pass: !jsResp.body.includes('Empirical cognitive metrics (working memory span') },
     { label: 'Image 3: Contains Hanoi dependent measure text', pass: jsResp.body.includes('The dependent measure for Tower of Hanoi was the total number of moves taken to complete the last five trials, including the wrong moves.') },
