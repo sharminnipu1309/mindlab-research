@@ -70,7 +70,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <ThemeToggle />
             <button
-              onClick={() => navigate('research-info')}
+              onClick={() => navigate('consent')}
               className="px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-[#6D5AE6] hover:bg-[#5B48D9] text-white flex items-center gap-1.5 sm:gap-2 shadow-[0_0_20px_rgba(109,90,230,0.45)] hover:shadow-[0_0_28px_rgba(109,90,230,0.65)] transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               <span>Begin session</span>
@@ -112,7 +112,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-8 sm:mb-10">
               <button
-                onClick={() => navigate('research-info')}
+                onClick={() => navigate('consent')}
                 className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-bold text-sm sm:text-base font-['Plus_Jakarta_Sans',sans-serif] bg-[#6D5AE6] hover:bg-[#5B48D9] text-white flex items-center justify-center gap-2.5 shadow-[0_0_30px_rgba(109,90,230,0.5)] hover:shadow-[0_0_40px_rgba(109,90,230,0.7)] transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 Begin your session
@@ -154,7 +154,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
 
           {/* Right Hero Column: Cognitive Network Visualization */}
           <div className="lg:col-span-6 flex justify-center animate-fade-in w-full overflow-hidden">
-            <CognitiveNetworkHero onSelectTask={() => navigate('research-info')} />
+            <CognitiveNetworkHero onSelectTask={() => navigate('consent')} />
           </div>
         </div>
       </section>
@@ -189,12 +189,9 @@ export default function LandingPage({ navigate, onResume }: Props) {
                 <h3 className="text-base sm:text-lg font-bold text-white mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
                   Tower of Hanoi
                 </h3>
-                <div className="text-xs font-semibold text-[#A5B4FC] mb-2.5 sm:mb-3">
+                <div className="text-xs font-semibold text-[#A5B4FC] mb-4 sm:mb-6">
                   Planning & Problem-Solving
                 </div>
-                <p className="text-xs text-[#94A3B8] leading-relaxed mb-4 sm:mb-6">
-                  Solve multi-step disc manipulation puzzles under strict constraint rules to evaluate lookahead planning and recursive problem solving.
-                </p>
               </div>
               <div className="pt-3 sm:pt-4 border-t border-[#232B5C] flex items-center justify-between text-xs text-[#818CF8] font-['Plus_Jakarta_Sans',sans-serif] font-semibold">
                 <span>6 puzzles</span>
@@ -214,12 +211,9 @@ export default function LandingPage({ navigate, onResume }: Props) {
                 <h3 className="text-base sm:text-lg font-bold text-white mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
                   Backward Corsi Block
                 </h3>
-                <div className="text-xs font-semibold text-[#5EEAD4] mb-2.5 sm:mb-3">
+                <div className="text-xs font-semibold text-[#5EEAD4] mb-4 sm:mb-6">
                   Spatial Working Memory
                 </div>
-                <p className="text-xs text-[#94A3B8] leading-relaxed mb-4 sm:mb-6">
-                  Observe sequences of illuminated blocks across a 3×3 spatial grid and mentally reproduce the exact reverse sequence.
-                </p>
               </div>
               <div className="pt-3 sm:pt-4 border-t border-[#232B5C] flex items-center justify-between text-xs text-[#2DD4BF] font-['Plus_Jakarta_Sans',sans-serif] font-semibold">
                 <span>8 levels</span>
@@ -239,12 +233,9 @@ export default function LandingPage({ navigate, onResume }: Props) {
                 <h3 className="text-base sm:text-lg font-bold text-white mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
                   Stroop Task
                 </h3>
-                <div className="text-xs font-semibold text-[#FCA5A5] mb-2.5 sm:mb-3">
+                <div className="text-xs font-semibold text-[#FCA5A5] mb-4 sm:mb-6">
                   Selective Attention & Control
                 </div>
-                <p className="text-xs text-[#94A3B8] leading-relaxed mb-4 sm:mb-6">
-                  Identify the ink color of color words while suppressing the automatic interference of reading the printed semantic word.
-                </p>
               </div>
               <div className="pt-3 sm:pt-4 border-t border-[#232B5C] flex items-center justify-between text-xs text-[#F87171] font-['Plus_Jakarta_Sans',sans-serif] font-semibold">
                 <span>128 trials</span>
@@ -264,12 +255,9 @@ export default function LandingPage({ navigate, onResume }: Props) {
                 <h3 className="text-base sm:text-lg font-bold text-white mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
                   Task Switching
                 </h3>
-                <div className="text-xs font-semibold text-[#93C5FD] mb-2.5 sm:mb-3">
+                <div className="text-xs font-semibold text-[#93C5FD] mb-4 sm:mb-6">
                   Cognitive Flexibility
                 </div>
-                <p className="text-xs text-[#94A3B8] leading-relaxed mb-4 sm:mb-6">
-                  Classify letter-number pairs while alternating between vowel/consonant and odd/even rules to quantify mental switch costs.
-                </p>
               </div>
               <div className="pt-3 sm:pt-4 border-t border-[#232B5C] flex items-center justify-between text-xs text-[#60A5FA] font-['Plus_Jakarta_Sans',sans-serif] font-semibold">
                 <span>64 trials</span>
@@ -321,8 +309,8 @@ export default function LandingPage({ navigate, onResume }: Props) {
               },
               {
                 icon: FlaskConical,
-                title: 'High-Precision Timing',
-                desc: 'All reaction times and move timestamps use high-resolution browser performance clocks to ensure scientific data fidelity.',
+                title: 'See how your mind is working',
+                desc: 'Observe how you plan, focus, remember, and adapt in real time across four distinct brain challenges.',
                 color: '#EF4444',
               },
               {
@@ -365,7 +353,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
             The full testing session takes approximately 25 minutes. Find a comfortable, quiet environment to begin your cognitive challenges.
           </p>
           <button
-            onClick={() => navigate('research-info')}
+            onClick={() => navigate('consent')}
             className="px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl font-bold text-sm sm:text-base font-['Plus_Jakarta_Sans',sans-serif] bg-[#6D5AE6] hover:bg-[#5B48D9] text-white inline-flex items-center justify-center gap-2.5 shadow-[0_0_35px_rgba(109,90,230,0.55)] hover:shadow-[0_0_45px_rgba(109,90,230,0.75)] transition-all hover:scale-[1.03] active:scale-[0.98] w-full sm:w-auto"
           >
             Start Research Session

@@ -64,12 +64,11 @@ export default function ParticipantNav({
           <ThemeToggle />
           <button
             onClick={() => navigate('landing')}
-            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-[#F8F8FC] hover:bg-[#EDEAF8] text-[#11152F] text-xs font-bold border border-[#E9E8F2] transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-white hover:bg-[#6D5AE6] text-[#4338CA] hover:text-white text-xs sm:text-sm font-extrabold border-2 border-[#6D5AE6]/40 hover:border-[#6D5AE6] shadow-sm hover:shadow-md transition-all active:scale-95 cursor-pointer"
             title="Return to application homepage"
           >
-            <Home size={14} className="text-[#6D5AE6]" />
-            <span className="hidden xs:inline">Back to Home</span>
-            <span className="xs:hidden">Home</span>
+            <Home size={16} className="text-[#6D5AE6] group-hover:text-white shrink-0" />
+            <span className="font-bold font-['Plus_Jakarta_Sans',sans-serif]">Back to Home</span>
           </button>
           {participantId && (
             <span className="text-xs sm:text-sm font-['JetBrains_Mono',monospace] text-[#73758C] bg-[#F8F8FC] px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-[#E9E8F2] truncate max-w-[120px] sm:max-w-none">

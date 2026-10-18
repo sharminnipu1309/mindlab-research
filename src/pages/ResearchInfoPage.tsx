@@ -59,98 +59,8 @@ export default function ResearchInfoPage({ navigate }: Props) {
               </h2>
             </div>
             <p className="text-xs sm:text-sm text-[#73758C] leading-relaxed">
-              This study is part of academic research in cognitive psychology. We are investigating how individuals perform on tasks that assess planning and problem-solving, spatial working memory, selective attention and interference control, and cognitive flexibility.
+              This study is about how the brain works. It looks at how well people plan and solve problems, remember where things are, pay attention when there are distractions, and switch between different rules.
             </p>
-          </div>
-
-          {/* What you'll do */}
-          <div className="bg-white rounded-2xl border border-[#E9E8F2] p-5 sm:p-7">
-            <div className="flex items-center gap-3 mb-4 sm:mb-5">
-              <div className="w-8 h-8 bg-[#E4F2F0] rounded-lg flex items-center justify-center flex-shrink-0">
-                <FlaskConical size={16} className="text-[#69AFA8]" />
-              </div>
-              <h2 className="text-sm sm:text-base font-bold text-[#252640] font-['Plus_Jakarta_Sans',sans-serif]">
-                What you will be asked to do
-              </h2>
-            </div>
-            <div className="space-y-3 sm:space-y-4">
-              {[
-                {
-                  num: '01',
-                  title: 'Tower of Hanoi',
-                  desc: 'You will complete a series of disc-moving puzzles, working through 6 puzzles of increasing difficulty. Each puzzle involves moving discs between three rods according to specific rules.',
-                  tag: 'Planning & Problem-Solving',
-                  color: '#6567C9',
-                },
-                {
-                  num: '02',
-                  title: 'Backward Corsi Block Task',
-                  desc: 'You will watch sequences of highlighted squares and recall them in reverse order. Sequences increase in length as you progress through the task.',
-                  tag: 'Spatial Working Memory',
-                  color: '#69AFA8',
-                },
-                {
-                  num: '03',
-                  title: 'Stroop Task',
-                  desc: 'You will see color words presented in colored ink and identify the ink color as quickly and accurately as possible while ignoring the printed word meaning.',
-                  tag: 'Selective Attention & Interference Control',
-                  color: '#E11D48',
-                },
-                {
-                  num: '04',
-                  title: 'Task Switching',
-                  desc: 'You will classify stimulus pairs containing a letter and a number, switching dynamically between letter (vowel/consonant) and number (odd/even) classification rules.',
-                  tag: 'Cognitive Flexibility & Task Switching',
-                  color: '#8B5CF6',
-                },
-              ].map(({ num, title, desc, tag, color }) => (
-                <div key={num} className="flex gap-3 sm:gap-4 p-4 sm:p-5 rounded-xl bg-[#F8F8FC] border border-[#E9E8F2]">
-                  <div
-                    className="text-xs sm:text-sm font-bold font-['JetBrains_Mono',monospace] mt-0.5 flex-shrink-0"
-                    style={{ color }}
-                  >
-                    {num}
-                  </div>
-                  <div>
-                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
-                      <span className="text-xs sm:text-sm font-bold text-[#252640] font-['Plus_Jakarta_Sans',sans-serif]">{title}</span>
-                      <span
-                        className="text-[9px] sm:text-[10px] font-semibold px-2 py-0.5 rounded-full font-['Plus_Jakarta_Sans',sans-serif]"
-                        style={{ background: color + '20', color }}
-                      >
-                        {tag}
-                      </span>
-                    </div>
-                    <p className="text-xs sm:text-sm text-[#73758C] leading-relaxed">{desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Data collection */}
-          <div className="bg-white rounded-2xl border border-[#E9E8F2] p-5 sm:p-7">
-            <div className="flex items-center gap-3 mb-3 sm:mb-4">
-              <div className="w-8 h-8 bg-[#F8F8FC] rounded-lg flex items-center justify-center flex-shrink-0 border border-[#E9E8F2]">
-                <Info size={16} className="text-[#73758C]" />
-              </div>
-              <h2 className="text-sm sm:text-base font-bold text-[#252640] font-['Plus_Jakarta_Sans',sans-serif]">
-                Data collection and privacy
-              </h2>
-            </div>
-            <div className="space-y-2.5 sm:space-y-3">
-              {[
-                'Task responses and performance will be recorded (move sequences, timing, accuracy)',
-                'Basic demographic information will be collected (age, gender, ADHD diagnosis) for research purposes',
-                'You will be assigned an anonymous participant ID — your name is not linked to your task data in research outputs',
-                'Data is handled in accordance with ethical research guidelines',
-              ].map((item, i) => (
-                <div key={i} className="flex gap-2.5 sm:gap-3 items-start text-xs sm:text-sm text-[#73758C]">
-                  <CheckCircle size={15} className="text-[#4A9B7F] flex-shrink-0 mt-0.5" />
-                  <span>{item}</span>
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Voluntary participation */}
@@ -162,7 +72,7 @@ export default function ResearchInfoPage({ navigate }: Props) {
                   Voluntary participation
                 </h3>
                 <p className="text-xs sm:text-sm text-[#73758C] leading-relaxed">
-                  Participation in this study is entirely voluntary. You may choose not to participate, withdraw at any time, or skip any activity without consequence. No personal benefit or disadvantage will result from your decision to participate or not participate.
+                  Participation in this study is entirely voluntary. You may choose not to participate or withdraw at any time without consequence. No personal benefit or disadvantage will result from your decision to participate or not participate.
                 </p>
               </div>
             </div>
@@ -184,8 +94,8 @@ export default function ResearchInfoPage({ navigate }: Props) {
           <button onClick={() => navigate('landing')} className="btn-ghost justify-center text-xs sm:text-sm py-2.5">
             ← Return to home
           </button>
-          <button onClick={() => navigate('consent')} className="btn-primary px-6 sm:px-8 py-3 justify-center text-xs sm:text-sm">
-            Continue to registration
+          <button onClick={() => navigate('consent')} className="btn-primary px-6 sm:px-8 py-3 justify-center text-xs sm:text-sm font-bold shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all">
+            Let's get started
             <ArrowRight size={16} />
           </button>
         </div>

@@ -190,15 +190,6 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <button
-              onClick={() => navigate('landing')}
-              className="flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-white border border-[#E2E8F0] shadow-xs text-xs sm:text-sm font-bold text-[#11152F] hover:bg-[#F8FAFC] transition-all cursor-pointer"
-              title="Return to application homepage"
-            >
-              <Home size={15} className="text-[#6D5AE6]" />
-              <span>Back to Home</span>
-            </button>
-
             <div className="bg-white border border-[#E2E8F0] shadow-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
               <span className="text-xs font-semibold text-[#64748B]">ID:</span>

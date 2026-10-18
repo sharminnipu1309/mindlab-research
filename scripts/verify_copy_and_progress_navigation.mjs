@@ -87,5 +87,33 @@ assert(tsContent.includes('participant?.taskSwitchingProgressCount') && tsConten
 const stroopContent = fs.readFileSync('src/pages/StroopRoom.tsx', 'utf-8');
 assert(stroopContent.includes('participant?.stroopProgressCount') && stroopContent.includes("'practiceComplete'"), 'StroopRoom skips tutorial/practice and starts at practiceComplete when resuming');
 
+// 4. Check ResearchInfoPage & LandingPage updates
+console.log('\n4. Verifying ResearchInfoPage & LandingPage updates:');
+const researchInfoContent = fs.readFileSync('src/pages/ResearchInfoPage.tsx', 'utf-8');
+const expectedPurpose = 'This study is about how the brain works. It looks at how well people plan and solve problems, remember where things are, pay attention when there are distractions, and switch between different rules.';
+assert(researchInfoContent.includes(expectedPurpose), 'ResearchInfoPage contains updated purpose text');
+assert(!researchInfoContent.includes('What you will be asked to do'), 'ResearchInfoPage does NOT contain "What you will be asked to do"');
+assert(!researchInfoContent.includes('Data collection and privacy'), 'ResearchInfoPage does NOT contain "Data collection and privacy"');
+assert(!researchInfoContent.includes('or skip any activity'), 'ResearchInfoPage does NOT contain "or skip any activity"');
+assert(researchInfoContent.includes("Let's get started"), 'ResearchInfoPage CTA contains "Let\'s get started"');
+assert(!researchInfoContent.includes('Continue to registration'), 'ResearchInfoPage CTA does NOT contain "Continue to registration"');
+
+// 5. LandingPage Navigation & Task Cards
+console.log('\n5. Verifying LandingPage Navigation & Task Cards:');
+assert(landingPageContent.includes("onClick={() => navigate('consent')}"), 'LandingPage Begin session navigates directly to consent');
+assert(landingPageContent.includes("onClick={() => navigate('research-info')}"), 'LandingPage Explore research navigates to research-info');
+assert(landingPageContent.includes('See how your mind is working'), 'LandingPage has "See how your mind is working"');
+assert(!landingPageContent.includes('High-Precision Timing'), 'LandingPage does NOT contain "High-Precision Timing"');
+assert(!landingPageContent.includes('Solve multi-step disc manipulation puzzles under strict constraint rules'), 'Hanoi explanation paragraph removed from landing card');
+assert(!landingPageContent.includes('Observe sequences of illuminated blocks across a 3×3 spatial grid'), 'Corsi explanation paragraph removed from landing card');
+assert(!landingPageContent.includes('Identify the ink color of color words while suppressing the automatic interference'), 'Stroop explanation paragraph removed from landing card');
+assert(!landingPageContent.includes('Classify letter-number pairs while alternating between vowel/consonant'), 'Task switching explanation paragraph removed from landing card');
+
+// 6. Single prominent Home button
+console.log('\n6. Verifying single visible Home button:');
+const navContent = fs.readFileSync('src/components/ParticipantNav.tsx', 'utf-8');
+assert(navContent.includes('Back to Home'), 'ParticipantNav has visible "Back to Home" button');
+assert(!dashboardContent.includes('title="Return to application homepage"'), 'Duplicate Home button removed from ParticipantDashboard');
+
 console.log('\n' + (failed === 0 ? '>>> ALL VERIFICATION CHECKS PASSED SUCCESSFULLY! <<<' : `>>> FAILED ${failed} CHECKS <<<`));
 process.exit(failed === 0 ? 0 : 1);

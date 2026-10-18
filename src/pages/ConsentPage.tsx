@@ -138,8 +138,8 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
             )}
 
             <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3">
-              <button onClick={() => navigate('research-info')} className="btn-ghost justify-center text-xs sm:text-sm py-2.5">
-                ← Back
+              <button onClick={() => navigate('landing')} className="btn-ghost justify-center text-xs sm:text-sm py-2.5">
+                ← Back to home
               </button>
               <button onClick={handleContinueToForm} className="btn-primary px-6 sm:px-7 py-2.5 justify-center text-xs sm:text-sm">
                 Continue
