@@ -52,6 +52,12 @@ async function verify() {
     { label: 'Does NOT contain "Study Protocol Update"', pass: !jsResp.body.includes('Study Protocol Update') },
     { label: 'Does NOT contain "Room 03 is Currently Locked"', pass: !jsResp.body.includes('Room 03 is Currently Locked') },
     { label: 'Does NOT contain "Room 04 is Currently Locked"', pass: !jsResp.body.includes('Room 04 is Currently Locked') },
+    { label: 'Pic 1: Contains "Solve 6 disc puzzles. Each one harder than the last."', pass: jsResp.body.includes('Solve 6 disc puzzles. Each one harder than the last.') },
+    { label: 'Pic 2: Contains "Tap on the disc on Pole"', pass: jsResp.body.includes('Tap on the disc on Pole') },
+    { label: 'Pic 3: Contains "Watch the squares light up on a 3×3 grid."', pass: jsResp.body.includes('Watch the squares light up on a 3×3 grid.') },
+    { label: 'Pic 5: Contains "Click the button that matches the COLOR of the displayed word."', pass: jsResp.body.includes('Click the button that matches the COLOR of the displayed word.') },
+    { label: 'Stroop: Contains "Time Out! Respond Faster"', pass: jsResp.body.includes('Time Out! Respond Faster') },
+    { label: 'Stroop: Contains 3 stimulus conditions explanation', pass: jsResp.body.includes('3 STIMULUS TYPES IN THIS TASK') },
   ];
 
   let allPass = true;
