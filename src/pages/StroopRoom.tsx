@@ -162,8 +162,14 @@ function generateExperimentalTrials(): TrialItem[] {
 }
 
 export default function StroopRoom({ navigate, participant, sessionId, onComplete }: Props) {
-  const [phase, setPhase] = useState<Phase>('intro');
-  const [trialIndex, setTrialIndex] = useState<number>(0);
+  const isResuming = (participant?.stroopProgressCount || 0) > 0 || participant?.stroopStatus === 'in_progress';
+  const resumedTrialIndex = (() => {
+    const count = participant?.stroopProgressCount || 0;
+    return Math.min(count, EXPERIMENTAL_COUNT - 1);
+  })();
+
+  const [phase, setPhase] = useState<Phase>(() => (isResuming ? 'practiceComplete' : 'intro'));
+  const [trialIndex, setTrialIndex] = useState<number>(resumedTrialIndex);
   const [trialStage, setTrialStage] = useState<TrialStage>('fixation');
   const [showExit, setShowExit] = useState<boolean>(false);
   const sessionOptionsRef = useRef(getExperimentSessionOptions());
@@ -282,7 +288,8 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
   // Begin experimental trials
   const handleStartExperiment = () => {
     experimentalRecordsRef.current = [];
-    setTrialIndex(0);
+    const count = participant?.stroopProgressCount || 0;
+    setTrialIndex(Math.min(count, EXPERIMENTAL_COUNT - 1));
     setPhase('experiment');
     runTrialStage('fixation');
   };
@@ -644,15 +651,19 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
                   <CheckCircle size={28} className="text-[#4A9B7F] sm:w-8 sm:h-8" />
                 </div>
                 <h2 className="text-xl sm:text-2xl font-bold text-[#252640] dark:text-white mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
-                  Practice Completed
+                  {isResuming && (participant?.stroopProgressCount || 0) > 0
+                    ? 'Resume Experiment'
+                    : 'Practice Completed'}
                 </h2>
                 <p className="text-xs sm:text-sm text-[#73758C] dark:text-slate-300 mb-4">
-                  You are now ready for the official research experiment.
+                  {isResuming && (participant?.stroopProgressCount || 0) > 0
+                    ? `Continuing your test from trial ${(participant?.stroopProgressCount || 0) + 1} of ${EXPERIMENTAL_COUNT}.`
+                    : 'You are now ready for the official research experiment.'}
                 </p>
                 <div className="bg-white dark:bg-[#15193B] rounded-2xl border border-[#E9E8F2] dark:border-[#252E63] p-4 sm:p-5 mb-6 sm:mb-8 text-left text-xs sm:text-sm text-[#73758C] dark:text-slate-300 space-y-2.5">
                   <div className="flex gap-2.5 items-start">
                     <Clock size={16} className="text-[#6567C9] flex-shrink-0 mt-0.5" />
-                    <span>You will now complete <strong>80 trials</strong> (40 congruent, 40 incongruent).</span>
+                    <span>You will complete <strong>80 trials</strong> (40 congruent, 40 incongruent).</span>
                   </div>
                   <div className="flex gap-2.5 items-start">
                     <Zap size={16} className="text-[#E11D48] flex-shrink-0 mt-0.5" />
@@ -664,7 +675,9 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
                   className="btn-primary w-full justify-center py-3 sm:py-3.5 text-xs sm:text-base shadow-md font-bold"
                   style={{ background: 'linear-gradient(135deg, #E11D48, #BE123C)' }}
                 >
-                  Begin 80-Trial Experiment
+                  {isResuming && (participant?.stroopProgressCount || 0) > 0
+                    ? `Resume Experiment (Trial ${(participant?.stroopProgressCount || 0) + 1} of ${EXPERIMENTAL_COUNT})`
+                    : 'Begin 80-Trial Experiment'}
                   <ArrowRight size={18} />
                 </button>
               </div>

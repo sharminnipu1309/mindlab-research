@@ -84,5 +84,8 @@ assert(corsiContent.includes('TRIALS_PER_LEVEL'), 'CorsiRoom calculates resumed 
 const tsContent = fs.readFileSync('src/pages/TaskSwitchingRoom.tsx', 'utf-8');
 assert(tsContent.includes('participant?.taskSwitchingProgressCount') && tsContent.includes("'blockIntro'"), 'TaskSwitchingRoom restores block index and skips tutorial when resuming');
 
+const stroopContent = fs.readFileSync('src/pages/StroopRoom.tsx', 'utf-8');
+assert(stroopContent.includes('participant?.stroopProgressCount') && stroopContent.includes("'practiceComplete'"), 'StroopRoom skips tutorial/practice and starts at practiceComplete when resuming');
+
 console.log('\n' + (failed === 0 ? '>>> ALL VERIFICATION CHECKS PASSED SUCCESSFULLY! <<<' : `>>> FAILED ${failed} CHECKS <<<`));
 process.exit(failed === 0 ? 0 : 1);

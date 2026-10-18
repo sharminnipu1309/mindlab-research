@@ -325,11 +325,25 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-8 mb-8 sm:mb-10">
           {/* ─── CARD 1: ROOM 01 — TOWER OF HANOI (Strategy) ────────────── */}
           <div
+            onClick={() => {
+              if (hanoiStatus === 'in_progress') {
+                navigate('hanoi-room');
+              }
+            }}
+            onKeyDown={e => {
+              if (hanoiStatus === 'in_progress' && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+                navigate('hanoi-room');
+              }
+            }}
+            role={hanoiStatus === 'in_progress' ? 'button' : undefined}
+            tabIndex={hanoiStatus === 'in_progress' ? 0 : undefined}
+            aria-label={hanoiStatus === 'in_progress' ? 'Resume Tower of Hanoi challenge' : undefined}
             className={`rounded-3xl border overflow-hidden transition-all duration-300 flex flex-col sm:flex-row group ${
               hanoiStatus === 'completed'
                 ? 'border-[#D1EDE5] bg-white shadow-sm'
                 : hanoiStatus === 'in_progress'
-                ? 'border-[#FDE68A] bg-white hover:border-[#D97706] hover:shadow-xl hover:-translate-y-1'
+                ? 'border-[#FDE68A] bg-white hover:border-[#D97706] hover:shadow-xl hover:-translate-y-1 cursor-pointer active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#D97706]'
                 : 'border-[#E2E8F0] bg-white hover:border-[#6D5AE6] hover:shadow-xl hover:-translate-y-1'
             }`}
           >
@@ -438,11 +452,25 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
 
           {/* ─── CARD 2: ROOM 02 — BACKWARD CORSI (Memory) ──────────────── */}
           <div
+            onClick={() => {
+              if (corsiStatus === 'in_progress') {
+                navigate('corsi-room');
+              }
+            }}
+            onKeyDown={e => {
+              if (corsiStatus === 'in_progress' && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+                navigate('corsi-room');
+              }
+            }}
+            role={corsiStatus === 'in_progress' ? 'button' : undefined}
+            tabIndex={corsiStatus === 'in_progress' ? 0 : undefined}
+            aria-label={corsiStatus === 'in_progress' ? 'Resume Backward Corsi challenge' : undefined}
             className={`rounded-3xl border overflow-hidden transition-all duration-300 flex flex-col sm:flex-row group ${
               corsiStatus === 'completed'
                 ? 'border-[#D1EDE5] bg-white shadow-sm'
                 : corsiStatus === 'in_progress'
-                ? 'border-[#FDE68A] bg-white hover:border-[#D97706] hover:shadow-xl hover:-translate-y-1'
+                ? 'border-[#FDE68A] bg-white hover:border-[#D97706] hover:shadow-xl hover:-translate-y-1 cursor-pointer active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#D97706]'
                 : 'border-[#E2E8F0] bg-white hover:border-[#0D9488] hover:shadow-xl hover:-translate-y-1'
             }`}
           >
@@ -551,11 +579,25 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
 
           {/* ─── CARD 3: ROOM 03 — STROOP TASK (Attention) ──────────────── */}
           <div
+            onClick={() => {
+              if (stroopStatus === 'in_progress') {
+                navigate('stroop-room');
+              }
+            }}
+            onKeyDown={e => {
+              if (stroopStatus === 'in_progress' && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+                navigate('stroop-room');
+              }
+            }}
+            role={stroopStatus === 'in_progress' ? 'button' : undefined}
+            tabIndex={stroopStatus === 'in_progress' ? 0 : undefined}
+            aria-label={stroopStatus === 'in_progress' ? 'Resume Stroop Task challenge' : undefined}
             className={`rounded-3xl border overflow-hidden transition-all duration-300 flex flex-col sm:flex-row group ${
               stroopStatus === 'completed'
                 ? 'border-[#D1EDE5] bg-white shadow-sm'
                 : stroopStatus === 'in_progress'
-                ? 'border-[#FDE68A] bg-white hover:border-[#D97706] hover:shadow-xl hover:-translate-y-1'
+                ? 'border-[#FDE68A] bg-white hover:border-[#D97706] hover:shadow-xl hover:-translate-y-1 cursor-pointer active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#D97706]'
                 : 'border-[#E2E8F0] bg-white hover:border-[#EF4444] hover:shadow-xl hover:-translate-y-1'
             }`}
           >
@@ -664,11 +706,25 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
 
           {/* ─── CARD 4: ROOM 04 — TASK SWITCHING (Flexibility) ─────────── */}
           <div
+            onClick={() => {
+              if (taskSwitchingStatus === 'in_progress') {
+                navigate('task-switching-room');
+              }
+            }}
+            onKeyDown={e => {
+              if (taskSwitchingStatus === 'in_progress' && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+                navigate('task-switching-room');
+              }
+            }}
+            role={taskSwitchingStatus === 'in_progress' ? 'button' : undefined}
+            tabIndex={taskSwitchingStatus === 'in_progress' ? 0 : undefined}
+            aria-label={taskSwitchingStatus === 'in_progress' ? 'Resume Task Switching challenge' : undefined}
             className={`rounded-3xl border overflow-hidden transition-all duration-300 flex flex-col sm:flex-row group ${
               taskSwitchingStatus === 'completed'
                 ? 'border-[#D1EDE5] bg-white shadow-sm'
                 : taskSwitchingStatus === 'in_progress'
-                ? 'border-[#FDE68A] bg-white hover:border-[#D97706] hover:shadow-xl hover:-translate-y-1'
+                ? 'border-[#FDE68A] bg-white hover:border-[#D97706] hover:shadow-xl hover:-translate-y-1 cursor-pointer active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#D97706]'
                 : 'border-[#E2E8F0] bg-white hover:border-[#2563EB] hover:shadow-xl hover:-translate-y-1'
             }`}
           >
