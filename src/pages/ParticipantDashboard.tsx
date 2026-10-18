@@ -392,7 +392,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
 
                 {/* Subtitle / Description */}
                 <p className="text-xs text-[#94A3B8] leading-relaxed mb-4">
-                  Solve 6 multi-step disc manipulation puzzles of increasing complexity under strict rules.
+                  Solve 6 disc puzzles. Each one harder than the last. Rules need to be followed exactly.
                 </p>
               </div>
 
@@ -519,7 +519,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
 
                 {/* Subtitle / Description */}
                 <p className="text-xs text-[#94A3B8] leading-relaxed mb-4">
-                  Memorize sequences of highlighted blocks on a 3×3 grid and recall them in reverse order.
+                  Watch the squares light up on a 3×3 grid. Then tap them back in the opposite order.
                 </p>
               </div>
 
@@ -646,7 +646,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
 
                 {/* Subtitle / Description */}
                 <p className="text-xs text-[#94A3B8] leading-relaxed mb-4">
-                  Classify font ink colors (R/G/B/Y) while resolving cognitive semantic interference.
+                  Click the button that matches the COLOR of the displayed word. Ignore the word's meaning, focus only on the display color.
                 </p>
               </div>
 

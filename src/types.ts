@@ -81,16 +81,16 @@ export interface CorsiSessionResult {
 }
 
 export type StroopColor = 'RED' | 'GREEN' | 'BLUE' | 'YELLOW';
-export type StroopCondition = 'congruent' | 'incongruent';
+export type StroopCondition = 'congruent' | 'incongruent' | 'neutral';
 
 export interface StroopTrialRecord {
   trialNumber: number;
   phase: 'practice' | 'experiment';
-  word: StroopColor;
+  word: string;
   inkColor: StroopColor;
   condition: StroopCondition;
   correctResponse: StroopColor;
-  participantResponse: StroopColor;
+  participantResponse: StroopColor | 'TIMEOUT';
   isCorrect: boolean;
   reactionTimeMs: number;
   timestampMs: number;
@@ -106,8 +106,12 @@ export interface StroopSessionResult {
   incongruentTrials: number;
   incongruentCorrect: number;
   incongruentAccuracy: number;
+  neutralTrials?: number;
+  neutralCorrect?: number;
+  neutralAccuracy?: number;
   congruentMeanRtMs: number;
   incongruentMeanRtMs: number;
+  neutralMeanRtMs?: number;
   stroopEffectMs: number;
   trials: StroopTrialRecord[];
   practiceTrials: StroopTrialRecord[];

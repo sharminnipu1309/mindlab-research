@@ -683,100 +683,42 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
       {/* Main Content Area - Optimized compact padding for single-viewport fit */}
       <div className="flex-1 flex flex-col items-center justify-center px-3 sm:px-6 py-2 sm:py-4">
 
-        {/* 1. TUTORIAL & PRACTICE INTRO SECTION */}
+        {/* 1. TUTORIAL & PRACTICE INTRO SECTION (Matching Picture 4) */}
         {phase === 'tutorialIntro' && (
-          <div className="text-center max-w-xl w-full animate-fade-in-up py-2">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#E4F2F0] dark:bg-teal-950/60 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
-              <Eye size={26} className="text-[#69AFA8] dark:text-teal-400" />
+          <div className="text-center max-w-lg w-full animate-fade-in-up py-4 px-2">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#E4F2F0] dark:bg-teal-950/60 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-xs border border-teal-200/50 dark:border-teal-800/40">
+              <Eye size={28} className="text-[#0D9488] dark:text-teal-400" />
             </div>
 
-            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#E4F2F0] dark:bg-teal-950/60 text-[#0D9488] dark:text-teal-300 text-xs font-bold uppercase tracking-wider mb-2">
-              <Sparkles size={13} />
-              Interactive Tutorial & Practice
-            </div>
-
-            <h2 className="text-lg sm:text-2xl font-bold text-[#252640] dark:text-white mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#252640] dark:text-white mb-3 font-['Plus_Jakarta_Sans',sans-serif]">
               Backward Corsi Block Task
             </h2>
 
-            <p className="text-xs sm:text-sm text-[#73758C] dark:text-slate-300 leading-relaxed mb-3">
-              Watch the highlighted blocks carefully. When the sequence ends, select the blocks in{' '}
-              <strong className="text-[#252640] dark:text-white">REVERSE ORDER</strong> — tapping the{' '}
-              <strong className="text-[#6567C9] dark:text-[#A5A6F6]">last block shown first</strong>.
+            <p className="text-sm sm:text-base font-semibold text-[#252640] dark:text-slate-100 leading-relaxed mb-3">
+              Watch the highlighted blocks carefully. When the sequence ends, tap the blocks in{' '}
+              <strong className="font-bold text-[#6567C9] dark:text-[#A5A6F6]">reverse order</strong> —{' '}
+              <strong className="font-bold text-[#252640] dark:text-white">last block first</strong>.
             </p>
 
-            {/* Visual Directional Tutorial Box */}
-            <div className="bg-white dark:bg-[#15193B] rounded-2xl border border-[#E9E8F2] dark:border-[#252E63] p-3.5 sm:p-4 mb-4 text-left shadow-xs">
-              <div className="text-xs font-bold text-[#6567C9] dark:text-[#A5A6F6] uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                <Info size={14} />
-                How Reverse Recall Works (Visual Example)
-              </div>
+            <p className="text-xs sm:text-sm font-semibold text-[#474864] dark:text-slate-200 leading-relaxed mb-6">
+              The sequence will get longer as you progress through the levels. You must get{' '}
+              <strong className="font-bold text-[#0D9488] dark:text-teal-300">at least 4 out of 6 trials</strong> correct to advance.
+            </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {/* Step 1: Presentation */}
-                <div className="p-3 rounded-xl bg-[#F8F8FC] dark:bg-[#1A2248] border border-[#E9E8F2] dark:border-[#252E63]">
-                  <div className="flex items-center gap-1.5 mb-1.5 text-xs font-bold text-[#6567C9] dark:text-[#A5A6F6]">
-                    <Eye size={14} />
-                    <span>STEP 1: WATCH SEQUENCE</span>
-                  </div>
-                  <p className="text-[11px] text-[#73758C] dark:text-slate-400 mb-2">
-                    Blocks highlight in forward presentation order:
-                  </p>
-                  <div className="flex items-center justify-center gap-1 sm:gap-2">
-                    <div className="px-2 py-1 rounded-lg bg-[#6567C9] text-white font-mono text-[11px] font-bold shadow-xs">
-                      Box A <span className="opacity-80 text-[10px]">(1st)</span>
-                    </div>
-                    <ArrowRight size={13} className="text-[#6567C9] flex-shrink-0" />
-                    <div className="px-2 py-1 rounded-lg bg-[#6567C9] text-white font-mono text-[11px] font-bold shadow-xs">
-                      Box B <span className="opacity-80 text-[10px]">(2nd)</span>
-                    </div>
-                    <ArrowRight size={13} className="text-[#6567C9] flex-shrink-0" />
-                    <div className="px-2 py-1 rounded-lg bg-[#6567C9] text-white font-mono text-[11px] font-bold shadow-xs ring-2 ring-amber-400">
-                      Box C <span className="opacity-80 text-[10px]">(Last)</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Step 2: Reverse Recall */}
-                <div className="p-3 rounded-xl bg-[#E4F2F0]/60 dark:bg-[#132E35] border border-[#69AFA8]/30">
-                  <div className="flex items-center gap-1.5 mb-1.5 text-xs font-bold text-[#4A9B7F] dark:text-emerald-400">
-                    <Undo2 size={14} />
-                    <span>STEP 2: REVERSE RECALL</span>
-                  </div>
-                  <p className="text-[11px] text-[#73758C] dark:text-slate-300 mb-2">
-                    Tap in <strong>reverse order</strong> (last block first!):
-                  </p>
-                  <div className="flex items-center justify-center gap-1 sm:gap-2">
-                    <div className="px-2 py-1 rounded-lg bg-[#4A9B7F] text-white font-mono text-[11px] font-bold shadow-xs ring-2 ring-emerald-300">
-                      Box C <span className="opacity-90 text-[10px]">(1st Tap)</span>
-                    </div>
-                    <ArrowRight size={13} className="text-[#4A9B7F] flex-shrink-0" />
-                    <div className="px-2 py-1 rounded-lg bg-[#4A9B7F] text-white font-mono text-[11px] font-bold shadow-xs">
-                      Box B <span className="opacity-90 text-[10px]">(2nd Tap)</span>
-                    </div>
-                    <ArrowRight size={13} className="text-[#4A9B7F] flex-shrink-0" />
-                    <div className="px-2 py-1 rounded-lg bg-[#4A9B7F] text-white font-mono text-[11px] font-bold shadow-xs">
-                      Box A <span className="opacity-90 text-[10px]">(3rd Tap)</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Directional takeaway */}
-              <div className="mt-2.5 flex items-center gap-2 p-2 rounded-lg bg-[#F0EEFB] dark:bg-[#1E2552] border border-[#6567C9]/20 text-xs text-[#474864] dark:text-slate-200">
-                <RotateCcw size={15} className="text-[#6567C9] dark:text-[#A5A6F6] flex-shrink-0" />
-                <span>
-                  <strong>Directional Rule:</strong> Think <em>"Last In, First Out"</em>. The last block to illuminate must always be your first tap.
+            {/* Instruction Card with Bold Indicators */}
+            <div className="bg-white dark:bg-[#15193B] rounded-2xl border-2 border-[#E9E8F2] dark:border-[#252E63] p-4 sm:p-5 mb-6 text-left shadow-xs space-y-3">
+              <div className="flex gap-3 items-center">
+                <div className="w-5 h-5 bg-[#6567C9] rounded-md flex-shrink-0 shadow-xs ring-2 ring-[#6567C9]/20" />
+                <span className="text-xs sm:text-sm font-semibold text-[#252640] dark:text-slate-200">
+                  Blocks light up in <strong className="font-bold text-[#6567C9] dark:text-[#A5A6F6]">blue</strong> during presentation
                 </span>
               </div>
-            </div>
-
-            {/* Practice overview note */}
-            <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-700/50 rounded-xl p-3 mb-4 text-xs text-amber-900 dark:text-amber-200 flex items-center gap-2 text-left">
-              <Sparkles size={16} className="text-amber-600 dark:text-amber-400 flex-shrink-0" />
-              <span>
-                You will complete <strong>3 practice trials</strong> (gradually increasing from 2 to 4 blocks) with feedback before the real assessment starts. Practice trials are <strong>not scored</strong> for research.
-              </span>
+              <div className="flex gap-3 items-center">
+                <div className="w-5 h-5 bg-[#0D9488] rounded-md flex-shrink-0 shadow-xs ring-2 ring-[#0D9488]/20" />
+                <span className="text-xs sm:text-sm font-semibold text-[#252640] dark:text-slate-200">
+                  Blocks flash briefly in <strong className="font-bold text-[#0D9488] dark:text-teal-300">teal</strong> when clicked during recall
+                </span>
+              </div>
             </div>
 
             <button
@@ -784,10 +726,10 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
                 setPracticeIndex(0);
                 startPracticeTrial(0);
               }}
-              className="btn-primary px-8 sm:px-10 py-2.5 sm:py-3 text-sm sm:text-base w-full sm:w-auto justify-center font-bold"
+              className="btn-primary px-8 sm:px-10 py-3 sm:py-3.5 text-sm sm:text-base w-full sm:w-auto justify-center font-bold shadow-md hover:shadow-lg transition-all"
             >
-              Begin Practice (3 Trials)
-              <ArrowRight size={17} />
+              Begin Activity
+              <ArrowRight size={18} />
             </button>
           </div>
         )}

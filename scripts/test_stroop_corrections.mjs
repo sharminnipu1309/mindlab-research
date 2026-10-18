@@ -9,81 +9,101 @@ const stroopFilePath = path.resolve('src/pages/StroopRoom.tsx');
 assert(fs.existsSync(stroopFilePath), 'src/pages/StroopRoom.tsx must exist');
 const stroopCode = fs.readFileSync(stroopFilePath, 'utf8');
 
-// 2. Verify Example Box Alignment (Matching Screenshot 2)
-console.log('1. Verifying Example Box Alignment with Screenshot 2...');
-assert(stroopCode.includes('EXAMPLE'), 'Must include EXAMPLE section title');
-assert(
-  stroopCode.includes('flex flex-col items-center justify-center text-center'),
-  'Example box must center content vertically and horizontally'
-);
-assert(
-  stroopCode.includes('text-2xl sm:text-3xl font-black font-[\'Plus_Jakarta_Sans\',sans-serif] tracking-wide text-[#DC2626] mb-2 sm:mb-2.5'),
-  'GREEN word must be centered prominently with bold red styling'
-);
-assert(
-  stroopCode.includes('The word says &quot;GREEN&quot;, but the ink is <strong className="text-[#DC2626] font-bold">RED</strong>.'),
-  'Explanatory text must be directly below the word'
-);
-assert(
-  stroopCode.includes('Correct response = <strong className="text-[#252640] dark:text-white font-[\'JetBrains_Mono\',monospace]">R</strong> <strong className="text-[#252640] dark:text-white font-semibold">(Red)</strong>'),
-  'Correct response instruction must be on a separate centered line'
-);
-assert(
-  stroopCode.includes('RESPONSE KEY MAPPINGS'),
-  'Must include RESPONSE KEY MAPPINGS legend below the box'
-);
-console.log('   ✓ Example box alignment matches Screenshot 2 typography, spacing, and centered layout.');
+// 2. Read types.ts
+const typesFilePath = path.resolve('src/types.ts');
+assert(fs.existsSync(typesFilePath), 'src/types.ts must exist');
+const typesCode = fs.readFileSync(typesFilePath, 'utf8');
 
-// 3. Verify Bold Desktop/PC Recommendation
-console.log('\n2. Verifying Desktop/PC Recommendation Banner...');
-const expectedDesktopRecommendation = 'For the best experience, please complete this task on a desktop or PC.';
+// 3. Verify 3 Stimulus Types (Neutral, Congruent, Incongruent)
+console.log('1. Verifying 3 Stimulus Conditions (Neutral, Congruent, Incongruent)...');
+assert(typesCode.includes("'congruent' | 'incongruent' | 'neutral'"), 'types.ts must include neutral condition');
+assert(stroopCode.includes('NEUTRAL_WORDS'), 'StroopRoom must define NEUTRAL_WORDS list');
+assert(stroopCode.includes("'EGG'"), 'NEUTRAL_WORDS must include EGG');
+assert(stroopCode.includes("'BED'"), 'NEUTRAL_WORDS must include BED');
+assert(stroopCode.includes('1. Neutral'), 'Intro UI must explain Neutral condition');
+assert(stroopCode.includes('2. Congruent'), 'Intro UI must explain Congruent condition');
+assert(stroopCode.includes('3. Incongruent'), 'Intro UI must explain Incongruent condition');
+console.log('   ✓ 3 Stimulus conditions verified in types and UI.');
+
+// 4. Verify Correct Response is always the ink/font color
+console.log('\n2. Verifying Correct Response Logic...');
 assert(
-  stroopCode.includes(expectedDesktopRecommendation),
-  `Must include exact text: "${expectedDesktopRecommendation}"`
+  stroopCode.includes('const isCorrect = responseColor === currentItem.inkColor;'),
+  'Correct response must always match the inkColor of the item'
 );
 assert(
-  stroopCode.includes(`<p className="text-xs sm:text-sm font-bold leading-snug">\n                      ${expectedDesktopRecommendation}`),
-  'Recommendation must be in bold text'
+  stroopCode.includes('Ignore the word'),
+  'Instructions must instruct participants to ignore the word meaning and respond to color'
 );
-console.log('   ✓ Bold Desktop/PC recommendation verified on intro screen.');
+console.log('   ✓ Correct response is strictly the printed ink color.');
 
-// 4. Verify Trial Counts (80 Experimental, 40 Congruent, 40 Incongruent, 20 Practice)
-console.log('\n3. Verifying Trial Counts (80 Experimental: 40 Congruent, 40 Incongruent)...');
-assert(stroopCode.includes('const EXPERIMENTAL_COUNT = 80;'), 'EXPERIMENTAL_COUNT must be 80');
-assert(stroopCode.includes('const PRACTICE_COUNT = 20;'), 'PRACTICE_COUNT must be 20');
-assert(stroopCode.includes('40 congruent, 40 incongruent'), 'Must state 40 congruent, 40 incongruent');
-console.log('   ✓ Trial count verified as 80 experimental (40 congruent, 40 incongruent) and 20 practice.');
+// 5. Verify Audio Feedback (Jingle & Buzzer)
+console.log('\n3. Verifying Audio Feedback Synthesizers...');
+assert(stroopCode.includes('function playJingleSound()'), 'Must contain playJingleSound implementation');
+assert(stroopCode.includes('function playBuzzerSound()'), 'Must contain playBuzzerSound implementation');
+assert(stroopCode.includes('playJingleSound();'), 'Must call playJingleSound on correct response');
+assert(stroopCode.includes('playBuzzerSound();'), 'Must call playBuzzerSound on incorrect or timeout response');
+console.log('   ✓ Web Audio API jingle and buzzer synthesizers verified.');
 
-// 5. Programmatic Verification of No-Consecutive-Ink-Color Algorithm (100 Iterations)
-console.log('\n4. Programmatically Verifying No-Consecutive-Ink-Color Algorithm across 100 runs...');
+// 6. Verify Visual Text Feedback
+console.log('\n4. Verifying Visual Text Feedback for Silent Environments...');
+assert(stroopCode.includes('Correct!'), 'Must include visible Correct! text');
+assert(stroopCode.includes('Incorrect'), 'Must include visible Incorrect text');
+assert(stroopCode.includes('Time Out'), 'Must include visible Time Out text');
+console.log('   ✓ On-screen text feedback verified for correct, incorrect, and timeout.');
+
+// 7. Verify Response Timeout Handling
+console.log('\n5. Verifying Response Timeout Handling...');
+assert(stroopCode.includes('RESPONSE_TIMEOUT_MS = 1500;'), 'RESPONSE_TIMEOUT_MS must be defined');
+assert(stroopCode.includes('handleTimeout'), 'Must have handleTimeout callback');
+assert(stroopCode.includes("'TIMEOUT'"), 'Participant response for timeout must be TIMEOUT');
+console.log('   ✓ Response timeout window and handler verified.');
+
+// 8. Verify Reaction Time Calculation in Milliseconds
+console.log('\n6. Verifying Millisecond Reaction Time Calculation...');
+assert(
+  stroopCode.includes('performance.now() - stimulusStartTimeRef.current'),
+  'Must compute high precision RT using performance.now()'
+);
+assert(stroopCode.includes('reactionTimeMs'), 'Must record reactionTimeMs in trial records');
+console.log('   ✓ Millisecond reaction time calculation verified.');
+
+// 9. Programmatic Verification of No-Consecutive-Ink-Color Algorithm across 100 runs
+console.log('\n7. Programmatically Verifying Experimental Trial Generator (100 Runs)...');
 const STROOP_COLORS = ['RED', 'GREEN', 'BLUE', 'YELLOW'];
+const NEUTRAL_WORDS = ['EGG', 'BED', 'SHIP', 'FORK', 'DESK', 'LAMP', 'DOOR', 'BOOK', 'PEN', 'CAT'];
+const EXPERIMENTAL_COUNT = 84;
 
 function simulateGenerateExperimentalTrials() {
   const pool = [];
-  // 40 Congruent trials (10 per color)
   STROOP_COLORS.forEach(color => {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 7; i++) {
       pool.push({ word: color, inkColor: color, condition: 'congruent' });
     }
   });
 
-  // 40 Incongruent trials (10 per ink color)
-  const incongruentPairs = [];
+  const incPairs = [];
   STROOP_COLORS.forEach(w => {
     STROOP_COLORS.forEach(ink => {
-      if (w !== ink) incongruentPairs.push({ word: w, inkColor: ink });
+      if (w !== ink) incPairs.push({ word: w, inkColor: ink });
     });
   });
-  incongruentPairs.forEach(pair => {
-    for (let i = 0; i < 3; i++) {
+  incPairs.forEach(pair => {
+    for (let i = 0; i < 2; i++) {
       pool.push({ ...pair, condition: 'incongruent' });
     }
   });
-
   pool.push({ word: 'YELLOW', inkColor: 'RED', condition: 'incongruent' });
   pool.push({ word: 'BLUE', inkColor: 'GREEN', condition: 'incongruent' });
   pool.push({ word: 'RED', inkColor: 'BLUE', condition: 'incongruent' });
   pool.push({ word: 'GREEN', inkColor: 'YELLOW', condition: 'incongruent' });
+
+  STROOP_COLORS.forEach((ink, inkIdx) => {
+    for (let i = 0; i < 7; i++) {
+      const neutralWord = NEUTRAL_WORDS[(i + inkIdx * 2) % NEUTRAL_WORDS.length];
+      pool.push({ word: neutralWord, inkColor: ink, condition: 'neutral' });
+    }
+  });
 
   for (let attempt = 0; attempt < 500; attempt++) {
     const remaining = [...pool];
@@ -116,7 +136,7 @@ function simulateGenerateExperimentalTrials() {
       sequence.push(pick);
     }
 
-    if (possible && sequence.length === 80) {
+    if (possible && sequence.length === EXPERIMENTAL_COUNT) {
       let valid = true;
       for (let i = 1; i < sequence.length; i++) {
         if (sequence[i].inkColor === sequence[i - 1].inkColor) {
@@ -132,11 +152,13 @@ function simulateGenerateExperimentalTrials() {
 
 for (let r = 0; r < 100; r++) {
   const seq = simulateGenerateExperimentalTrials();
-  assert.strictEqual(seq.length, 80, `Run ${r}: Must contain exactly 80 trials`);
+  assert.strictEqual(seq.length, 84, `Run ${r}: Must contain exactly 84 trials`);
   const congruentCount = seq.filter(t => t.condition === 'congruent').length;
   const incongruentCount = seq.filter(t => t.condition === 'incongruent').length;
-  assert.strictEqual(congruentCount, 40, `Run ${r}: Must contain exactly 40 congruent`);
-  assert.strictEqual(incongruentCount, 40, `Run ${r}: Must contain exactly 40 incongruent`);
+  const neutralCount = seq.filter(t => t.condition === 'neutral').length;
+  assert.strictEqual(congruentCount, 28, `Run ${r}: Must contain exactly 28 congruent`);
+  assert.strictEqual(incongruentCount, 28, `Run ${r}: Must contain exactly 28 incongruent`);
+  assert.strictEqual(neutralCount, 28, `Run ${r}: Must contain exactly 28 neutral`);
 
   for (let i = 1; i < seq.length; i++) {
     assert.notStrictEqual(
@@ -146,30 +168,6 @@ for (let r = 0; r < 100; r++) {
     );
   }
 }
-console.log('   ✓ 100 independent trials generated: 0 consecutive ink color repetitions, 100% 40/40 balance.');
-
-// 6. Verify Feedback is Practice-Only
-console.log('\n5. Verifying Practice-Only Feedback & Clean Experimental Transitions...');
-assert(
-  stroopCode.includes('{/* Feedback display: STRICTLY restricted to Practice Phase only */}'),
-  'Feedback rendering must be guarded by isPractice'
-);
-assert(
-  stroopCode.includes('{isPractice && trialStage === \'feedback\' && feedback && ('),
-  'JSX must only show feedback when isPractice is true'
-);
-assert(
-  stroopCode.includes('// ACTUAL EXPERIMENTAL PHASE: NO VISIBLE FEEDBACK!'),
-  'Code comments and logic must explicitly handle experimental phase without feedback'
-);
-assert(
-  stroopCode.includes('setTrialStage(\'interTrial\');'),
-  'Experimental phase must transition smoothly through interTrial'
-);
-assert(
-  stroopCode.includes('persistStroopTrial'),
-  'Internal persistence of trials to Supabase must remain intact'
-);
-console.log('   ✓ Feedback confirmed active during practice only; experimental trials transition smoothly without correctness messages.');
+console.log('   ✓ 100 runs verified: 84 trials, 28 congruent/28 incongruent/28 neutral, 0 consecutive ink color repetitions.');
 
 console.log('\n🎉 ALL STROOP TASK CORRECTION CHECKS PASSED SUCCESSFULLY!\n');

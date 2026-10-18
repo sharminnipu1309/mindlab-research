@@ -744,7 +744,7 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
                 </div>
                 <div className="font-semibold text-[#252640] text-xs sm:text-sm">
                   {selectedRod === null
-                    ? `Select disc on Pole ${['A', 'B', 'C'][tutorialMove.from]} to move to Pole ${['A', 'B', 'C'][tutorialMove.to]}`
+                    ? `Tap on the disc on Pole ${['A', 'B', 'C'][tutorialMove.from]} to move to Pole ${['A', 'B', 'C'][tutorialMove.to]}`
                     : selectedRod === tutorialMove.from
                     ? `Click Pole ${['A', 'B', 'C'][tutorialMove.to]} to place the disc`
                     : `Click Pole ${['A', 'B', 'C'][tutorialMove.from]} to select the correct disc`}
