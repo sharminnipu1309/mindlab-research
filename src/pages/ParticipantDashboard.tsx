@@ -380,33 +380,33 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             }`}
           >
             {/* Left Visual Panel */}
-            <div className="sm:w-[40%] bg-[#D5E8EF] dark:bg-[#1A2B36] border-b sm:border-b-0 sm:border-r border-[#C5DCE4] dark:border-[#314E62] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
+            <div className="sm:w-[40%] bg-gradient-to-b from-[#CDE4EE] to-[#BDDEEB] dark:from-[#1A2C38] dark:to-[#14232D] border-b sm:border-b-0 sm:border-r border-[#A5CBD9] dark:border-[#314E62] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
               <div className="w-full flex items-center justify-between relative z-10">
                 <span className="text-xs font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
                   Room 01
                 </span>
                 {hanoiStatus === 'completed' ? (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF4F8] dark:bg-[#223847] text-[#183B4A] dark:text-[#63B8C6] border border-[#63B8C6]/50 dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1 shadow-2xs">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#223847] text-[#0D9488] dark:text-[#5EEAD4] border border-[#0D9488]/40 dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1 shadow-xs">
                     <Check size={11} strokeWidth={3} /> Completed
                   </span>
                 ) : hanoiStatus === 'in_progress' ? (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#FEF3C7] dark:bg-[#78350F]/40 text-[#D97706] dark:text-[#FDE68A] border border-[#FDE68A] dark:border-[#92400E] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1.5 shadow-xs">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#78350F]/40 text-[#D97706] dark:text-[#FDE68A] border border-[#FDE68A] dark:border-[#92400E] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1.5 shadow-xs">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] dark:bg-[#FDE68A] animate-pulse" /> In Progress
                   </span>
                 ) : (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#1A2B36] text-[#183B4A] dark:text-[#F1F8FB] border border-[#A7CBD9] dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#1A2B36] text-[#163A4A] dark:text-[#F1F8FB] border border-[#8EBED2] dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] shadow-xs">
                     Not Started
                   </span>
                 )}
               </div>
 
               {/* Elevated Circular Badge with Miniature Visual */}
-              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#223847] shadow-sm border border-[#A7CBD9] dark:border-[#314E62] flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
+              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#223847] shadow-md border-2 border-white/90 dark:border-[#314E62] ring-1 ring-[#8EBED2]/50 dark:ring-transparent flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
                 <HanoiVisual size="md" variant="card" />
               </div>
 
               {/* Bottom Pill Badge */}
-              <div className="relative z-10 px-3 py-1 rounded-full bg-white dark:bg-[#1A2B36] border border-[#A7CBD9] dark:border-[#314E62] text-[#183B4A] dark:text-[#F1F8FB] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
+              <div className="relative z-10 px-3 py-1 rounded-full bg-white dark:bg-[#1A2B36] border border-[#8EBED2] dark:border-[#314E62] text-[#163A4A] dark:text-[#F1F8FB] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-xs">
                 Strategy Challenge
               </div>
             </div>
@@ -524,33 +524,33 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             }`}
           >
             {/* Left Visual Panel */}
-            <div className="sm:w-[40%] bg-[#D5E8EF] dark:bg-[#1A2B36] border-b sm:border-b-0 sm:border-r border-[#C5DCE4] dark:border-[#314E62] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
+            <div className="sm:w-[40%] bg-gradient-to-b from-[#CDE4EE] to-[#BDDEEB] dark:from-[#1A2C38] dark:to-[#14232D] border-b sm:border-b-0 sm:border-r border-[#A5CBD9] dark:border-[#314E62] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
               <div className="w-full flex items-center justify-between relative z-10">
                 <span className="text-xs font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
                   Room 02
                 </span>
                 {corsiStatus === 'completed' ? (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF4F8] dark:bg-[#223847] text-[#183B4A] dark:text-[#63B8C6] border border-[#63B8C6]/50 dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1 shadow-2xs">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#223847] text-[#0D9488] dark:text-[#5EEAD4] border border-[#0D9488]/40 dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1 shadow-xs">
                     <Check size={11} strokeWidth={3} /> Completed
                   </span>
                 ) : corsiStatus === 'in_progress' ? (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#FEF3C7] dark:bg-[#78350F]/40 text-[#D97706] dark:text-[#FDE68A] border border-[#FDE68A] dark:border-[#92400E] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1.5 shadow-xs">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#78350F]/40 text-[#D97706] dark:text-[#FDE68A] border border-[#FDE68A] dark:border-[#92400E] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1.5 shadow-xs">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] dark:bg-[#FDE68A] animate-pulse" /> In Progress
                   </span>
                 ) : (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#1A2B36] text-[#183B4A] dark:text-[#F1F8FB] border border-[#A7CBD9] dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#1A2B36] text-[#163A4A] dark:text-[#F1F8FB] border border-[#8EBED2] dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] shadow-xs">
                     Not Started
                   </span>
                 )}
               </div>
 
               {/* Elevated Circular Badge with Miniature Visual */}
-              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#223847] shadow-sm border border-[#A7CBD9] dark:border-[#314E62] flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
+              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#223847] shadow-md border-2 border-white/90 dark:border-[#314E62] ring-1 ring-[#8EBED2]/50 dark:ring-transparent flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
                 <CorsiVisual size="md" variant="card" />
               </div>
 
               {/* Bottom Pill Badge */}
-              <div className="relative z-10 px-3 py-1 rounded-full bg-white dark:bg-[#1A2B36] border border-[#A7CBD9] dark:border-[#314E62] text-[#183B4A] dark:text-[#F1F8FB] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
+              <div className="relative z-10 px-3 py-1 rounded-full bg-white dark:bg-[#1A2B36] border border-[#8EBED2] dark:border-[#314E62] text-[#183B4A] dark:text-[#F1F8FB] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-xs">
                 Memory Challenge
               </div>
             </div>
@@ -668,33 +668,33 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             }`}
           >
             {/* Left Visual Panel */}
-            <div className="sm:w-[40%] bg-[#D5E8EF] dark:bg-[#1A2B36] border-b sm:border-b-0 sm:border-r border-[#C5DCE4] dark:border-[#314E62] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
+            <div className="sm:w-[40%] bg-gradient-to-b from-[#CDE4EE] to-[#BDDEEB] dark:from-[#1A2C38] dark:to-[#14232D] border-b sm:border-b-0 sm:border-r border-[#A5CBD9] dark:border-[#314E62] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
               <div className="w-full flex items-center justify-between relative z-10">
                 <span className="text-xs font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
                   Room 03
                 </span>
                 {stroopStatus === 'completed' ? (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF4F8] dark:bg-[#223847] text-[#183B4A] dark:text-[#63B8C6] border border-[#63B8C6]/50 dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1 shadow-2xs">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#223847] text-[#0D9488] dark:text-[#5EEAD4] border border-[#0D9488]/40 dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1 shadow-xs">
                     <Check size={11} strokeWidth={3} /> Completed
                   </span>
                 ) : stroopStatus === 'in_progress' ? (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#FEF3C7] dark:bg-[#78350F]/40 text-[#D97706] dark:text-[#FDE68A] border border-[#FDE68A] dark:border-[#92400E] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1.5 shadow-xs">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#78350F]/40 text-[#D97706] dark:text-[#FDE68A] border border-[#FDE68A] dark:border-[#92400E] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1.5 shadow-xs">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] dark:bg-[#FDE68A] animate-pulse" /> In Progress
                   </span>
                 ) : (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#1A2B36] text-[#183B4A] dark:text-[#F1F8FB] border border-[#A7CBD9] dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#1A2B36] text-[#163A4A] dark:text-[#F1F8FB] border border-[#8EBED2] dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] shadow-xs">
                     Not Started
                   </span>
                 )}
               </div>
 
               {/* Elevated Circular Badge with Miniature Visual */}
-              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#223847] shadow-sm border border-[#A7CBD9] dark:border-[#314E62] flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
+              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#223847] shadow-md border-2 border-white/90 dark:border-[#314E62] ring-1 ring-[#8EBED2]/50 dark:ring-transparent flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
                 <StroopVisual size="md" variant="card" />
               </div>
 
               {/* Bottom Pill Badge */}
-              <div className="relative z-10 px-3 py-1 rounded-full bg-white dark:bg-[#1A2B36] border border-[#A7CBD9] dark:border-[#314E62] text-[#183B4A] dark:text-[#F1F8FB] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
+              <div className="relative z-10 px-3 py-1 rounded-full bg-white dark:bg-[#1A2B36] border border-[#8EBED2] dark:border-[#314E62] text-[#183B4A] dark:text-[#F1F8FB] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-xs">
                 Attention Challenge
               </div>
             </div>
@@ -812,33 +812,33 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             }`}
           >
             {/* Left Visual Panel */}
-            <div className="sm:w-[40%] bg-[#D5E8EF] dark:bg-[#1A2B36] border-b sm:border-b-0 sm:border-r border-[#C5DCE4] dark:border-[#314E62] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
+            <div className="sm:w-[40%] bg-gradient-to-b from-[#CDE4EE] to-[#BDDEEB] dark:from-[#1A2C38] dark:to-[#14232D] border-b sm:border-b-0 sm:border-r border-[#A5CBD9] dark:border-[#314E62] p-4 sm:p-6 relative flex flex-col items-center justify-between min-h-[160px] sm:min-h-[220px] overflow-hidden">
               <div className="w-full flex items-center justify-between relative z-10">
                 <span className="text-xs font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
                   Room 04
                 </span>
                 {taskSwitchingStatus === 'completed' ? (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#EAF4F8] dark:bg-[#223847] text-[#183B4A] dark:text-[#63B8C6] border border-[#63B8C6]/50 dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1 shadow-2xs">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#223847] text-[#0D9488] dark:text-[#5EEAD4] border border-[#0D9488]/40 dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1 shadow-xs">
                     <Check size={11} strokeWidth={3} /> Completed
                   </span>
                 ) : taskSwitchingStatus === 'in_progress' ? (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#FEF3C7] dark:bg-[#78350F]/40 text-[#D97706] dark:text-[#FDE68A] border border-[#FDE68A] dark:border-[#92400E] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1.5 shadow-xs">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#78350F]/40 text-[#D97706] dark:text-[#FDE68A] border border-[#FDE68A] dark:border-[#92400E] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1.5 shadow-xs">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] dark:bg-[#FDE68A] animate-pulse" /> In Progress
                   </span>
                 ) : (
-                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#1A2B36] text-[#183B4A] dark:text-[#F1F8FB] border border-[#A7CBD9] dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white dark:bg-[#1A2B36] text-[#163A4A] dark:text-[#F1F8FB] border border-[#8EBED2] dark:border-[#314E62] font-['Plus_Jakarta_Sans',sans-serif] shadow-xs">
                     Not Started
                   </span>
                 )}
               </div>
 
               {/* Elevated Circular Badge with Miniature Visual */}
-              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#223847] shadow-sm border border-[#A7CBD9] dark:border-[#314E62] flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
+              <div className="my-auto relative z-10 w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white dark:bg-[#223847] shadow-md border-2 border-white/90 dark:border-[#314E62] ring-1 ring-[#8EBED2]/50 dark:ring-transparent flex items-center justify-center p-2 group-hover:scale-105 transition-transform duration-300">
                 <TaskSwitchingVisual size="md" variant="card" />
               </div>
 
               {/* Bottom Pill Badge */}
-              <div className="relative z-10 px-3 py-1 rounded-full bg-white dark:bg-[#1A2B36] border border-[#A7CBD9] dark:border-[#314E62] text-[#183B4A] dark:text-[#F1F8FB] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-2xs">
+              <div className="relative z-10 px-3 py-1 rounded-full bg-white dark:bg-[#1A2B36] border border-[#8EBED2] dark:border-[#314E62] text-[#183B4A] dark:text-[#F1F8FB] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-xs">
                 Flexibility Challenge
               </div>
             </div>

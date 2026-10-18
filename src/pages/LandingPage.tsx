@@ -180,8 +180,8 @@ export default function LandingPage({ navigate, onResume }: Props) {
             {/* Challenge 1: Tower of Hanoi */}
             <div className="rounded-2xl p-5 sm:p-6 bg-white border border-[#C5DCE4] hover:border-[#4D91AD] hover:shadow-lg dark:bg-[#203541] dark:border-[#2D4654] dark:hover:border-[#63B8C6] transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1">
               <div>
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#D5E8EF] border border-[#C5DCE4] dark:bg-[#192831] dark:border-[#2D4654] flex items-center justify-center p-2 mb-4 sm:mb-6 transition-colors">
-                  <HanoiVisual size="md" variant="dark" />
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-b from-[#CDE4EE] to-[#BDDEEB] border border-[#A5CBD9] dark:from-[#1A2C38] dark:to-[#14232D] dark:border-[#314E62] flex items-center justify-center p-2 mb-4 sm:mb-6 transition-colors shadow-xs">
+                  <HanoiVisual size="md" variant="card" />
                 </div>
                 <div className="text-[10px] font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif] mb-1">
                   Room 01 · Strategy
@@ -202,8 +202,8 @@ export default function LandingPage({ navigate, onResume }: Props) {
             {/* Challenge 2: Backward Corsi Block */}
             <div className="rounded-2xl p-5 sm:p-6 bg-white border border-[#C5DCE4] hover:border-[#4D91AD] hover:shadow-lg dark:bg-[#203541] dark:border-[#2D4654] dark:hover:border-[#63B8C6] transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1">
               <div>
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#D5E8EF] border border-[#C5DCE4] dark:bg-[#192831] dark:border-[#2D4654] flex items-center justify-center p-2 mb-4 sm:mb-6 transition-colors">
-                  <CorsiVisual size="md" variant="dark" />
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-b from-[#CDE4EE] to-[#BDDEEB] border border-[#A5CBD9] dark:from-[#1A2C38] dark:to-[#14232D] dark:border-[#314E62] flex items-center justify-center p-2 mb-4 sm:mb-6 transition-colors shadow-xs">
+                  <CorsiVisual size="md" variant="card" />
                 </div>
                 <div className="text-[10px] font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif] mb-1">
                   Room 02 · Memory
@@ -224,8 +224,8 @@ export default function LandingPage({ navigate, onResume }: Props) {
             {/* Challenge 3: Stroop Task */}
             <div className="rounded-2xl p-5 sm:p-6 bg-white border border-[#C5DCE4] hover:border-[#4D91AD] hover:shadow-lg dark:bg-[#203541] dark:border-[#2D4654] dark:hover:border-[#63B8C6] transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1">
               <div>
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#D5E8EF] border border-[#C5DCE4] dark:bg-[#192831] dark:border-[#2D4654] flex items-center justify-center p-2 mb-4 sm:mb-6 transition-colors">
-                  <StroopVisual size="md" variant="dark" />
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-b from-[#CDE4EE] to-[#BDDEEB] border border-[#A5CBD9] dark:from-[#1A2C38] dark:to-[#14232D] dark:border-[#314E62] flex items-center justify-center p-2 mb-4 sm:mb-6 transition-colors shadow-xs">
+                  <StroopVisual size="md" variant="card" />
                 </div>
                 <div className="text-[10px] font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif] mb-1">
                   Room 03 · Attention
@@ -246,8 +246,8 @@ export default function LandingPage({ navigate, onResume }: Props) {
             {/* Challenge 4: Task Switching */}
             <div className="rounded-2xl p-5 sm:p-6 bg-white border border-[#C5DCE4] hover:border-[#4D91AD] hover:shadow-lg dark:bg-[#203541] dark:border-[#2D4654] dark:hover:border-[#63B8C6] transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1">
               <div>
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#D5E8EF] border border-[#C5DCE4] dark:bg-[#192831] dark:border-[#2D4654] flex items-center justify-center p-1.5 mb-4 sm:mb-6 transition-colors">
-                  <TaskSwitchingVisual size="md" variant="dark" />
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-b from-[#CDE4EE] to-[#BDDEEB] border border-[#A5CBD9] dark:from-[#1A2C38] dark:to-[#14232D] dark:border-[#314E62] flex items-center justify-center p-1.5 mb-4 sm:mb-6 transition-colors shadow-xs">
+                  <TaskSwitchingVisual size="md" variant="card" />
                 </div>
                 <div className="text-[10px] font-black text-[#163A4A] dark:text-[#7BD7E6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif] mb-1">
                   Room 04 · Flexibility
