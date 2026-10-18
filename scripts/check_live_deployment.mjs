@@ -39,6 +39,7 @@ async function verify() {
   }
 
   // Check for newly added strings and removed old strings
+  const checks = [
     { label: 'Theme CSS contains Icy blue (#EAF4F8)', pass: cssBody.includes('#EAF4F8') || jsResp.body.includes('#EAF4F8') },
     { label: 'Theme CSS contains Deep blue-gray (#263B46)', pass: cssBody.includes('#263B46') || jsResp.body.includes('#263B46') },
     { label: 'Theme CSS contains Ocean blue (#4D91AD)', pass: cssBody.includes('#4D91AD') || jsResp.body.includes('#4D91AD') },
