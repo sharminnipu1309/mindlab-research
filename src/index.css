@@ -519,6 +519,19 @@ body:not(.dark) .bg-\[\#EDEAF8\]\/60 {
   background-color: rgba(228, 235, 229, 0.7);
 }
 
+body:not(.dark) .bg-\[\#F3EEFE\],
+body:not(.dark) .bg-\[\#F5F3FF\] {
+  background-color: #E4EBE5;
+}
+
+body:not(.dark) .text-\[\#6D5AE6\],
+body:not(.dark) .text-\[\#6567C9\],
+body:not(.dark) .text-\[\#8B5CF6\],
+body:not(.dark) .text-\[\#7C3AED\],
+body:not(.dark) .text-\[\#6366F1\] {
+  color: #354238;
+}
+
 /* ─── DARK MODE ARCHITECTURE (HIGHEST PRIORITY FIX) ─────────────────────── */
 html.dark {
   color-scheme: dark;
@@ -560,7 +573,9 @@ html.dark .bg-\[\#1E2552\] {
 }
 
 /* Soft sage surface highlights */
-html.dark .bg-\[\#EDEAF8\] {
+html.dark .bg-\[\#EDEAF8\],
+html.dark .bg-\[\#F3EEFE\],
+html.dark .bg-\[\#F5F3FF\] {
   background-color: rgba(163, 185, 165, 0.12) !important;
 }
 
@@ -601,7 +616,11 @@ html.dark .text-\[\#94A3B8\] {
 html.dark .text-\[\#6D5AE6\],
 html.dark .text-\[\#6567C9\],
 html.dark .text-\[\#818CF8\],
+html.dark .text-\[\#8B5CF6\],
+html.dark .text-\[\#7C3AED\],
+html.dark .text-\[\#6366F1\],
 html.dark .text-\[\#A5B4FC\],
+html.dark .text-\[\#A5A6F6\],
 html.dark .text-\[\#C7D2FE\] {
   color: #A3B9A5 !important;
 }

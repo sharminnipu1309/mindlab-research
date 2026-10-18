@@ -33,17 +33,17 @@ export function HanoiVisual({ variant = 'light', size = 'md', className = '' }: 
         <rect x="18" y="74" width="64" height="5" rx="2.5" fill={isDark ? '#4B5563' : '#CBD5E1'} />
 
         {/* 3 Poles */}
-        <rect x="28.5" y="32" width="3" height="42" rx="1.5" fill={isDark ? '#818CF8' : '#94A3B8'} opacity="0.85" />
-        <rect x="48.5" y="32" width="3" height="42" rx="1.5" fill={isDark ? '#818CF8' : '#94A3B8'} opacity="0.85" />
-        <rect x="68.5" y="32" width="3" height="42" rx="1.5" fill={isDark ? '#818CF8' : '#94A3B8'} opacity="0.85" />
+        <rect x="28.5" y="32" width="3" height="42" rx="1.5" fill={isDark ? '#A3B9A5' : '#94A3B8'} opacity="0.85" />
+        <rect x="48.5" y="32" width="3" height="42" rx="1.5" fill={isDark ? '#A3B9A5' : '#94A3B8'} opacity="0.85" />
+        <rect x="68.5" y="32" width="3" height="42" rx="1.5" fill={isDark ? '#A3B9A5' : '#94A3B8'} opacity="0.85" />
 
         {/* Pole 1 Discs (Stacked: Large, Medium, Small) */}
-        <rect x="20" y="66" width="20" height="7" rx="3.5" fill="#4338CA" />
-        <rect x="22.5" y="58" width="15" height="7" rx="3.5" fill="#6D5AE6" />
-        <rect x="25" y="50" width="10" height="7" rx="3.5" fill="#A78BFA" />
+        <rect x="20" y="66" width="20" height="7" rx="3.5" fill="#354238" />
+        <rect x="22.5" y="58" width="15" height="7" rx="3.5" fill="#47564A" />
+        <rect x="25" y="50" width="10" height="7" rx="3.5" fill="#A3B9A5" />
 
         {/* Pole 3 Disc (Target placement demonstration) */}
-        <rect x="62" y="66" width="16" height="7" rx="3.5" fill="#7C3AED" opacity="0.4" strokeDasharray="2 2" stroke="#A78BFA" />
+        <rect x="62" y="66" width="16" height="7" rx="3.5" fill={isDark ? '#A3B9A5' : '#354238'} opacity="0.4" strokeDasharray="2 2" stroke={isDark ? '#D7E0D8' : '#354238'} />
 
         {/* Subtle accent highlight glow */}
         <circle cx="30" cy="53.5" r="2" fill="#FFFFFF" opacity="0.8" />
