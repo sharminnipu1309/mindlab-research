@@ -623,21 +623,21 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
       )}
 
       {/* Header strip */}
-      <div className="bg-white dark:bg-[#1A2B36] border-b border-[#C5DCE4] dark:border-[#314E62] px-4 sm:px-8 py-3 sm:py-4 transition-colors">
+      <div className="bg-white dark:bg-white border-b border-[#C5DCE4] px-4 sm:px-8 py-3 sm:py-4 transition-colors">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-6">
             <div>
-              <div className="text-[10px] font-black text-[#183B4A] dark:text-[#63B8C6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
+              <div className="text-[10px] font-black text-[#183B4A] dark:text-[#183B4A] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
                 Room 01 — Tower of Hanoi
               </div>
               <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-xs sm:text-sm font-bold text-[#263B46] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif]">
+                <span className="text-xs sm:text-sm font-bold text-[#183B4A] dark:text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif]">
                   Puzzle {puzzleIdx + 1} of {puzzles.length}
                 </span>
-                <span className="text-xs text-[#526E7B] dark:text-[#A2C4D6]">·</span>
-                <span className="text-xs font-semibold text-[#20748F] dark:text-[#63B8C6]">Attempt {attemptNumber} of {MAX_HANOI_ATTEMPTS}</span>
-                <span className="text-xs text-[#526E7B] dark:text-[#A2C4D6]">·</span>
-                <span className="text-xs font-medium text-[#526E7B] dark:text-[#A2C4D6]">{diskCount} discs</span>
+                <span className="text-xs text-[#526E7B]">·</span>
+                <span className="text-xs font-semibold text-[#20748F]">Attempt {attemptNumber} of {MAX_HANOI_ATTEMPTS}</span>
+                <span className="text-xs text-[#526E7B]">·</span>
+                <span className="text-xs font-medium text-[#526E7B]">{diskCount} discs</span>
               </div>
             </div>
             {/* Puzzle progress dots */}
@@ -647,10 +647,10 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
                   <div
                     className={`rounded-full transition-all ${
                       i < puzzleIdx
-                        ? 'w-2 h-2 bg-[#0D9488] dark:bg-[#14B8A6]'
+                        ? 'w-2 h-2 bg-[#0D9488]'
                         : i === puzzleIdx
-                        ? 'w-2.5 h-2.5 sm:w-3 sm:h-3 bg-[#4D91AD] dark:bg-[#63B8C6] ring-2 ring-[#4D91AD]/30'
-                        : 'w-2 h-2 bg-[#C5DCE4] dark:bg-[#314E62]'
+                        ? 'w-2.5 h-2.5 sm:w-3 sm:h-3 bg-[#4D91AD] ring-2 ring-[#4D91AD]/30'
+                        : 'w-2 h-2 bg-[#C5DCE4]'
                     }`}
                   />
                 </div>
@@ -661,18 +661,18 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
           {/* HUD */}
           <div className="flex items-center gap-4 sm:gap-6">
             {sessionOptions.showMoveCounter && [
-              { label: 'ATTEMPT', value: `${attemptNumber}/${MAX_HANOI_ATTEMPTS}`, mono: true, colorClass: 'text-[#20748F] dark:text-[#63B8C6]' },
-              { label: 'MOVES', value: moves, mono: true, colorClass: 'text-[#263B46] dark:text-[#F1F8FB]' },
-              { label: 'LIMIT', value: moveLimit, mono: true, colorClass: 'text-[#263B46] dark:text-[#F1F8FB]' },
+              { label: 'ATTEMPT', value: `${attemptNumber}/${MAX_HANOI_ATTEMPTS}`, mono: true, colorClass: 'text-[#20748F]' },
+              { label: 'MOVES', value: moves, mono: true, colorClass: 'text-[#183B4A]' },
+              { label: 'LIMIT', value: moveLimit, mono: true, colorClass: 'text-[#183B4A]' },
               {
                 label: 'REMAINING',
                 value: remaining,
                 mono: true,
-                colorClass: remaining <= 3 ? 'text-[#DC2626] dark:text-[#F87171]' : remaining <= 8 ? 'text-[#D97706] dark:text-[#FBBF24]' : 'text-[#263B46] dark:text-[#F1F8FB]',
+                colorClass: remaining <= 3 ? 'text-[#DC2626]' : remaining <= 8 ? 'text-[#D97706]' : 'text-[#183B4A]',
               },
             ].map(({ label, value, colorClass }) => (
               <div key={label} className="text-center">
-                <div className="text-[8px] sm:text-[9px] font-bold text-[#526E7B] dark:text-[#A2C4D6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
+                <div className="text-[8px] sm:text-[9px] font-bold text-[#526E7B] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
                   {label}
                 </div>
                 <div
@@ -684,12 +684,12 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
             ))}
             {sessionOptions.showTimer && (
               <>
-                {sessionOptions.showMoveCounter && <div className="h-6 sm:h-8 w-px bg-[#C5DCE4] dark:bg-[#314E62]" />}
+                {sessionOptions.showMoveCounter && <div className="h-6 sm:h-8 w-px bg-[#C5DCE4]" />}
                 <div className="text-center">
-                  <div className="text-[8px] sm:text-[9px] font-bold text-[#526E7B] dark:text-[#A2C4D6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
+                  <div className="text-[8px] sm:text-[9px] font-bold text-[#526E7B] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
                     <Clock size={9} className="inline mr-0.5" /> TIME
                   </div>
-                  <div className="text-sm sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#263B46] dark:text-[#F1F8FB] leading-none mt-0.5">
+                  <div className="text-sm sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#183B4A] leading-none mt-0.5">
                     {formatTime(elapsedMs)}
                   </div>
                 </div>
@@ -702,21 +702,21 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
       {/* Main game area */}
       <div className="flex-1 flex flex-col items-center justify-center px-3 sm:px-8 py-4 sm:py-6">
         {/* Simplified Instructions */}
-        <div className="bg-white dark:bg-[#223847] border border-[#C5DCE4] dark:border-[#314E62] rounded-2xl px-4 sm:px-6 py-2.5 sm:py-3 mb-3 sm:mb-4 text-center text-xs sm:text-sm text-[#526E7B] dark:text-[#A2C4D6] max-w-xl shadow-xs transition-colors">
-          <div className="font-bold text-[#263B46] dark:text-[#F1F8FB]">Move the discs to match the Goal State.</div>
-          <div className="text-[11px] sm:text-xs text-[#526E7B] dark:text-[#A2C4D6] mt-0.5 font-medium">
+        <div className="bg-white dark:bg-white border border-[#C5DCE4] rounded-2xl px-4 sm:px-6 py-2.5 sm:py-3 mb-3 sm:mb-4 text-center text-xs sm:text-sm text-[#526E7B] max-w-xl shadow-xs transition-colors">
+          <div className="font-bold text-[#183B4A] dark:text-[#183B4A]">Move the discs to match the Goal State.</div>
+          <div className="text-[11px] sm:text-xs text-[#526E7B] mt-0.5 font-medium">
             Move one disc at a time. Never place a larger disc on a smaller disc.
           </div>
-          <div className="text-[10px] sm:text-[11px] text-[#20748F] dark:text-[#63B8C6] font-medium mt-1.5 pt-1.5 border-t border-[#C5DCE4] dark:border-[#314E62]">
+          <div className="text-[10px] sm:text-[11px] text-[#20748F] font-medium mt-1.5 pt-1.5 border-t border-[#C5DCE4]">
             The dependent measure for Tower of Hanoi was the total number of moves taken to complete the last five trials, including the wrong moves.
           </div>
         </div>
 
         {/* GOAL STATE: Small, Compact Visual Preview (Exact miniature replica) */}
-        <div className="w-full max-w-md bg-white dark:bg-[#223847] rounded-2xl border border-[#C5DCE4] dark:border-[#314E62] shadow-xs px-3 sm:px-6 py-2 sm:py-3 mb-3 sm:mb-4 flex flex-col items-center animate-fade-in transition-colors">
+        <div className="w-full max-w-md bg-white dark:bg-white rounded-2xl border border-[#C5DCE4] shadow-xs px-3 sm:px-6 py-2 sm:py-3 mb-3 sm:mb-4 flex flex-col items-center animate-fade-in transition-colors">
           <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
-            <div className="w-2 h-2 rounded-full bg-[#4D91AD] dark:bg-[#63B8C6]" />
-            <span className="text-[10px] sm:text-[11px] font-bold text-[#263B46] dark:text-[#F1F8FB] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
+            <div className="w-2 h-2 rounded-full bg-[#4D91AD]" />
+            <span className="text-[10px] sm:text-[11px] font-bold text-[#183B4A] dark:text-[#183B4A] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
               Goal State
             </span>
           </div>
@@ -771,7 +771,7 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
 
         {/* ACTUAL INTERACTIVE PUZZLE BOARD */}
         <div
-          className="bg-white dark:bg-[#223847] rounded-3xl border border-[#C5DCE4] dark:border-[#314E62] shadow-sm px-3 sm:px-10 pb-4 sm:pb-6 pt-6 sm:pt-10 w-full max-w-2xl relative overflow-hidden transition-colors"
+          className="bg-white dark:bg-white rounded-3xl border border-[#C5DCE4] shadow-sm px-3 sm:px-10 pb-4 sm:pb-6 pt-6 sm:pt-10 w-full max-w-2xl relative overflow-hidden transition-colors"
           style={{ minHeight: boardHeight + 50 }}
         >
           {/* SVG Curved Tutorial Arrow (Trials 1 & 2 only) */}

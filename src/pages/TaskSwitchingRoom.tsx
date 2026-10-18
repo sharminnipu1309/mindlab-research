@@ -783,14 +783,14 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
       )}
 
       {/* Header Strip */}
-      <div className="bg-white dark:bg-[#1A2B36] border-b border-[#C5DCE4] dark:border-[#314E62] px-4 sm:px-8 py-3 sm:py-4">
+      <div className="bg-white dark:bg-white border-b border-[#C5DCE4] px-4 sm:px-8 py-3 sm:py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div>
-            <div className="text-[10px] font-black text-[#183B4A] dark:text-[#63B8C6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
+            <div className="text-[10px] font-black text-[#183B4A] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
               Room 04 — Task Switching
             </div>
             <div className="flex items-center gap-3 mt-0.5">
-              <span className="text-xs sm:text-sm font-bold text-[#183B4A] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif]">
+              <span className="text-xs sm:text-sm font-bold text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif]">
                 {phase === 'tutorial'
                   ? `Interactive Tutorial (Step ${tutorialStep + 1} of 4)`
                   : phase === 'practice'
@@ -809,7 +809,7 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                 setPhase('tutorial');
                 goToTutorialStep(0);
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#EAF4F8] dark:bg-[#131F27] border border-[#C5DCE4] dark:border-[#314E62] text-xs font-bold text-[#183B4A] dark:text-[#63B8C6] hover:bg-white dark:hover:bg-[#223847] transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#EAF4F8] dark:bg-[#EAF4F8] border border-[#C5DCE4] text-xs font-bold text-[#183B4A] hover:bg-white transition-all cursor-pointer"
             >
               <BookOpen size={14} />
               <span>Tutorial</span>
@@ -823,18 +823,18 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
 
         {/* 1. INTERACTIVE TUTORIAL PHASE */}
         {phase === 'tutorial' && (
-          <div className="max-w-2xl w-full bg-white dark:bg-[#223847] rounded-3xl border border-[#C5DCE4] dark:border-[#314E62] shadow-md p-5 sm:p-8 animate-fade-in text-center my-auto">
+          <div className="max-w-2xl w-full bg-white dark:bg-white rounded-3xl border border-[#C5DCE4] shadow-md p-5 sm:p-8 animate-fade-in text-center my-auto">
             {/* Step Progress Indicator */}
-            <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#C5DCE4] dark:border-[#314E62]">
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#C5DCE4]">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-[#EAF4F8] dark:bg-[#1A2B36] text-[#245D72] dark:text-[#63B8C6] flex items-center justify-center font-bold text-xs">
+                <div className="w-8 h-8 rounded-xl bg-[#EAF4F8] text-[#245D72] flex items-center justify-center font-bold text-xs">
                   <BookOpen size={16} />
                 </div>
                 <div className="text-left">
-                  <div className="text-[10px] font-bold text-[#245D72] dark:text-[#63B8C6] uppercase tracking-wider">
+                  <div className="text-[10px] font-bold text-[#245D72] uppercase tracking-wider">
                     Interactive Tutorial
                   </div>
-                  <div className="text-xs font-semibold text-[#183B4A] dark:text-[#F1F8FB]">
+                  <div className="text-xs font-semibold text-[#183B4A]">
                     Step {tutorialStep + 1} of 4: {
                       tutorialStep === 0 ? 'The 2×2 Grid' :
                       tutorialStep === 1 ? 'Letter Rule (Top Row)' :
@@ -853,8 +853,8 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                     onClick={() => goToTutorialStep(step)}
                     className={`h-2 rounded-full transition-all ${
                       tutorialStep === step
-                        ? 'w-6 bg-[#245D72] dark:bg-[#63B8C6]'
-                        : 'w-2 bg-[#C5DCE4] dark:bg-[#314E62] hover:bg-[#85B4C7]'
+                        ? 'w-6 bg-[#245D72]'
+                        : 'w-2 bg-[#C5DCE4] hover:bg-[#85B4C7]'
                     }`}
                     title={`Step ${step + 1}`}
                   />
@@ -863,8 +863,8 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             </div>
 
             {/* Prominent Speed Instruction */}
-            <div className="bg-[#FFFBEB] dark:bg-amber-950/40 rounded-2xl border border-[#FDE68A] dark:border-amber-700/60 p-3 sm:p-3.5 mb-6 text-center shadow-xs">
-              <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold text-[#B45309] dark:text-amber-200">
+            <div className="bg-[#FFFBEB] dark:bg-[#FFFBEB] rounded-2xl border border-[#FDE68A] p-3 sm:p-3.5 mb-6 text-center shadow-xs">
+              <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold text-[#B45309]">
                 <Zap size={16} className="text-[#D97706] animate-pulse flex-shrink-0" />
                 <span>Respond as quickly and accurately as possible.</span>
               </div>
@@ -874,57 +874,57 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             {tutorialStep === 0 && (
               <div className="space-y-5 animate-fade-in text-left">
                 <div className="text-center">
-                  <h3 className="text-lg sm:text-xl font-bold text-[#183B4A] dark:text-[#F1F8FB] mb-1 font-['Plus_Jakarta_Sans',sans-serif]">
+                  <h3 className="text-lg sm:text-xl font-bold text-[#183B4A] mb-1 font-['Plus_Jakarta_Sans',sans-serif]">
                     How the 2×2 Grid Works
                   </h3>
-                  <p className="text-sm sm:text-base font-semibold text-[#11152F] dark:text-white max-w-lg mx-auto">
+                  <p className="text-sm sm:text-base font-semibold text-[#183B4A] max-w-lg mx-auto">
                     You will see a letter and a number pair (e.g., 6M) presented inside a <strong>2×2 grid</strong>. Where it appears on the grid determines which task to do:
                   </p>
                 </div>
 
                 {/* Visual 2x2 Grid with Directional Highlights */}
-                <div className="max-w-xs mx-auto aspect-square border-2 border-[#C5DCE4] dark:border-[#314E62] rounded-2xl grid grid-cols-2 grid-rows-2 relative overflow-hidden bg-white dark:bg-[#1A2B36] shadow-xs">
-                  <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[2px] bg-[#C5DCE4] dark:bg-[#314E62] pointer-events-none" />
-                  <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[2px] bg-[#C5DCE4] dark:bg-[#314E62] pointer-events-none" />
+                <div className="max-w-xs mx-auto aspect-square border-2 border-[#C5DCE4] rounded-2xl grid grid-cols-2 grid-rows-2 relative overflow-hidden bg-white dark:bg-white shadow-xs">
+                  <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[2px] bg-[#C5DCE4] pointer-events-none" />
+                  <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[2px] bg-[#C5DCE4] pointer-events-none" />
 
                   {/* Top-Left */}
-                  <div className="p-3 bg-[#EAF4F8] dark:bg-[#223847] flex flex-col items-center justify-center border-b border-r border-[#C5DCE4] dark:border-[#314E62]">
-                    <span className="text-[10px] font-bold text-[#245D72] dark:text-[#63B8C6] uppercase">Top-Left</span>
-                    <span className="text-base font-extrabold text-[#183B4A] dark:text-[#F1F8FB] mt-0.5">Letter Rule</span>
+                  <div className="p-3 bg-[#EAF4F8] flex flex-col items-center justify-center border-b border-r border-[#C5DCE4]">
+                    <span className="text-[10px] font-bold text-[#245D72] uppercase">Top-Left</span>
+                    <span className="text-base font-extrabold text-[#183B4A] mt-0.5">Letter Rule</span>
                   </div>
                   {/* Top-Right */}
-                  <div className="p-3 bg-[#EAF4F8] dark:bg-[#223847] flex flex-col items-center justify-center border-b border-[#C5DCE4] dark:border-[#314E62]">
-                    <span className="text-[10px] font-bold text-[#245D72] dark:text-[#63B8C6] uppercase">Top-Right</span>
-                    <span className="text-base font-extrabold text-[#183B4A] dark:text-[#F1F8FB] mt-0.5">Letter Rule</span>
+                  <div className="p-3 bg-[#EAF4F8] flex flex-col items-center justify-center border-b border-[#C5DCE4]">
+                    <span className="text-[10px] font-bold text-[#245D72] uppercase">Top-Right</span>
+                    <span className="text-base font-extrabold text-[#183B4A] mt-0.5">Letter Rule</span>
                   </div>
                   {/* Bottom-Left */}
-                  <div className="p-3 bg-[#E4F5F2] dark:bg-[#163336] flex flex-col items-center justify-center border-r border-[#C5DCE4] dark:border-[#314E62]">
-                    <span className="text-[10px] font-bold text-[#0D9488] dark:text-[#5EEAD4] uppercase">Bottom-Left</span>
-                    <span className="text-base font-extrabold text-[#183B4A] dark:text-[#F1F8FB] mt-0.5">Number Rule</span>
+                  <div className="p-3 bg-[#E4F5F2] flex flex-col items-center justify-center border-r border-[#C5DCE4]">
+                    <span className="text-[10px] font-bold text-[#0D9488] uppercase">Bottom-Left</span>
+                    <span className="text-base font-extrabold text-[#183B4A] mt-0.5">Number Rule</span>
                   </div>
                   {/* Bottom-Right */}
-                  <div className="p-3 bg-[#E4F5F2] dark:bg-[#163336] flex flex-col items-center justify-center">
-                    <span className="text-[10px] font-bold text-[#0D9488] dark:text-[#5EEAD4] uppercase">Bottom-Right</span>
-                    <span className="text-base font-extrabold text-[#183B4A] dark:text-[#F1F8FB] mt-0.5">Number Rule</span>
+                  <div className="p-3 bg-[#E4F5F2] flex flex-col items-center justify-center">
+                    <span className="text-[10px] font-bold text-[#0D9488] uppercase">Bottom-Right</span>
+                    <span className="text-base font-extrabold text-[#183B4A] mt-0.5">Number Rule</span>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                  <div className="p-3.5 rounded-xl bg-[#EAF4F8] dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62]">
-                    <div className="font-bold text-[#245D72] dark:text-[#63B8C6] flex items-center gap-1.5 mb-1">
+                  <div className="p-3.5 rounded-xl bg-[#EAF4F8] border border-[#C5DCE4]">
+                    <div className="font-bold text-[#245D72] flex items-center gap-1.5 mb-1">
                       <ArrowUp size={14} />
                       Top Row = Letter Rule
                     </div>
-                    <p className="text-[#335667] dark:text-[#A2C4D6]">
+                    <p className="text-[#335667]">
                       Look at the <strong>letter</strong>. Ignore the number completely.
                     </p>
                   </div>
-                  <div className="p-3.5 rounded-xl bg-[#E4F5F2] dark:bg-[#1A2B36] border border-[#8DC4BE] dark:border-[#314E62]">
-                    <div className="font-bold text-[#0D9488] dark:text-[#5EEAD4] flex items-center gap-1.5 mb-1">
+                  <div className="p-3.5 rounded-xl bg-[#E4F5F2] border border-[#8DC4BE]">
+                    <div className="font-bold text-[#0D9488] flex items-center gap-1.5 mb-1">
                       <ArrowDown size={14} />
                       Bottom Row = Number Rule
                     </div>
-                    <p className="text-[#335667] dark:text-[#A2C4D6]">
+                    <p className="text-[#335667]">
                       Look at the <strong>number</strong>. Ignore the letter completely.
                     </p>
                   </div>
@@ -936,43 +936,43 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             {tutorialStep === 1 && (
               <div className="space-y-4 animate-fade-in text-left">
                 <div className="text-center">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF4F8] dark:bg-[#1A2B36] text-[#245D72] dark:text-[#63B8C6] mb-1">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF4F8] text-[#245D72] mb-1">
                     <ArrowUp size={13} />
                     Top Row: Respond According to the Letter
                   </div>
-                  <h3 className="text-lg sm:text-xl font-bold text-[#183B4A] dark:text-[#F1F8FB] mb-1 font-['Plus_Jakarta_Sans',sans-serif]">
+                  <h3 className="text-lg sm:text-xl font-bold text-[#183B4A] mb-1 font-['Plus_Jakarta_Sans',sans-serif]">
                     Rule 1 — Letter Trials
                   </h3>
-                  <p className="text-xs sm:text-sm font-semibold text-[#183B4A] dark:text-slate-200 max-w-lg mx-auto">
+                  <p className="text-xs sm:text-sm font-semibold text-[#183B4A] max-w-lg mx-auto">
                     When the number-letter pair (6M) is in the <strong>Top-Left or Top-Right</strong>, select the <strong>LETTER</strong>:
                   </p>
                 </div>
 
                 {/* Key Mapping Card */}
                 <div className="grid grid-cols-2 gap-3 max-w-md mx-auto text-xs">
-                  <div className="p-3 rounded-xl bg-[#EAF4F8] dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62] text-center">
-                    <span className="text-[#335667] dark:text-[#A2C4D6] block text-[11px] mb-1 font-semibold">Vowel (A, E, I, O, U)</span>
-                    <kbd className="px-3 py-1 bg-white dark:bg-[#223847] border border-[#C5DCE4] dark:border-[#314E62] rounded-lg text-sm font-mono font-bold text-[#183B4A] dark:text-[#F1F8FB]">B</kbd>
+                  <div className="p-3 rounded-xl bg-[#EAF4F8] border border-[#C5DCE4] text-center">
+                    <span className="text-[#335667] block text-[11px] mb-1 font-semibold">Vowel (A, E, I, O, U)</span>
+                    <kbd className="px-3 py-1 bg-white border border-[#C5DCE4] rounded-lg text-sm font-mono font-bold text-[#183B4A]">B</kbd>
                   </div>
-                  <div className="p-3 rounded-xl bg-[#EAF4F8] dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62] text-center">
-                    <span className="text-[#335667] dark:text-[#A2C4D6] block text-[11px] mb-1 font-semibold">Consonant (G, K, M, etc.)</span>
-                    <kbd className="px-3 py-1 bg-white dark:bg-[#223847] border border-[#C5DCE4] dark:border-[#314E62] rounded-lg text-sm font-mono font-bold text-[#183B4A] dark:text-[#F1F8FB]">N</kbd>
+                  <div className="p-3 rounded-xl bg-[#EAF4F8] border border-[#C5DCE4] text-center">
+                    <span className="text-[#335667] block text-[11px] mb-1 font-semibold">Consonant (G, K, M, etc.)</span>
+                    <kbd className="px-3 py-1 bg-white border border-[#C5DCE4] rounded-lg text-sm font-mono font-bold text-[#183B4A]">N</kbd>
                   </div>
                 </div>
 
                 {/* Interactive Practice Stimulus */}
-                <div className="bg-[#F4F9FB] dark:bg-[#1A2B36] rounded-2xl border border-[#C5DCE4] dark:border-[#314E62] p-4 text-center">
-                  <div className="text-[11px] font-bold text-[#245D72] dark:text-[#63B8C6] uppercase tracking-wider mb-2">
+                <div className="bg-[#F8FBFC] dark:bg-[#F8FBFC] rounded-2xl border border-[#C5DCE4] p-4 text-center">
+                  <div className="text-[11px] font-bold text-[#245D72] uppercase tracking-wider mb-2">
                     Try It: Interactive Example
                   </div>
 
                   {/* Mini 2x2 grid showing E 4 in Top-Left */}
-                  <div className="w-44 h-44 mx-auto border-2 border-[#C5DCE4] dark:border-[#314E62] rounded-xl grid grid-cols-2 grid-rows-2 relative overflow-hidden bg-white dark:bg-[#131F27] mb-3">
-                    <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[1px] bg-[#C5DCE4] dark:bg-[#314E62]" />
-                    <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[1px] bg-[#C5DCE4] dark:bg-[#314E62]" />
+                  <div className="w-44 h-44 mx-auto border-2 border-[#C5DCE4] rounded-xl grid grid-cols-2 grid-rows-2 relative overflow-hidden bg-white dark:bg-white mb-3">
+                    <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[1px] bg-[#C5DCE4]" />
+                    <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[1px] bg-[#C5DCE4]" />
 
                     {/* Top-Left with E 4 */}
-                    <div className="p-2 bg-[#EAF4F8] dark:bg-[#223847] flex items-center justify-center font-black text-2xl text-[#183B4A] dark:text-[#F1F8FB] border-b border-r border-[#C5DCE4] dark:border-[#314E62] animate-pop-in">
+                    <div className="p-2 bg-[#EAF4F8] flex items-center justify-center font-black text-2xl text-[#183B4A] border-b border-r border-[#C5DCE4] animate-pop-in">
                       E&nbsp;&nbsp;4
                     </div>
                     <div className="bg-transparent" />
@@ -980,7 +980,7 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                     <div className="bg-transparent" />
                   </div>
 
-                  <p className="text-xs text-[#183B4A] dark:text-[#F1F8FB] font-medium mb-3">
+                  <p className="text-xs text-[#183B4A] font-medium mb-3">
                     The stimulus is in the <strong>top row</strong>. The letter is <strong>E</strong>. What do you press?
                   </p>
 
@@ -989,27 +989,27 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                       onClick={() => handleTutorialResponse(1, 'B')}
                       className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                         tutorialFeedback?.step === 1 && tutorialFeedback.userKey === 'B'
-                          ? 'bg-[#D1EDE5] dark:bg-emerald-950/60 border-[#4A9B7F] text-[#0D9488] dark:text-emerald-300'
-                          : 'bg-white dark:bg-[#223847] border-[#C5DCE4] dark:border-[#314E62] text-[#183B4A] dark:text-[#F1F8FB] hover:bg-[#EAF4F8] dark:hover:bg-[#2C485C]'
+                          ? 'bg-[#D1EDE5] border-[#4A9B7F] text-[#0D9488]'
+                          : 'bg-white border-[#C5DCE4] text-[#183B4A] hover:bg-[#EAF4F8]'
                       }`}
                     >
-                      <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-[#1A2B36] rounded mr-1 font-mono">B</kbd> Vowel
+                      <kbd className="px-1.5 py-0.5 bg-slate-100 rounded mr-1 font-mono">B</kbd> Vowel
                     </button>
                     <button
                       onClick={() => handleTutorialResponse(1, 'N')}
                       className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                         tutorialFeedback?.step === 1 && tutorialFeedback.userKey === 'N'
-                          ? 'bg-[#FCE8EB] dark:bg-rose-950/60 border-[#E11D48] text-[#DC2626] dark:text-rose-300'
-                          : 'bg-white dark:bg-[#223847] border-[#C5DCE4] dark:border-[#314E62] text-[#335667] dark:text-[#A2C4D6] hover:bg-[#EAF4F8] dark:hover:bg-[#2C485C]'
+                          ? 'bg-[#FCE8EB] border-[#E11D48] text-[#DC2626]'
+                          : 'bg-white border-[#C5DCE4] text-[#335667] hover:bg-[#EAF4F8]'
                       }`}
                     >
-                      <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-[#1A2B36] rounded mr-1 font-mono">N</kbd> Consonant
+                      <kbd className="px-1.5 py-0.5 bg-slate-100 rounded mr-1 font-mono">N</kbd> Consonant
                     </button>
                   </div>
 
                   {tutorialFeedback?.step === 1 && (
                     <div className={`mt-3 p-2.5 rounded-xl text-xs font-medium animate-pop-in ${
-                      tutorialFeedback.isCorrect ? 'bg-[#D1EDE5] dark:bg-emerald-950/60 text-[#0D9488] dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800' : 'bg-[#FCE8EB] dark:bg-rose-950/60 text-[#DC2626] dark:text-rose-300 border border-rose-300 dark:border-rose-800'
+                      tutorialFeedback.isCorrect ? 'bg-[#D1EDE5] text-[#0D9488] border border-emerald-300' : 'bg-[#FCE8EB] text-[#DC2626] border border-rose-300'
                     }`}>
                       {tutorialFeedback.explanation}
                     </div>
@@ -1022,51 +1022,51 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             {tutorialStep === 2 && (
               <div className="space-y-4 animate-fade-in text-left">
                 <div className="text-center">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#E4F5F2] dark:bg-[#163336] text-[#0D9488] dark:text-[#5EEAD4] mb-1">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#E4F5F2] text-[#0D9488] mb-1">
                     <ArrowDown size={13} />
                     Bottom Row: Respond According to the Number
                   </div>
-                  <h3 className="text-lg sm:text-xl font-bold text-[#183B4A] dark:text-[#F1F8FB] mb-1 font-['Plus_Jakarta_Sans',sans-serif]">
+                  <h3 className="text-lg sm:text-xl font-bold text-[#183B4A] mb-1 font-['Plus_Jakarta_Sans',sans-serif]">
                     Rule 2 — Number Trials
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#335667] dark:text-[#A2C4D6] max-w-lg mx-auto">
+                  <p className="text-xs sm:text-sm text-[#335667] max-w-lg mx-auto">
                     When the stimulus appears in the <strong>Bottom-Left or Bottom-Right</strong>, choose your response based on the <strong>NUMBER</strong>:
                   </p>
                 </div>
 
                 {/* Key Mapping Card */}
                 <div className="grid grid-cols-2 gap-3 max-w-md mx-auto text-xs">
-                  <div className="p-3 rounded-xl bg-[#E4F5F2] dark:bg-[#163336] border border-[#8DC4BE] dark:border-[#314E62] text-center">
-                    <span className="text-[#335667] dark:text-[#A2C4D6] block text-[11px] mb-1 font-semibold">Odd (1, 3, 5, 7, 9)</span>
-                    <kbd className="px-3 py-1 bg-white dark:bg-[#223847] border border-[#8DC4BE] dark:border-[#314E62] rounded-lg text-sm font-mono font-bold text-[#0D9488] dark:text-[#5EEAD4]">B</kbd>
+                  <div className="p-3 rounded-xl bg-[#E4F5F2] border border-[#8DC4BE] text-center">
+                    <span className="text-[#335667] block text-[11px] mb-1 font-semibold">Odd (1, 3, 5, 7, 9)</span>
+                    <kbd className="px-3 py-1 bg-white border border-[#8DC4BE] rounded-lg text-sm font-mono font-bold text-[#0D9488]">B</kbd>
                   </div>
-                  <div className="p-3 rounded-xl bg-[#E4F5F2] dark:bg-[#163336] border border-[#8DC4BE] dark:border-[#314E62] text-center">
-                    <span className="text-[#335667] dark:text-[#A2C4D6] block text-[11px] mb-1 font-semibold">Even (2, 4, 6, 8)</span>
-                    <kbd className="px-3 py-1 bg-white dark:bg-[#223847] border border-[#8DC4BE] dark:border-[#314E62] rounded-lg text-sm font-mono font-bold text-[#0D9488] dark:text-[#5EEAD4]">N</kbd>
+                  <div className="p-3 rounded-xl bg-[#E4F5F2] border border-[#8DC4BE] text-center">
+                    <span className="text-[#335667] block text-[11px] mb-1 font-semibold">Even (2, 4, 6, 8)</span>
+                    <kbd className="px-3 py-1 bg-white border border-[#8DC4BE] rounded-lg text-sm font-mono font-bold text-[#0D9488]">N</kbd>
                   </div>
                 </div>
 
                 {/* Interactive Practice Stimulus */}
-                <div className="bg-[#F4F9FB] dark:bg-[#1A2B36] rounded-2xl border border-[#C5DCE4] dark:border-[#314E62] p-4 text-center">
-                  <div className="text-[11px] font-bold text-[#0D9488] dark:text-[#5EEAD4] uppercase tracking-wider mb-2">
+                <div className="bg-[#F8FBFC] dark:bg-[#F8FBFC] rounded-2xl border border-[#C5DCE4] p-4 text-center">
+                  <div className="text-[11px] font-bold text-[#0D9488] uppercase tracking-wider mb-2">
                     Try It: Interactive Example
                   </div>
 
                   {/* Mini 2x2 grid showing M 7 in Bottom-Right */}
-                  <div className="w-44 h-44 mx-auto border-2 border-[#C5DCE4] dark:border-[#314E62] rounded-xl grid grid-cols-2 grid-rows-2 relative overflow-hidden bg-white dark:bg-[#131F27] mb-3">
-                    <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[1px] bg-[#C5DCE4] dark:bg-[#314E62]" />
-                    <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[1px] bg-[#C5DCE4] dark:bg-[#314E62]" />
+                  <div className="w-44 h-44 mx-auto border-2 border-[#C5DCE4] rounded-xl grid grid-cols-2 grid-rows-2 relative overflow-hidden bg-white dark:bg-white mb-3">
+                    <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[1px] bg-[#C5DCE4]" />
+                    <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[1px] bg-[#C5DCE4]" />
 
                     <div className="bg-transparent" />
                     <div className="bg-transparent" />
                     <div className="bg-transparent" />
                     {/* Bottom-Right with M 7 */}
-                    <div className="p-2 bg-[#E4F5F2] dark:bg-[#163336] flex items-center justify-center font-black text-2xl text-[#183B4A] dark:text-[#F1F8FB] border-t border-l border-[#8DC4BE] dark:border-[#314E62] animate-pop-in">
+                    <div className="p-2 bg-[#E4F5F2] flex items-center justify-center font-black text-2xl text-[#183B4A] border-t border-l border-[#8DC4BE] animate-pop-in">
                       M&nbsp;&nbsp;7
                     </div>
                   </div>
 
-                  <p className="text-xs text-[#183B4A] dark:text-[#F1F8FB] font-medium mb-3">
+                  <p className="text-xs text-[#183B4A] font-medium mb-3">
                     The stimulus is in the <strong>bottom row</strong>. The number is <strong>7</strong>. What do you press?
                   </p>
 
@@ -1075,27 +1075,27 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                       onClick={() => handleTutorialResponse(2, 'B')}
                       className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                         tutorialFeedback?.step === 2 && tutorialFeedback.userKey === 'B'
-                          ? 'bg-[#D1EDE5] dark:bg-emerald-950/60 border-[#4A9B7F] text-[#0D9488] dark:text-emerald-300'
-                          : 'bg-white dark:bg-[#223847] border-[#8DC4BE] dark:border-[#314E62] text-[#0D9488] dark:text-[#5EEAD4] hover:bg-[#E4F5F2] dark:hover:bg-[#163336]'
+                          ? 'bg-[#D1EDE5] border-[#4A9B7F] text-[#0D9488]'
+                          : 'bg-white border-[#8DC4BE] text-[#0D9488] hover:bg-[#E4F5F2]'
                       }`}
                     >
-                      <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-[#1A2B36] rounded mr-1 font-mono">B</kbd> Odd
+                      <kbd className="px-1.5 py-0.5 bg-slate-100 rounded mr-1 font-mono">B</kbd> Odd
                     </button>
                     <button
                       onClick={() => handleTutorialResponse(2, 'N')}
                       className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                         tutorialFeedback?.step === 2 && tutorialFeedback.userKey === 'N'
-                          ? 'bg-[#FCE8EB] dark:bg-rose-950/60 border-[#E11D48] text-[#DC2626] dark:text-rose-300'
-                          : 'bg-white dark:bg-[#223847] border-[#C5DCE4] dark:border-[#314E62] text-[#335667] dark:text-[#A2C4D6] hover:bg-[#EAF4F8] dark:hover:bg-[#2C485C]'
+                          ? 'bg-[#FCE8EB] border-[#E11D48] text-[#DC2626]'
+                          : 'bg-white border-[#C5DCE4] text-[#335667] hover:bg-[#EAF4F8]'
                       }`}
                     >
-                      <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-[#1A2B36] rounded mr-1 font-mono">N</kbd> Even
+                      <kbd className="px-1.5 py-0.5 bg-slate-100 rounded mr-1 font-mono">N</kbd> Even
                     </button>
                   </div>
 
                   {tutorialFeedback?.step === 2 && (
                     <div className={`mt-3 p-2.5 rounded-xl text-xs font-medium animate-pop-in ${
-                      tutorialFeedback.isCorrect ? 'bg-[#D1EDE5] dark:bg-emerald-950/60 text-[#0D9488] dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800' : 'bg-[#FCE8EB] dark:bg-rose-950/60 text-[#DC2626] dark:text-rose-300 border border-rose-300 dark:border-rose-800'
+                      tutorialFeedback.isCorrect ? 'bg-[#D1EDE5] text-[#0D9488] border border-emerald-300' : 'bg-[#FCE8EB] text-[#DC2626] border border-rose-300'
                     }`}>
                       {tutorialFeedback.explanation}
                     </div>
@@ -1108,49 +1108,49 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             {tutorialStep === 3 && (
               <div className="space-y-4 animate-fade-in text-left">
                 <div className="text-center">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF4F8] dark:bg-[#1A2B36] text-[#245D72] dark:text-[#63B8C6] mb-1">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF4F8] text-[#245D72] mb-1">
                     <RotateCw size={13} />
                     Mixed Trials: Clockwise Rotation
                   </div>
-                  <h3 className="text-lg sm:text-xl font-bold text-[#183B4A] dark:text-[#F1F8FB] mb-1 font-['Plus_Jakarta_Sans',sans-serif]">
+                  <h3 className="text-lg sm:text-xl font-bold text-[#183B4A] mb-1 font-['Plus_Jakarta_Sans',sans-serif]">
                     Rule 3 — Mixed Task Switching
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#335667] dark:text-[#A2C4D6] max-w-lg mx-auto">
+                  <p className="text-xs sm:text-sm text-[#335667] max-w-lg mx-auto">
                     In mixed trials, the stimulus moves <strong>clockwise</strong> around the 4 quadrants on every turn. Identify which rule applies based on where the stimulus appears:
                   </p>
                 </div>
 
                 {/* Clockwise Flow Graphic */}
-                <div className="p-3.5 rounded-2xl bg-[#EAF4F8] dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62] text-xs">
+                <div className="p-3.5 rounded-2xl bg-[#EAF4F8] border border-[#C5DCE4] text-xs">
                   <div className="flex items-center justify-between text-center font-bold">
-                    <span className="text-[#245D72] dark:text-[#63B8C6]">1. Top-Left (Letter)</span>
-                    <ArrowRight size={14} className="text-[#4D91AD] dark:text-[#63B8C6]" />
-                    <span className="text-[#245D72] dark:text-[#63B8C6]">2. Top-Right (Letter)</span>
-                    <ArrowRight size={14} className="text-[#4D91AD] dark:text-[#63B8C6]" />
-                    <span className="text-[#0D9488] dark:text-[#5EEAD4]">3. Bottom-Right (Number)</span>
-                    <ArrowRight size={14} className="text-[#4D91AD] dark:text-[#63B8C6]" />
-                    <span className="text-[#0D9488] dark:text-[#5EEAD4]">4. Bottom-Left (Number)</span>
+                    <span className="text-[#245D72]">1. Top-Left (Letter)</span>
+                    <ArrowRight size={14} className="text-[#4D91AD]" />
+                    <span className="text-[#245D72]">2. Top-Right (Letter)</span>
+                    <ArrowRight size={14} className="text-[#4D91AD]" />
+                    <span className="text-[#0D9488]">3. Bottom-Right (Number)</span>
+                    <ArrowRight size={14} className="text-[#4D91AD]" />
+                    <span className="text-[#0D9488]">4. Bottom-Left (Number)</span>
                   </div>
                 </div>
 
                 {/* Quick Reference Summary */}
-                <div className="bg-white dark:bg-[#1A2B36] rounded-2xl border border-[#C5DCE4] dark:border-[#314E62] overflow-hidden text-xs">
+                <div className="bg-white dark:bg-white rounded-2xl border border-[#C5DCE4] overflow-hidden text-xs">
                   <table className="w-full text-left">
-                    <thead className="bg-[#EAF4F8] dark:bg-[#131F27] border-b border-[#C5DCE4] dark:border-[#314E62] text-[11px] font-bold text-[#335667] dark:text-[#A2C4D6]">
+                    <thead className="bg-[#EAF4F8] border-b border-[#C5DCE4] text-[11px] font-bold text-[#335667]">
                       <tr>
                         <th className="p-2.5">Key</th>
-                        <th className="p-2.5 text-[#245D72] dark:text-[#63B8C6]">Top Row: Letter Rule</th>
-                        <th className="p-2.5 text-[#0D9488] dark:text-[#5EEAD4]">Bottom Row: Number Rule</th>
+                        <th className="p-2.5 text-[#245D72]">Top Row: Letter Rule</th>
+                        <th className="p-2.5 text-[#0D9488]">Bottom Row: Number Rule</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#C5DCE4] dark:divide-[#314E62] text-[#183B4A] dark:text-[#F1F8FB] font-medium">
+                    <tbody className="divide-y divide-[#C5DCE4] text-[#183B4A] font-medium">
                       <tr>
-                        <td className="p-2.5 font-bold font-mono text-[#245D72] dark:text-[#63B8C6]">B</td>
+                        <td className="p-2.5 font-bold font-mono text-[#245D72]">B</td>
                         <td className="p-2.5">Vowel (A, E, I, O, U)</td>
                         <td className="p-2.5">Odd (1, 3, 5, 7, 9)</td>
                       </tr>
                       <tr>
-                        <td className="p-2.5 font-bold font-mono text-[#245D72] dark:text-[#63B8C6]">N</td>
+                        <td className="p-2.5 font-bold font-mono text-[#245D72]">N</td>
                         <td className="p-2.5">Consonant (all others)</td>
                         <td className="p-2.5">Even (2, 4, 6, 8)</td>
                       </tr>
@@ -1159,26 +1159,26 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                 </div>
 
                 {/* Interactive Practice Stimulus: K 2 in Bottom-Left */}
-                <div className="bg-[#F4F9FB] dark:bg-[#1A2B36] rounded-2xl border border-[#C5DCE4] dark:border-[#314E62] p-4 text-center">
-                  <div className="text-[11px] font-bold text-[#245D72] dark:text-[#63B8C6] uppercase tracking-wider mb-2">
+                <div className="bg-[#F8FBFC] dark:bg-[#F8FBFC] rounded-2xl border border-[#C5DCE4] p-4 text-center">
+                  <div className="text-[11px] font-bold text-[#245D72] uppercase tracking-wider mb-2">
                     Try It: Identify Rule &amp; Respond
                   </div>
 
                   {/* Mini 2x2 grid showing K 2 in Bottom-Left */}
-                  <div className="w-44 h-44 mx-auto border-2 border-[#C5DCE4] dark:border-[#314E62] rounded-xl grid grid-cols-2 grid-rows-2 relative overflow-hidden bg-white dark:bg-[#131F27] mb-3">
-                    <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[1px] bg-[#C5DCE4] dark:bg-[#314E62]" />
-                    <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[1px] bg-[#C5DCE4] dark:bg-[#314E62]" />
+                  <div className="w-44 h-44 mx-auto border-2 border-[#C5DCE4] rounded-xl grid grid-cols-2 grid-rows-2 relative overflow-hidden bg-white dark:bg-white mb-3">
+                    <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[1px] bg-[#C5DCE4]" />
+                    <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[1px] bg-[#C5DCE4]" />
 
                     <div className="bg-transparent" />
                     <div className="bg-transparent" />
                     {/* Bottom-Left with K 2 */}
-                    <div className="p-2 bg-[#E4F5F2] dark:bg-[#163336] flex items-center justify-center font-black text-2xl text-[#183B4A] dark:text-[#F1F8FB] border-t border-r border-[#8DC4BE] dark:border-[#314E62] animate-pop-in">
+                    <div className="p-2 bg-[#E4F5F2] flex items-center justify-center font-black text-2xl text-[#183B4A] border-t border-r border-[#8DC4BE] animate-pop-in">
                       K&nbsp;&nbsp;2
                     </div>
                     <div className="bg-transparent" />
                   </div>
 
-                  <p className="text-xs text-[#183B4A] dark:text-[#F1F8FB] font-medium mb-3">
+                  <p className="text-xs text-[#183B4A] font-medium mb-3">
                     The stimulus rotated to <strong>bottom-left</strong>. The number is <strong>2 (Even)</strong>. What do you press?
                   </p>
 
@@ -1187,27 +1187,27 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                       onClick={() => handleTutorialResponse(3, 'B')}
                       className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                         tutorialFeedback?.step === 3 && tutorialFeedback.userKey === 'B'
-                          ? 'bg-[#FCE8EB] dark:bg-rose-950/60 border-[#E11D48] text-[#DC2626] dark:text-rose-300'
-                          : 'bg-white dark:bg-[#223847] border-[#C5DCE4] dark:border-[#314E62] text-[#335667] dark:text-[#A2C4D6] hover:bg-[#EAF4F8] dark:hover:bg-[#2C485C]'
+                          ? 'bg-[#FCE8EB] border-[#E11D48] text-[#DC2626]'
+                          : 'bg-white border-[#C5DCE4] text-[#335667] hover:bg-[#EAF4F8]'
                       }`}
                     >
-                      <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-[#1A2B36] rounded mr-1 font-mono">B</kbd> Odd
+                      <kbd className="px-1.5 py-0.5 bg-slate-100 rounded mr-1 font-mono">B</kbd> Odd
                     </button>
                     <button
                       onClick={() => handleTutorialResponse(3, 'N')}
                       className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                         tutorialFeedback?.step === 3 && tutorialFeedback.userKey === 'N'
-                          ? 'bg-[#D1EDE5] dark:bg-emerald-950/60 border-[#4A9B7F] text-[#0D9488] dark:text-emerald-300'
-                          : 'bg-white dark:bg-[#223847] border-[#8DC4BE] dark:border-[#314E62] text-[#0D9488] dark:text-[#5EEAD4] hover:bg-[#E4F5F2] dark:hover:bg-[#163336]'
+                          ? 'bg-[#D1EDE5] border-[#4A9B7F] text-[#0D9488]'
+                          : 'bg-white border-[#8DC4BE] text-[#0D9488] hover:bg-[#E4F5F2]'
                       }`}
                     >
-                      <kbd className="px-1.5 py-0.5 bg-slate-100 dark:bg-[#1A2B36] rounded mr-1 font-mono">N</kbd> Even
+                      <kbd className="px-1.5 py-0.5 bg-slate-100 rounded mr-1 font-mono">N</kbd> Even
                     </button>
                   </div>
 
                   {tutorialFeedback?.step === 3 && (
                     <div className={`mt-3 p-2.5 rounded-xl text-xs font-medium animate-pop-in ${
-                      tutorialFeedback.isCorrect ? 'bg-[#D1EDE5] dark:bg-emerald-950/60 text-[#0D9488] dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800' : 'bg-[#FCE8EB] dark:bg-rose-950/60 text-[#DC2626] dark:text-rose-300 border border-rose-300 dark:border-rose-800'
+                      tutorialFeedback.isCorrect ? 'bg-[#D1EDE5] text-[#0D9488] border border-emerald-300' : 'bg-[#FCE8EB] text-[#DC2626] border border-rose-300'
                     }`}>
                       {tutorialFeedback.explanation}
                     </div>
@@ -1217,11 +1217,11 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             )}
 
             {/* Navigation Between Tutorial Steps */}
-            <div className="flex items-center justify-between gap-3 mt-6 pt-4 border-t border-[#C5DCE4] dark:border-[#314E62]">
+            <div className="flex items-center justify-between gap-3 mt-6 pt-4 border-t border-[#C5DCE4]">
               {tutorialStep > 0 ? (
                 <button
                   onClick={() => goToTutorialStep(tutorialStep - 1)}
-                  className="px-4 py-2.5 rounded-xl bg-[#EAF4F8] dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62] text-xs font-bold text-[#183B4A] dark:text-[#A2C4D6] hover:bg-white dark:hover:bg-[#223847] transition-colors flex items-center gap-1.5 cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-[#EAF4F8] border border-[#C5DCE4] text-xs font-bold text-[#183B4A] hover:bg-white transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
                   <ArrowLeft size={14} />
                   Previous Step
@@ -1259,23 +1259,23 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
         {/* 1. INTRO PHASE — PRACTICE INSTRUCTIONS */}
         {phase === 'intro' && (
           <div className="text-center max-w-xl w-full animate-fade-in-up">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#EAF4F8] dark:bg-[#1A2B36] rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-5 text-[#245D72] dark:text-[#63B8C6]">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#EAF4F8] rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-5 text-[#245D72]">
               <RefreshCw size={26} />
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-[#183B4A] dark:text-[#F1F8FB] mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
               Alternating-Runs Task Switching
             </h2>
-            <p className="text-sm sm:text-base font-semibold text-[#11152F] dark:text-white leading-relaxed mb-6">
+            <p className="text-sm sm:text-base font-semibold text-[#11152F] dark:text-[#EAF4F8] leading-relaxed mb-6">
               You will see a letter and a number pair (e.g., 6M) presented inside a <strong>2×2 grid</strong>. Where it appears on the grid determines which task to do:
             </p>
 
             {/* Prominent, Larger, Bold Speed Instruction Banner */}
-            <div className="bg-[#FFFBEB] dark:bg-amber-950/40 rounded-2xl border border-[#FDE68A] dark:border-amber-700/60 p-4 sm:p-5 mb-6 text-center shadow-xs">
-              <div className="flex items-center justify-center gap-2 text-sm sm:text-base font-extrabold text-[#B45309] dark:text-amber-200">
+            <div className="bg-[#FFFBEB] dark:bg-[#FFFBEB] rounded-2xl border border-[#FDE68A] p-4 sm:p-5 mb-6 text-center shadow-xs">
+              <div className="flex items-center justify-center gap-2 text-sm sm:text-base font-extrabold text-[#B45309]">
                 <Zap size={20} className="text-[#D97706] animate-pulse flex-shrink-0" />
                 <span>Respond as quickly and accurately as possible.</span>
               </div>
-              <p className="text-xs text-[#92400E] dark:text-amber-300 mt-1 font-medium">
+              <p className="text-xs text-[#92400E] mt-1 font-medium">
                 Use the <strong>B</strong> and <strong>N</strong> keys on your keyboard.
               </p>
             </div>
@@ -1283,56 +1283,56 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             {/* Task rules comparison cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 text-left">
               {/* Top Row — Letter Task */}
-              <div className="bg-white dark:bg-[#223847] rounded-2xl border border-[#C5DCE4] dark:border-[#314E62] p-4 sm:p-5 shadow-xs">
+              <div className="bg-white dark:bg-white rounded-2xl border border-[#C5DCE4] p-4 sm:p-5 shadow-xs">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#245D72] dark:bg-[#63B8C6]" />
-                  <span className="text-xs font-extrabold text-[#245D72] dark:text-[#63B8C6] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#245D72]" />
+                  <span className="text-xs font-extrabold text-[#245D72] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                     TOP ROW — LETTER TASK
                   </span>
                 </div>
-                <p className="text-xs sm:text-sm font-semibold text-[#183B4A] dark:text-slate-200 mb-3">
+                <p className="text-xs sm:text-sm font-semibold text-[#183B4A] mb-3">
                   When the number-letter pair (6M) is in the <strong>Top-Left or Top-Right</strong>, select the <strong>LETTER</strong>:
                 </p>
                 <div className="space-y-2 text-xs font-semibold">
-                  <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-[#EAF4F8] dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62]">
-                    <span className="text-[#183B4A] dark:text-white">Vowel (A, E, I, O, U)</span>
-                    <kbd className="px-2 sm:px-2.5 py-1 bg-white dark:bg-[#223847] border border-[#C5DCE4] dark:border-[#314E62] rounded-lg text-xs font-mono font-bold text-[#183B4A] dark:text-[#F1F8FB]">B</kbd>
+                  <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-[#EAF4F8] border border-[#C5DCE4]">
+                    <span className="text-[#183B4A]">Vowel (A, E, I, O, U)</span>
+                    <kbd className="px-2 sm:px-2.5 py-1 bg-white border border-[#C5DCE4] rounded-lg text-xs font-mono font-bold text-[#183B4A]">B</kbd>
                   </div>
-                  <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-[#EAF4F8] dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62]">
-                    <span className="text-[#183B4A] dark:text-white">Consonant</span>
-                    <kbd className="px-2 sm:px-2.5 py-1 bg-white dark:bg-[#223847] border border-[#C5DCE4] dark:border-[#314E62] rounded-lg text-xs font-mono font-bold text-[#183B4A] dark:text-[#F1F8FB]">N</kbd>
+                  <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-[#EAF4F8] border border-[#C5DCE4]">
+                    <span className="text-[#183B4A]">Consonant</span>
+                    <kbd className="px-2 sm:px-2.5 py-1 bg-white border border-[#C5DCE4] rounded-lg text-xs font-mono font-bold text-[#183B4A]">N</kbd>
                   </div>
                 </div>
               </div>
 
               {/* Bottom Row — Number Task */}
-              <div className="bg-white dark:bg-[#223847] rounded-2xl border border-[#8DC4BE] dark:border-[#314E62] p-4 sm:p-5 shadow-xs">
+              <div className="bg-white dark:bg-white rounded-2xl border border-[#8DC4BE] p-4 sm:p-5 shadow-xs">
                 <div className="flex items-center gap-2 mb-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#0D9488]" />
-                  <span className="text-xs font-extrabold text-[#0D9488] dark:text-[#5EEAD4] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-xs font-extrabold text-[#0D9488] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                     BOTTOM ROW — NUMBER TASK
                   </span>
                 </div>
-                <p className="text-xs sm:text-sm font-semibold text-[#183B4A] dark:text-slate-200 mb-3">
+                <p className="text-xs sm:text-sm font-semibold text-[#183B4A] mb-3">
                   When the number-letter pair (6M) is in the <strong>Bottom-Left or Bottom-Right</strong>, select the <strong>NUMBER</strong>:
                 </p>
                 <div className="space-y-2 text-xs font-semibold">
-                  <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-[#E4F5F2] dark:bg-[#1A2B36] border border-[#8DC4BE] dark:border-[#314E62]">
-                    <span className="text-[#183B4A] dark:text-white">Odd (1, 3, 5, 7, 9)</span>
-                    <kbd className="px-2 sm:px-2.5 py-1 bg-white dark:bg-[#223847] border border-[#8DC4BE] dark:border-[#314E62] rounded-lg text-xs font-mono font-bold text-[#0D9488] dark:text-[#5EEAD4]">B</kbd>
+                  <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-[#E4F5F2] border border-[#8DC4BE]">
+                    <span className="text-[#183B4A]">Odd (1, 3, 5, 7, 9)</span>
+                    <kbd className="px-2 sm:px-2.5 py-1 bg-white border border-[#8DC4BE] rounded-lg text-xs font-mono font-bold text-[#0D9488]">B</kbd>
                   </div>
-                  <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-[#E4F5F2] dark:bg-[#1A2B36] border border-[#8DC4BE] dark:border-[#314E62]">
-                    <span className="text-[#183B4A] dark:text-white">Even (2, 4, 6, 8)</span>
-                    <kbd className="px-2 sm:px-2.5 py-1 bg-white dark:bg-[#223847] border border-[#8DC4BE] dark:border-[#314E62] rounded-lg text-xs font-mono font-bold text-[#0D9488] dark:text-[#5EEAD4]">N</kbd>
+                  <div className="flex items-center justify-between p-2 sm:p-2.5 rounded-xl bg-[#E4F5F2] border border-[#8DC4BE]">
+                    <span className="text-[#183B4A]">Even (2, 4, 6, 8)</span>
+                    <kbd className="px-2 sm:px-2.5 py-1 bg-white border border-[#8DC4BE] rounded-lg text-xs font-mono font-bold text-[#0D9488]">N</kbd>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Alternating runs explanation */}
-            <div className="bg-[#EAF4F8] dark:bg-[#1A2B36] rounded-2xl border border-[#C5DCE4] dark:border-[#314E62] p-3.5 sm:p-4 mb-6 sm:mb-8 text-left text-xs text-[#335667] dark:text-[#A2C4D6] space-y-2">
+            <div className="bg-white dark:bg-white rounded-2xl border border-[#C5DCE4] p-3.5 sm:p-4 mb-6 sm:mb-8 text-left text-xs text-[#245D72] space-y-2 shadow-xs">
               <div className="flex items-start gap-2.5">
-                <RefreshCw size={15} className="text-[#245D72] dark:text-[#63B8C6] flex-shrink-0 mt-0.5" />
+                <RefreshCw size={15} className="text-[#245D72] flex-shrink-0 mt-0.5" />
                 <span>
                   <strong>Predictable Alternating Runs:</strong> In the mixed block, the stimulus rotates <strong>clockwise</strong> around the 4 quadrants on every turn (Top-Left → Top-Right → Bottom-Right → Bottom-Left). There are <strong>no written task cues</strong>—the quadrant indicates the task!
                 </span>
@@ -1346,7 +1346,7 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                   setPhase('tutorial');
                   goToTutorialStep(0);
                 }}
-                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white dark:bg-[#223847] border border-[#C5DCE4] dark:border-[#314E62] text-xs sm:text-sm font-bold text-[#183B4A] dark:text-[#F1F8FB] hover:bg-[#EAF4F8] dark:hover:bg-[#1A2B36] transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white dark:bg-white border border-[#C5DCE4] text-xs sm:text-sm font-bold text-[#183B4A] hover:bg-[#EAF4F8] transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
               >
                 <BookOpen size={16} />
                 View Interactive Tutorial
@@ -1367,15 +1367,15 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
         {(phase === 'practice' || phase === 'experiment') && currentItem && (
           <div className="flex flex-col items-center gap-3 sm:gap-5 w-full max-w-xl animate-fade-in">
             {/* Header info badge (No task cue words in experimental phase) */}
-            <div className="flex items-center gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-semibold font-['Plus_Jakarta_Sans',sans-serif] bg-white dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62] shadow-xs text-[#183B4A] dark:text-[#A2C4D6] text-center">
+            <div className="flex items-center gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-semibold font-['Plus_Jakarta_Sans',sans-serif] bg-white dark:bg-white border border-[#C5DCE4] shadow-xs text-[#183B4A] text-center">
               {phase === 'practice' ? (
                 <>
-                  <span className="w-2 h-2 rounded-full bg-[#245D72] dark:bg-[#63B8C6] animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-[#245D72] animate-pulse" />
                   Practice Phase ({trialIndexInBlock + 1} of {PRACTICE_COUNT})
                 </>
               ) : (
                 <>
-                  <span className="w-2 h-2 rounded-full bg-[#245D72] dark:bg-[#63B8C6] animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-[#245D72] animate-pulse" />
                   Block {currentBlockIndex + 1} of 3: {currentBlockIndex === 0 ? 'Pure Letter' : currentBlockIndex === 1 ? 'Pure Number' : 'Mixed Alternating Runs'} ({trialIndexInBlock + 1} of {currentBlockTrials.length})
                 </>
               )}
@@ -1387,14 +1387,14 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                 <div
                   className={`flex items-center gap-2 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold animate-pop-in border shadow-xs text-center ${
                     feedback.isCorrect
-                      ? 'bg-[#D1EDE5] dark:bg-emerald-950/60 border-[#4A9B7F]/30 dark:border-emerald-700/60 text-[#0D9488] dark:text-emerald-300'
-                      : 'bg-[#FCE8EB] dark:bg-rose-950/60 border-[#E11D48]/30 dark:border-rose-700/60 text-[#DC2626] dark:text-rose-300'
+                      ? 'bg-[#D1EDE5] border-[#4A9B7F]/30 text-[#0D9488]'
+                      : 'bg-[#FCE8EB] border-[#E11D48]/30 text-[#DC2626]'
                   }`}
                 >
                   {feedback.isCorrect ? (
-                    <CheckCircle size={16} className="text-[#0D9488] dark:text-emerald-300 flex-shrink-0" />
+                    <CheckCircle size={16} className="text-[#0D9488] flex-shrink-0" />
                   ) : (
-                    <X size={16} className="text-[#DC2626] dark:text-rose-300 flex-shrink-0" />
+                    <X size={16} className="text-[#DC2626] flex-shrink-0" />
                   )}
                   <span className="font-['Plus_Jakarta_Sans',sans-serif] break-words">
                     {feedback.title} — {feedback.explanation}
@@ -1404,9 +1404,9 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             </div>
 
             {/* Prominent Speed Instruction */}
-            <div className="w-full max-w-sm sm:max-w-md text-center py-2 px-4 rounded-2xl bg-white dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62] shadow-xs mb-1">
-              <span className="text-xs sm:text-sm font-extrabold text-[#183B4A] dark:text-[#F1F8FB] tracking-tight flex items-center justify-center gap-2">
-                <Zap size={16} className="text-[#245D72] dark:text-[#63B8C6] flex-shrink-0 animate-pulse" />
+            <div className="w-full max-w-sm sm:max-w-md text-center py-2 px-4 rounded-2xl bg-white dark:bg-white border border-[#C5DCE4] shadow-xs mb-1">
+              <span className="text-xs sm:text-sm font-extrabold text-[#183B4A] tracking-tight flex items-center justify-center gap-2">
+                <Zap size={16} className="text-[#245D72] flex-shrink-0 animate-pulse" />
                 <span>Respond as quickly and accurately as possible.</span>
               </span>
             </div>
@@ -1415,62 +1415,62 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             <div className="w-full max-w-sm sm:max-w-md flex flex-col items-center">
               {/* Top row guide (visible exclusively during practice phase) */}
               {phase === 'practice' && (
-                <div className="w-full flex justify-between px-3 mb-1 text-[11px] font-bold tracking-wider uppercase text-[#245D72] dark:text-[#63B8C6]">
+                <div className="w-full flex justify-between px-3 mb-1 text-[11px] font-bold tracking-wider uppercase text-[#245D72]">
                   <span>Top Row: Letter Task</span>
-                  <span className="text-[10px] text-[#335667] dark:text-[#A2C4D6] font-normal font-mono">B = Vowel · N = Consonant</span>
+                  <span className="text-[10px] text-[#335667] font-normal font-mono">B = Vowel · N = Consonant</span>
                 </div>
               )}
 
               {/* 2×2 Quadrant Grid Frame */}
-              <div className="w-full aspect-square max-h-[280px] sm:max-h-[320px] bg-white dark:bg-[#1A2B36] rounded-3xl border-2 border-[#C5DCE4] dark:border-[#314E62] shadow-sm relative overflow-hidden select-none grid grid-cols-2 grid-rows-2">
+              <div className="w-full aspect-square max-h-[280px] sm:max-h-[320px] bg-white dark:bg-white rounded-3xl border-2 border-[#C5DCE4] shadow-sm relative overflow-hidden select-none grid grid-cols-2 grid-rows-2">
                 {/* Central Dividing Crosshairs */}
-                <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[2px] bg-[#C5DCE4] dark:bg-[#314E62] pointer-events-none" />
-                <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[2px] bg-[#C5DCE4] dark:bg-[#314E62] pointer-events-none" />
+                <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[2px] bg-[#C5DCE4] pointer-events-none" />
+                <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[2px] bg-[#C5DCE4] pointer-events-none" />
 
                 {/* Central Fixation Cross at crosshair intersection */}
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none">
                   {trialStage === 'fixation' ? (
-                    <div className="w-7 h-7 rounded-full bg-white dark:bg-[#223847] border border-[#C5DCE4] dark:border-[#314E62] shadow-xs flex items-center justify-center text-base font-mono font-bold text-[#183B4A] dark:text-[#F1F8FB] animate-scale-in">
+                    <div className="w-7 h-7 rounded-full bg-white dark:bg-white border border-[#C5DCE4] shadow-xs flex items-center justify-center text-base font-mono font-bold text-[#183B4A] animate-scale-in">
                       +
                     </div>
                   ) : trialStage === 'interTrial' ? (
-                    <div className="w-2 h-2 rounded-full bg-[#C5DCE4] dark:bg-[#314E62]" />
+                    <div className="w-2 h-2 rounded-full bg-[#C5DCE4]" />
                   ) : (
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#C5DCE4]/60 dark:bg-[#314E62]/60" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#C5DCE4]/60" />
                   )}
                 </div>
 
                 {/* Quadrant 1: Top-Left (Row 1, Col 1 -> Letter Task) */}
-                <div className={`flex items-center justify-center p-3 relative transition-colors ${currentItem.quadrant === 1 ? 'bg-[#EAF4F8]/70 dark:bg-[#223847]/70' : ''}`}>
+                <div className={`flex items-center justify-center p-3 relative transition-colors ${currentItem.quadrant === 1 ? 'bg-[#EAF4F8]/70 dark:bg-[#EAF4F8]/70' : ''}`}>
                   {(trialStage === 'stimulus' || trialStage === 'feedback') && currentItem.quadrant === 1 && (
-                    <div className="text-3xl sm:text-5xl font-black font-['Plus_Jakarta_Sans',sans-serif] tracking-wider text-[#183B4A] dark:text-[#F1F8FB] animate-pop-in">
+                    <div className="text-3xl sm:text-5xl font-black font-['Plus_Jakarta_Sans',sans-serif] tracking-wider text-[#183B4A] animate-pop-in">
                       {currentItem.letter}&nbsp;&nbsp;{currentItem.number}
                     </div>
                   )}
                 </div>
 
                 {/* Quadrant 2: Top-Right (Row 1, Col 2 -> Letter Task) */}
-                <div className={`flex items-center justify-center p-3 relative transition-colors ${currentItem.quadrant === 2 ? 'bg-[#EAF4F8]/70 dark:bg-[#223847]/70' : ''}`}>
+                <div className={`flex items-center justify-center p-3 relative transition-colors ${currentItem.quadrant === 2 ? 'bg-[#EAF4F8]/70 dark:bg-[#EAF4F8]/70' : ''}`}>
                   {(trialStage === 'stimulus' || trialStage === 'feedback') && currentItem.quadrant === 2 && (
-                    <div className="text-3xl sm:text-5xl font-black font-['Plus_Jakarta_Sans',sans-serif] tracking-wider text-[#183B4A] dark:text-[#F1F8FB] animate-pop-in">
+                    <div className="text-3xl sm:text-5xl font-black font-['Plus_Jakarta_Sans',sans-serif] tracking-wider text-[#183B4A] animate-pop-in">
                       {currentItem.letter}&nbsp;&nbsp;{currentItem.number}
                     </div>
                   )}
                 </div>
 
                 {/* Quadrant 4: Bottom-Left (Row 2, Col 1 -> Number Task) */}
-                <div className={`flex items-center justify-center p-3 relative transition-colors ${currentItem.quadrant === 4 ? 'bg-[#EAF4F8]/70 dark:bg-[#223847]/70' : ''}`}>
+                <div className={`flex items-center justify-center p-3 relative transition-colors ${currentItem.quadrant === 4 ? 'bg-[#EAF4F8]/70 dark:bg-[#EAF4F8]/70' : ''}`}>
                   {(trialStage === 'stimulus' || trialStage === 'feedback') && currentItem.quadrant === 4 && (
-                    <div className="text-3xl sm:text-5xl font-black font-['Plus_Jakarta_Sans',sans-serif] tracking-wider text-[#183B4A] dark:text-[#F1F8FB] animate-pop-in">
+                    <div className="text-3xl sm:text-5xl font-black font-['Plus_Jakarta_Sans',sans-serif] tracking-wider text-[#183B4A] animate-pop-in">
                       {currentItem.letter}&nbsp;&nbsp;{currentItem.number}
                     </div>
                   )}
                 </div>
 
                 {/* Quadrant 3: Bottom-Right (Row 2, Col 2 -> Number Task) */}
-                <div className={`flex items-center justify-center p-3 relative transition-colors ${currentItem.quadrant === 3 ? 'bg-[#EAF4F8]/70 dark:bg-[#223847]/70' : ''}`}>
+                <div className={`flex items-center justify-center p-3 relative transition-colors ${currentItem.quadrant === 3 ? 'bg-[#EAF4F8]/70 dark:bg-[#EAF4F8]/70' : ''}`}>
                   {(trialStage === 'stimulus' || trialStage === 'feedback') && currentItem.quadrant === 3 && (
-                    <div className="text-3xl sm:text-5xl font-black font-['Plus_Jakarta_Sans',sans-serif] tracking-wider text-[#183B4A] dark:text-[#F1F8FB] animate-pop-in">
+                    <div className="text-3xl sm:text-5xl font-black font-['Plus_Jakarta_Sans',sans-serif] tracking-wider text-[#183B4A] animate-pop-in">
                       {currentItem.letter}&nbsp;&nbsp;{currentItem.number}
                     </div>
                   )}
@@ -1479,9 +1479,9 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
 
               {/* Bottom row guide (visible exclusively during practice phase) */}
               {phase === 'practice' && (
-                <div className="w-full flex justify-between px-3 mt-1 text-[11px] font-bold tracking-wider uppercase text-[#0D9488] dark:text-[#5EEAD4]">
+                <div className="w-full flex justify-between px-3 mt-1 text-[11px] font-bold tracking-wider uppercase text-[#0D9488]">
                   <span>Bottom Row: Number Task</span>
-                  <span className="text-[10px] text-[#335667] dark:text-[#A2C4D6] font-normal font-mono">B = Odd · N = Even</span>
+                  <span className="text-[10px] text-[#335667] font-normal font-mono">B = Odd · N = Even</span>
                 </div>
               )}
             </div>
@@ -1499,12 +1499,12 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                           handleResponse('B');
                         }}
                         disabled={trialStage !== 'stimulus'}
-                        className="flex flex-col items-center justify-center p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#223847] border border-[#C5DCE4] dark:border-[#314E62] shadow-xs hover:border-[#245D72] dark:hover:border-[#63B8C6] hover:bg-[#EAF4F8]/40 dark:hover:bg-[#1A2B36] active:scale-95 transition-all disabled:opacity-70 disabled:cursor-default cursor-pointer"
+                        className="flex flex-col items-center justify-center p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-white border-2 border-[#C5DCE4] shadow-xs hover:border-[#245D72] hover:bg-[#EAF4F8] active:scale-95 transition-all disabled:opacity-70 disabled:cursor-default cursor-pointer text-[#183B4A]"
                       >
-                        <kbd className="px-4 sm:px-5 py-1 sm:py-1.5 bg-[#EAF4F8] dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62] rounded-xl text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#183B4A] dark:text-[#F1F8FB] mb-1">
+                        <kbd className="px-4 sm:px-5 py-1 sm:py-1.5 bg-[#EAF4F8] dark:bg-[#EAF4F8] border border-[#C5DCE4] rounded-xl text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#183B4A] mb-1">
                           B
                         </kbd>
-                        <span className="text-xs font-bold text-[#245D72] dark:text-[#63B8C6] font-['Plus_Jakarta_Sans',sans-serif]">
+                        <span className="text-xs font-bold text-[#245D72] font-['Plus_Jakarta_Sans',sans-serif]">
                           Vowel
                         </span>
                       </button>
@@ -1515,12 +1515,12 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                           handleResponse('N');
                         }}
                         disabled={trialStage !== 'stimulus'}
-                        className="flex flex-col items-center justify-center p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#223847] border border-[#C5DCE4] dark:border-[#314E62] shadow-xs hover:border-[#245D72] dark:hover:border-[#63B8C6] hover:bg-[#EAF4F8]/40 dark:hover:bg-[#1A2B36] active:scale-95 transition-all disabled:opacity-70 disabled:cursor-default cursor-pointer"
+                        className="flex flex-col items-center justify-center p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-white border-2 border-[#C5DCE4] shadow-xs hover:border-[#245D72] hover:bg-[#EAF4F8] active:scale-95 transition-all disabled:opacity-70 disabled:cursor-default cursor-pointer text-[#183B4A]"
                       >
-                        <kbd className="px-4 sm:px-5 py-1 sm:py-1.5 bg-[#EAF4F8] dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62] rounded-xl text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#183B4A] dark:text-[#F1F8FB] mb-1">
+                        <kbd className="px-4 sm:px-5 py-1 sm:py-1.5 bg-[#EAF4F8] dark:bg-[#EAF4F8] border border-[#C5DCE4] rounded-xl text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#183B4A] mb-1">
                           N
                         </kbd>
-                        <span className="text-xs font-bold text-[#245D72] dark:text-[#63B8C6] font-['Plus_Jakarta_Sans',sans-serif]">
+                        <span className="text-xs font-bold text-[#245D72] font-['Plus_Jakarta_Sans',sans-serif]">
                           Consonant
                         </span>
                       </button>
@@ -1533,12 +1533,12 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                           handleResponse('B');
                         }}
                         disabled={trialStage !== 'stimulus'}
-                        className="flex flex-col items-center justify-center p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#223847] border border-[#C5DCE4] dark:border-[#314E62] shadow-xs hover:border-[#0D9488] hover:bg-[#E4F5F2]/40 dark:hover:bg-[#163336] active:scale-95 transition-all disabled:opacity-70 disabled:cursor-default cursor-pointer"
+                        className="flex flex-col items-center justify-center p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-white border-2 border-[#8DC4BE] shadow-xs hover:border-[#0D9488] hover:bg-[#E4F5F2] active:scale-95 transition-all disabled:opacity-70 disabled:cursor-default cursor-pointer text-[#0D9488]"
                       >
-                        <kbd className="px-4 sm:px-5 py-1 sm:py-1.5 bg-[#EAF4F8] dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62] rounded-xl text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#183B4A] dark:text-[#F1F8FB] mb-1">
+                        <kbd className="px-4 sm:px-5 py-1 sm:py-1.5 bg-[#E4F5F2] dark:bg-[#E4F5F2] border border-[#8DC4BE] rounded-xl text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#0D9488] mb-1">
                           B
                         </kbd>
-                        <span className="text-xs font-bold text-[#0D9488] dark:text-[#5EEAD4] font-['Plus_Jakarta_Sans',sans-serif]">
+                        <span className="text-xs font-bold text-[#0D9488] font-['Plus_Jakarta_Sans',sans-serif]">
                           Odd
                         </span>
                       </button>
@@ -1549,12 +1549,12 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                           handleResponse('N');
                         }}
                         disabled={trialStage !== 'stimulus'}
-                        className="flex flex-col items-center justify-center p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#223847] border border-[#C5DCE4] dark:border-[#314E62] shadow-xs hover:border-[#0D9488] hover:bg-[#E4F5F2]/40 dark:hover:bg-[#163336] active:scale-95 transition-all disabled:opacity-70 disabled:cursor-default cursor-pointer"
+                        className="flex flex-col items-center justify-center p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-white border-2 border-[#8DC4BE] shadow-xs hover:border-[#0D9488] hover:bg-[#E4F5F2] active:scale-95 transition-all disabled:opacity-70 disabled:cursor-default cursor-pointer text-[#0D9488]"
                       >
-                        <kbd className="px-4 sm:px-5 py-1 sm:py-1.5 bg-[#EAF4F8] dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62] rounded-xl text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#183B4A] dark:text-[#F1F8FB] mb-1">
+                        <kbd className="px-4 sm:px-5 py-1 sm:py-1.5 bg-[#E4F5F2] dark:bg-[#E4F5F2] border border-[#8DC4BE] rounded-xl text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#0D9488] mb-1">
                           N
                         </kbd>
-                        <span className="text-xs font-bold text-[#0D9488] dark:text-[#5EEAD4] font-['Plus_Jakarta_Sans',sans-serif]">
+                        <span className="text-xs font-bold text-[#0D9488] font-['Plus_Jakarta_Sans',sans-serif]">
                           Even
                         </span>
                       </button>
@@ -1570,12 +1570,12 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                       handleResponse('B');
                     }}
                     disabled={trialStage !== 'stimulus'}
-                    className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-[#223847] border border-[#C5DCE4] dark:border-[#314E62] shadow-xs hover:border-[#245D72] dark:hover:border-[#63B8C6] hover:bg-[#EAF4F8] dark:hover:bg-[#1A2B36] active:scale-95 transition-all disabled:opacity-70 disabled:cursor-default cursor-pointer"
+                    className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-white border-2 border-[#C5DCE4] shadow-xs hover:border-[#245D72] hover:bg-[#EAF4F8] active:scale-95 transition-all disabled:opacity-70 disabled:cursor-default cursor-pointer text-[#183B4A]"
                   >
-                    <kbd className="px-5 sm:px-6 py-1.5 sm:py-2 bg-[#EAF4F8] dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62] rounded-xl text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#183B4A] dark:text-[#F1F8FB]">
+                    <kbd className="px-5 sm:px-6 py-1.5 sm:py-2 bg-[#EAF4F8] dark:bg-[#EAF4F8] border border-[#C5DCE4] rounded-xl text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#183B4A]">
                       B
                     </kbd>
-                    <span className="text-[10px] text-[#335667] dark:text-[#A2C4D6] mt-1 font-mono font-medium">Vowel / Odd</span>
+                    <span className="text-[10px] text-[#335667] mt-1 font-mono font-medium">Vowel / Odd</span>
                   </button>
 
                   <button
@@ -1584,12 +1584,12 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                       handleResponse('N');
                     }}
                     disabled={trialStage !== 'stimulus'}
-                    className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-[#223847] border border-[#C5DCE4] dark:border-[#314E62] shadow-xs hover:border-[#245D72] dark:hover:border-[#63B8C6] hover:bg-[#EAF4F8] dark:hover:bg-[#1A2B36] active:scale-95 transition-all disabled:opacity-70 disabled:cursor-default cursor-pointer"
+                    className="flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-white border-2 border-[#C5DCE4] shadow-xs hover:border-[#245D72] hover:bg-[#EAF4F8] active:scale-95 transition-all disabled:opacity-70 disabled:cursor-default cursor-pointer text-[#183B4A]"
                   >
-                    <kbd className="px-5 sm:px-6 py-1.5 sm:py-2 bg-[#EAF4F8] dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62] rounded-xl text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#183B4A] dark:text-[#F1F8FB]">
+                    <kbd className="px-5 sm:px-6 py-1.5 sm:py-2 bg-[#EAF4F8] dark:bg-[#EAF4F8] border border-[#C5DCE4] rounded-xl text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#183B4A]">
                       N
                     </kbd>
-                    <span className="text-[10px] text-[#335667] dark:text-[#A2C4D6] mt-1 font-mono font-medium">Consonant / Even</span>
+                    <span className="text-[10px] text-[#335667] mt-1 font-mono font-medium">Consonant / Even</span>
                   </button>
                 </div>
               )}
@@ -1599,28 +1599,28 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
 
         {/* 3. PRACTICE COMPLETE TRANSITION */}
         {phase === 'practiceComplete' && (
-          <div className="text-center max-w-md w-full bg-white dark:bg-[#223847] rounded-3xl border border-[#C5DCE4] dark:border-[#314E62] shadow-md p-6 sm:p-8 animate-pop-in">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#D1EDE5] dark:bg-emerald-950/60 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5">
-              <CheckCircle size={30} className="text-[#0D9488] dark:text-emerald-300" />
+          <div className="text-center max-w-md w-full bg-white dark:bg-white rounded-3xl border border-[#C5DCE4] shadow-md p-6 sm:p-8 animate-pop-in">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#D1EDE5] rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5">
+              <CheckCircle size={30} className="text-[#0D9488]" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#183B4A] dark:text-[#F1F8FB] mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#183B4A] mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
               Practice Complete
             </h2>
-            <p className="text-xs sm:text-sm text-[#335667] dark:text-[#A2C4D6] mb-5">
+            <p className="text-xs sm:text-sm text-[#335667] mb-5">
               You are now ready for the actual experimental blocks.
             </p>
 
             {/* Prominent Speed Instruction */}
-            <div className="bg-[#FFFBEB] dark:bg-amber-950/40 rounded-2xl border border-[#FDE68A] dark:border-amber-700/60 p-3.5 sm:p-4 mb-5 text-center shadow-xs">
-              <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold text-[#B45309] dark:text-amber-200">
+            <div className="bg-[#FFFBEB] dark:bg-[#FFFBEB] rounded-2xl border border-[#FDE68A] p-3.5 sm:p-4 mb-5 text-center shadow-xs">
+              <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold text-[#B45309]">
                 <Zap size={16} className="text-[#D97706] animate-pulse flex-shrink-0" />
                 <span>Respond as quickly and accurately as possible.</span>
               </div>
             </div>
 
-            <div className="bg-[#EAF4F8] dark:bg-[#1A2B36] rounded-2xl border border-[#C5DCE4] dark:border-[#314E62] p-4 sm:p-5 mb-6 sm:mb-8 text-left text-xs sm:text-sm text-[#335667] dark:text-[#A2C4D6] space-y-2.5">
+            <div className="bg-[#F8FBFC] dark:bg-[#F8FBFC] rounded-2xl border border-[#C5DCE4] p-4 sm:p-5 mb-6 sm:mb-8 text-left text-xs sm:text-sm text-[#335667] space-y-2.5">
               <div className="flex gap-2.5 items-start">
-                <Layers size={16} className="text-[#245D72] dark:text-[#63B8C6] flex-shrink-0 mt-0.5" />
+                <Layers size={16} className="text-[#245D72] flex-shrink-0 mt-0.5" />
                 <span>The experiment consists of <strong>128 trials</strong> across 3 blocks:</span>
               </div>
               <div className="pl-6 space-y-1 text-xs">
@@ -1628,8 +1628,8 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                 <p>• <strong>Block 2 (32 trials):</strong> Bottom row only — Number task</p>
                 <p>• <strong>Block 3 (64 trials):</strong> Mixed — Clockwise rotation across all 4 quadrants</p>
               </div>
-              <div className="flex gap-2.5 items-start pt-1 font-medium text-[#183B4A] dark:text-[#F1F8FB]">
-                <Zap size={16} className="text-[#245D72] dark:text-[#63B8C6] flex-shrink-0 mt-0.5" />
+              <div className="flex gap-2.5 items-start pt-1 font-medium text-[#183B4A]">
+                <Zap size={16} className="text-[#245D72] flex-shrink-0 mt-0.5" />
                 <span>Use the <strong>B</strong> and <strong>N</strong> keys to respond. No correctness feedback will be shown during the experiment.</span>
               </div>
             </div>
@@ -1645,23 +1645,23 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
 
         {/* 4. BLOCK INTRO SCREEN (For Block 2 and Block 3) */}
         {phase === 'blockIntro' && (
-          <div className="text-center max-w-md w-full bg-white dark:bg-[#223847] rounded-3xl border border-[#C5DCE4] dark:border-[#314E62] shadow-md p-6 sm:p-8 animate-pop-in">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#EAF4F8] dark:bg-[#1A2B36] rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5 text-[#245D72] dark:text-[#63B8C6]">
+          <div className="text-center max-w-md w-full bg-white dark:bg-white rounded-3xl border border-[#C5DCE4] shadow-md p-6 sm:p-8 animate-pop-in">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#EAF4F8] rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5 text-[#245D72]">
               <RefreshCw size={28} />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#183B4A] dark:text-[#F1F8FB] mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#183B4A] mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
               {currentBlockIndex === 1 ? 'Block 2: Pure Number (32 Trials)' : 'Block 3: Mixed Alternating Runs (64 Trials)'}
             </h2>
 
             {/* Prominent Speed Instruction */}
-            <div className="bg-[#FFFBEB] dark:bg-amber-950/40 rounded-2xl border border-[#FDE68A] dark:border-amber-700/60 p-3 sm:p-3.5 mb-4 text-center shadow-xs">
-              <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold text-[#B45309] dark:text-amber-200">
+            <div className="bg-[#FFFBEB] dark:bg-[#FFFBEB] rounded-2xl border border-[#FDE68A] p-3 sm:p-3.5 mb-4 text-center shadow-xs">
+              <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold text-[#B45309]">
                 <Zap size={16} className="text-[#D97706] animate-pulse flex-shrink-0" />
                 <span>Respond as quickly and accurately as possible.</span>
               </div>
             </div>
 
-            <p className="text-xs sm:text-sm text-[#335667] dark:text-[#A2C4D6] mb-6">
+            <p className="text-xs sm:text-sm text-[#335667] mb-6">
               {currentBlockIndex === 1
                 ? 'In this block, stimuli appear in the bottom row. Respond according to the number on every trial (32 trials): B = Odd, N = Even.'
                 : 'In this final block, the stimulus rotates clockwise around all 4 quadrants (64 trials). When the stimulus is in the top row, respond according to the letter (B: Vowel, N: Consonant). When the stimulus is in the bottom row, respond according to the number (B: Odd, N: Even).'}
@@ -1680,14 +1680,14 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
 
         {/* 5. TASK COMPLETE SUMMARY */}
         {phase === 'taskComplete' && (
-          <div className="text-center max-w-sm w-full bg-white dark:bg-[#223847] rounded-3xl border border-[#C5DCE4] dark:border-[#314E62] shadow-md p-6 sm:p-8 animate-pop-in">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#D1EDE5] dark:bg-emerald-950/60 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5">
-              <CheckCircle size={30} className="text-[#0D9488] dark:text-emerald-300" />
+          <div className="text-center max-w-sm w-full bg-white dark:bg-white rounded-3xl border border-[#C5DCE4] shadow-md p-6 sm:p-8 animate-pop-in">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#D1EDE5] rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5">
+              <CheckCircle size={30} className="text-[#0D9488]" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#183B4A] dark:text-[#F1F8FB] mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#183B4A] mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
               Activity Completed
             </h2>
-            <p className="text-xs sm:text-sm text-[#335667] dark:text-[#A2C4D6] mb-6 sm:mb-8">
+            <p className="text-xs sm:text-sm text-[#335667] mb-6 sm:mb-8">
               Thank you for completing the Task Switching experiment.
             </p>
 

@@ -567,22 +567,22 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
       )}
 
       {/* Header strip - compact vertical height */}
-      <div className="bg-white dark:bg-[#1A2B36] border-b border-[#C5DCE4] dark:border-[#314E62] px-3 sm:px-8 py-2.5 sm:py-3 transition-colors">
+      <div className="bg-white dark:bg-white border-b border-[#C5DCE4] px-3 sm:px-8 py-2.5 sm:py-3 transition-colors">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
           <div className="text-center sm:text-left">
-            <div className="text-[10px] font-black text-[#183B4A] dark:text-[#63B8C6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
+            <div className="text-[10px] font-black text-[#183B4A] dark:text-[#183B4A] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
               Room 02 — Backward Corsi Block Task
             </div>
             <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mt-0.5 flex-wrap">
               {isPracticeMode ? (
                 <>
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#D5E8EF] text-[#183B4A] dark:bg-[#223847] dark:text-[#63B8C6] border border-[#B8D7E3] dark:border-[#314E62]">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#D5E8EF] text-[#183B4A] border border-[#B8D7E3]">
                     Practice Trial {practiceIndex + 1} of 3
                   </span>
-                  <span className="text-xs text-[#526E7B] dark:text-[#A2C4D6]">·</span>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#D5E8EF] dark:bg-[#223847] text-xs font-medium text-[#183B4A] dark:text-[#F1F8FB] border border-[#B8D7E3] dark:border-[#314E62]">
+                  <span className="text-xs text-[#526E7B]">·</span>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#D5E8EF] text-xs font-medium text-[#183B4A] border border-[#B8D7E3]">
                     <span>Sequence:</span>
-                    <strong className="text-sm font-black font-['JetBrains_Mono',monospace] text-[#183B4A] dark:text-[#F1F8FB]">
+                    <strong className="text-sm font-black font-['JetBrains_Mono',monospace] text-[#183B4A]">
                       {currentPracticeConfig.sequenceLength}
                     </strong>
                     <span>blocks</span>
@@ -590,20 +590,20 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
                 </>
               ) : isOfficialMode ? (
                 <>
-                  <span className="text-xs sm:text-sm font-bold text-[#263B46] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-xs sm:text-sm font-bold text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif]">
                     Level {level} of {TOTAL_LEVELS}
                   </span>
-                  <span className="text-xs text-[#526E7B] dark:text-[#A2C4D6]">·</span>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#D5E8EF] dark:bg-[#223847] text-xs font-medium text-[#183B4A] dark:text-[#F1F8FB] border border-[#B8D7E3] dark:border-[#314E62]">
+                  <span className="text-xs text-[#526E7B]">·</span>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#D5E8EF] text-xs font-medium text-[#183B4A] border border-[#B8D7E3]">
                     <span>Sequence:</span>
-                    <strong className="text-sm font-black font-['JetBrains_Mono',monospace] text-[#183B4A] dark:text-[#F1F8FB]">
+                    <strong className="text-sm font-black font-['JetBrains_Mono',monospace] text-[#183B4A]">
                       {seqLen}
                     </strong>
                     <span>blocks</span>
                   </div>
                 </>
               ) : (
-                <span className="text-xs sm:text-sm font-bold text-[#263B46] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif]">
+                <span className="text-xs sm:text-sm font-bold text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif]">
                   {phase === 'tutorialIntro' ? 'Tutorial & Practice Phase' : 'Pre-Experiment Briefing'}
                 </span>
               )}
@@ -706,17 +706,17 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
             </p>
 
             {/* Instruction Card with Bold Indicators */}
-            <div className="bg-white dark:bg-[#223847] rounded-2xl border-2 border-[#C5DCE4] dark:border-[#314E62] p-4 sm:p-5 mb-6 text-left shadow-xs space-y-3">
+            <div className="bg-white dark:bg-white rounded-2xl border-2 border-[#C5DCE4] p-4 sm:p-5 mb-6 text-left shadow-xs space-y-3">
               <div className="flex gap-3 items-center">
                 <div className="w-5 h-5 bg-[#2563EB] rounded-md flex-shrink-0 shadow-xs ring-2 ring-[#2563EB]/25" />
-                <span className="text-xs sm:text-sm font-semibold text-[#263B46] dark:text-[#F1F8FB]">
-                  Blocks light up in <strong className="font-bold text-[#2563EB] dark:text-[#60A5FA]">blue</strong> during presentation
+                <span className="text-xs sm:text-sm font-semibold text-[#183B4A] dark:text-[#183B4A]">
+                  Blocks light up in <strong className="font-bold text-[#2563EB]">blue</strong> during presentation
                 </span>
               </div>
               <div className="flex gap-3 items-center">
                 <div className="w-5 h-5 bg-[#0D9488] rounded-md flex-shrink-0 shadow-xs ring-2 ring-[#0D9488]/25" />
-                <span className="text-xs sm:text-sm font-semibold text-[#263B46] dark:text-[#F1F8FB]">
-                  Blocks flash briefly in <strong className="font-bold text-[#0D9488] dark:text-[#5EEAD4]">teal</strong> when clicked during recall
+                <span className="text-xs sm:text-sm font-semibold text-[#183B4A] dark:text-[#183B4A]">
+                  Blocks flash briefly in <strong className="font-bold text-[#0D9488]">teal</strong> when clicked during recall
                 </span>
               </div>
             </div>
@@ -745,30 +745,30 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
               </div>
 
               {/* Prominent Sequence Number Text */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-white dark:bg-[#15193B] border border-[#E9E8F2] dark:border-[#252E63] shadow-xs">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-white dark:bg-white border border-[#C5DCE4] shadow-xs">
                 {phase === 'practiceWatching' ? (
-                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[#474864] dark:text-slate-300">
-                    <span className="font-bold uppercase tracking-wider text-[#73758C] dark:text-slate-400 text-[11px]">
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[#183B4A]">
+                    <span className="font-bold uppercase tracking-wider text-[#526E7B] text-[11px]">
                       Length:
                     </span>
-                    <span className="text-base sm:text-lg font-black font-['JetBrains_Mono',monospace] text-[#6567C9] dark:text-[#A5A6F6]">
+                    <span className="text-base sm:text-lg font-black font-['JetBrains_Mono',monospace] text-[#245D72]">
                       {currentPracticeConfig.sequenceLength}
                     </span>
-                    <span className="font-bold text-[#474864] dark:text-slate-300 text-[11px]">blocks</span>
+                    <span className="font-bold text-[#526E7B] text-[11px]">blocks</span>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[#474864] dark:text-slate-300">
-                    <span className="font-bold uppercase tracking-wider text-[#73758C] dark:text-slate-400 text-[11px]">
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-[#183B4A]">
+                    <span className="font-bold uppercase tracking-wider text-[#526E7B] text-[11px]">
                       Selected:
                     </span>
-                    <span className="text-base sm:text-lg font-black font-['JetBrains_Mono',monospace] text-[#69AFA8] dark:text-[#5EEAD4]">
+                    <span className="text-base sm:text-lg font-black font-['JetBrains_Mono',monospace] text-[#0D9488]">
                       {practicePlayerResponse.length}
                     </span>
-                    <span className="text-xs font-bold text-[#9597AB]">/</span>
-                    <span className="text-base sm:text-lg font-black font-['JetBrains_Mono',monospace] text-[#252640] dark:text-white">
+                    <span className="text-xs font-bold text-[#526E7B]">/</span>
+                    <span className="text-base sm:text-lg font-black font-['JetBrains_Mono',monospace] text-[#183B4A]">
                       {currentPracticeConfig.sequenceLength}
                     </span>
-                    <span className="font-bold text-[#474864] dark:text-slate-300 text-[11px]">blocks</span>
+                    <span className="font-bold text-[#526E7B] text-[11px]">blocks</span>
                   </div>
                 )}
               </div>
@@ -778,12 +778,12 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
             <div
               className={`flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold font-['Plus_Jakarta_Sans',sans-serif] transition-all text-center ${
                 phase === 'practiceWatching'
-                  ? 'bg-[#EDEAF8] text-[#6567C9] dark:bg-[#1E2552] dark:text-[#A5A6F6]'
+                  ? 'bg-[#EDEAF8] text-[#6567C9]'
                   : phase === 'practiceRecall'
-                  ? 'bg-[#E4F2F0] text-[#69AFA8] dark:bg-teal-950/60 dark:text-teal-300'
+                  ? 'bg-[#E4F2F0] text-[#0D9488]'
                   : practiceLastResult === 'correct'
-                  ? 'bg-[#D1EDE5] text-[#4A9B7F] dark:bg-emerald-950/60 dark:text-emerald-300'
-                  : 'bg-[#FCEFD9] text-[#D4813A] dark:bg-amber-950/60 dark:text-amber-300'
+                  ? 'bg-[#D1EDE5] text-[#0D9488]'
+                  : 'bg-[#FCEFD9] text-[#D97706]'
               }`}
             >
               {phase === 'practiceWatching' && (
@@ -813,7 +813,7 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
             </div>
 
             {/* Unified Practice Board & Actions Card (Zero-Scroll Layout) */}
-            <div className="bg-white dark:bg-[#223847] rounded-3xl border border-[#C5DCE4] dark:border-[#314E62] shadow-sm p-4 sm:p-6 pt-3.5 sm:pt-4 max-w-full overflow-hidden transition-colors flex flex-col items-center">
+            <div className="bg-white dark:bg-white rounded-3xl border border-[#C5DCE4] shadow-sm p-4 sm:p-6 pt-3.5 sm:pt-4 max-w-full overflow-hidden transition-colors flex flex-col items-center">
               <CorsiBoard
                 highlighted={phase === 'practiceWatching' ? highlightedBlock : null}
                 flashBlock={flashingBlock}
@@ -824,7 +824,7 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
               />
 
               {/* Action Controls directly below the grid in the same viewport */}
-              <div className="w-full mt-3 sm:mt-4 pt-2.5 border-t border-[#C5DCE4] dark:border-[#314E62] flex items-center justify-center min-h-[40px]">
+              <div className="w-full mt-3 sm:mt-4 pt-2.5 border-t border-[#C5DCE4] flex items-center justify-center min-h-[40px]">
                 {phase === 'practiceRecall' ? (
                   <div className="flex gap-2.5 sm:gap-3 items-center">
                     <button
@@ -844,12 +844,12 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
                     </button>
                   </div>
                 ) : phase === 'practiceWatching' ? (
-                  <span className="text-xs text-[#526E7B] dark:text-[#A2C4D6] font-medium flex items-center gap-1.5 animate-pulse">
-                    <Eye size={13} className="text-[#4D91AD] dark:text-[#63B8C6]" />
+                  <span className="text-xs text-[#526E7B] font-medium flex items-center gap-1.5 animate-pulse">
+                    <Eye size={13} className="text-[#245D72]" />
                     Watch practice sequence...
                   </span>
                 ) : (
-                  <span className="text-xs text-[#526E7B] dark:text-[#A2C4D6] font-medium">
+                  <span className="text-xs text-[#526E7B] font-medium">
                     Review practice feedback below
                   </span>
                 )}
@@ -1062,7 +1062,7 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
             </div>
 
             {/* Unified Corsi Grid & Action Button Card (Zero-scroll: Done is right under the grid in same viewport) */}
-            <div className="bg-white dark:bg-[#223847] rounded-3xl border border-[#C5DCE4] dark:border-[#314E62] shadow-sm p-4 sm:p-6 pt-3.5 sm:pt-4 max-w-full overflow-hidden transition-colors flex flex-col items-center">
+            <div className="bg-white dark:bg-white rounded-3xl border border-[#C5DCE4] shadow-sm p-4 sm:p-6 pt-3.5 sm:pt-4 max-w-full overflow-hidden transition-colors flex flex-col items-center">
               {/* CorsiBoard with showSelectionIndicators={false}: No numbers, no persistent markings during official trials */}
               <CorsiBoard
                 highlighted={phase === 'watching' ? highlightedBlock : null}
@@ -1074,7 +1074,7 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
               />
 
               {/* Action Area directly below the grid in the same card (No Scrolling Needed!) */}
-              <div className="w-full mt-3 sm:mt-4 pt-2.5 border-t border-[#C5DCE4] dark:border-[#314E62] flex items-center justify-center min-h-[40px]">
+              <div className="w-full mt-3 sm:mt-4 pt-2.5 border-t border-[#C5DCE4] flex items-center justify-center min-h-[40px]">
                 {phase === 'recall' ? (
                   <div className="flex gap-2.5 sm:gap-3 items-center">
                     <button
@@ -1094,8 +1094,8 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
                     </button>
                   </div>
                 ) : phase === 'watching' ? (
-                  <span className="text-xs text-[#526E7B] dark:text-[#A2C4D6] font-medium flex items-center gap-1.5 animate-pulse">
-                    <Eye size={13} className="text-[#4D91AD] dark:text-[#63B8C6]" />
+                  <span className="text-xs text-[#526E7B] font-medium flex items-center gap-1.5 animate-pulse">
+                    <Eye size={13} className="text-[#245D72]" />
                     Observing pattern... Please wait
                   </span>
                 ) : (
