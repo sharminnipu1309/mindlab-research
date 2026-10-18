@@ -34,8 +34,10 @@
   /* Explicit brand palette aliases */
   --forest-charcoal: #282E28;
   --forest-deep: #1D221E;
+  --forest-accent: #435447;
+  --green-highlight: #A8B9AA;
   --sage-deep: #354238;
-  --sage-accent: #A3B9A5;
+  --sage-accent: #A8B9AA;
   --sage-white: #D7E0D8;
   --sage-muted: #B6C7B8;
   --sage-gray: #47564A;
@@ -47,30 +49,31 @@ html.dark {
   color-scheme: dark;
 
   /* Primary & Supporting Theme Colors (Dark Mode) */
-  --background: #282E28;           /* Primary dark-mode background: dark forest charcoal */
+  --background: #1D221E;           /* Deep dark-mode background: #1D221E */
   --foreground: #D7E0D8;           /* Primary text: soft sage white */
   --card: #354238;                 /* Cards, nav surfaces, panels: deep sage surface */
+  --card-alt: #282E28;             /* Differentiated card/panel surface */
   --card-foreground: #D7E0D8;      /* Soft sage white */
-  --primary: #A3B9A5;              /* Soft sage accent for key controls/buttons */
+  --primary: #A8B9AA;              /* Soft green highlight / accent for key controls/buttons */
   --primary-foreground: #1D221E;   /* Deep charcoal on bright accent buttons */
-  --secondary: #282E28;            /* Secondary button background in dark mode */
+  --secondary: #435447;            /* Muted forest accent for secondary actions & selected states */
   --secondary-foreground: #D7E0D8;
   --secondary-border: #445448;     /* Border in dark mode */
-  --muted: #2D382F;                /* Deep muted sage background */
+  --muted: #282E28;                /* Deep muted sage background */
   --muted-foreground: #B6C7B8;     /* Contrasting muted light sage (WCAG AA > 5.8:1) */
   --border: #445448;               /* Visible card outlines without excessive brightness */
   --input: #1D221E;                /* Form input background */
   --input-foreground: #D7E0D8;
-  --ring: #A3B9A5;                 /* Focus ring */
-  --accent: #A3B9A5;               /* Soft sage accent */
+  --ring: #A8B9AA;                 /* Focus ring */
+  --accent: #A8B9AA;               /* Soft green highlight */
   --accent-foreground: #1D221E;
-  --accent-soft: #A3B9A5;
+  --accent-soft: #A8B9AA;
   --deep-bg: #1D221E;              /* Deeper background & overlays */
 
   /* Logo branding tokens */
   --logo-text: #D7E0D8;
-  --logo-accent: #A3B9A5;
-  --logo-sub: #A3B9A5;
+  --logo-accent: #A8B9AA;
+  --logo-sub: #A8B9AA;
 }
 
 @theme {
@@ -93,8 +96,10 @@ html.dark {
   /* Sage & Forest Named Utilities */
   --color-forest-charcoal: #282E28;
   --color-forest-deep: #1D221E;
+  --color-forest-accent: #435447;
+  --color-green-highlight: #A8B9AA;
   --color-sage-deep: #354238;
-  --color-sage-accent: #A3B9A5;
+  --color-sage-accent: #A8B9AA;
   --color-sage-white: #D7E0D8;
   --color-sage-muted: #B6C7B8;
   --color-sage-gray: #47564A;
@@ -538,22 +543,26 @@ html.dark {
 }
 
 html.dark body {
-  background-color: #282E28 !important;
-  color: #D7E0D8 !important;
+  background-color: #1D221E;
+  color: #D7E0D8;
 }
 
-/* Cards, navigation surfaces, panels & interactive containers */
-html.dark .bg-white {
-  background-color: #354238 !important;
-  border-color: #445448 !important;
-  color: #D7E0D8 !important;
+/* Cards, navigation surfaces, panels & interactive containers (fallback for unmarked components) */
+html.dark .bg-white:not([class*="dark:bg-"]) {
+  background-color: #354238;
+}
+html.dark .bg-white:not([class*="dark:border-"]) {
+  border-color: #445448;
+}
+html.dark .bg-white:not([class*="dark:text-"]) {
+  color: #D7E0D8;
 }
 
-html.dark .bg-\[\#F8F8FC\],
-html.dark .bg-\[\#F7F8FC\],
-html.dark .bg-\[\#F8FAFC\] {
-  background-color: #282E28 !important;
-  color: #D7E0D8 !important;
+html.dark .bg-\[\#F8F8FC\]:not([class*="dark:bg-"]),
+html.dark .bg-\[\#F7F8FC\]:not([class*="dark:bg-"]),
+html.dark .bg-\[\#F8FAFC\]:not([class*="dark:bg-"]) {
+  background-color: #282E28;
+  color: #D7E0D8;
 }
 
 /* Deeper dark containers & overlays */
