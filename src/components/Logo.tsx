@@ -1,13 +1,13 @@
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg';
-  variant?: 'default' | 'white' | 'indigo' | 'forest';
+  variant?: 'default' | 'white' | 'indigo' | 'ocean';
 }
 
 export default function Logo({ size = 'md', variant = 'default' }: LogoProps) {
   const isWhite = variant === 'white' || variant === 'indigo';
-  const textColor = isWhite ? '#FFFFFF' : 'var(--logo-text, #282E28)';
-  const accentColor = isWhite ? '#A3B9A5' : 'var(--logo-accent, #354238)';
-  const subColor = isWhite ? 'rgba(215, 224, 216, 0.85)' : 'var(--logo-sub, #47564A)';
+  const textColor = isWhite ? '#FFFFFF' : 'var(--logo-text, #263B46)';
+  const accentColor = isWhite ? '#63B8C6' : 'var(--logo-accent, #4D91AD)';
+  const subColor = isWhite ? 'rgba(234, 244, 248, 0.9)' : 'var(--logo-sub, #526E7B)';
 
   const sizes = {
     sm: { mark: 22, text: 15, sub: 9 },
@@ -21,7 +21,7 @@ export default function Logo({ size = 'md', variant = 'default' }: LogoProps) {
       {/* Abstract mark: neural connection / geometric maze */}
       <svg width={s.mark} height={s.mark} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
         {/* Outer circle */}
-        <circle cx="20" cy="20" r="18" stroke={accentColor} strokeWidth="1.5" opacity="0.35" />
+        <circle cx="20" cy="20" r="18" stroke={accentColor} strokeWidth="1.5" opacity="0.45" />
         {/* Inner geometric structure */}
         <circle cx="20" cy="20" r="3.5" fill={accentColor} />
         {/* Neural connection lines */}
@@ -53,7 +53,7 @@ export default function Logo({ size = 'md', variant = 'default' }: LogoProps) {
             color: textColor,
             letterSpacing: '-0.01em',
           }}
-          className={!isWhite ? 'text-[#282E28] dark:text-[#D7E0D8]' : ''}
+          className={!isWhite ? 'text-[#263B46] dark:text-[#EAF4F8]' : ''}
         >
           MindLab
         </span>
@@ -67,7 +67,7 @@ export default function Logo({ size = 'md', variant = 'default' }: LogoProps) {
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
             }}
-            className={!isWhite ? 'text-[#47564A] dark:text-[#A3B9A5]' : ''}
+            className={!isWhite ? 'text-[#526E7B] dark:text-[#63B8C6]' : ''}
           >
             Research
           </span>

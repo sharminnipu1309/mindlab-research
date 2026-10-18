@@ -26,24 +26,24 @@ export function HanoiVisual({ variant = 'light', size = 'md', className = '' }: 
         className="w-full h-full"
       >
         {/* Subtle background concentric rings / grid lines */}
-        <circle cx="50" cy="50" r="46" stroke={isDark ? '#A3B9A5' : '#354238'} strokeWidth="1" opacity={isDark ? '0.25' : '0.15'} />
-        <circle cx="50" cy="50" r="32" stroke={isDark ? '#D7E0D8' : '#354238'} strokeWidth="1" strokeDasharray="3 3" opacity={isDark ? '0.3' : '0.2'} />
+        <circle cx="50" cy="50" r="46" stroke={isDark ? '#63B8C6' : '#4D91AD'} strokeWidth="1" opacity={isDark ? '0.3' : '0.18'} />
+        <circle cx="50" cy="50" r="32" stroke={isDark ? '#EAF4F8' : '#4D91AD'} strokeWidth="1" strokeDasharray="3 3" opacity={isDark ? '0.35' : '0.22'} />
 
         {/* Base */}
-        <rect x="18" y="74" width="64" height="5" rx="2.5" fill={isDark ? '#4B5563' : '#CBD5E1'} />
+        <rect x="18" y="74" width="64" height="5" rx="2.5" fill={isDark ? '#2D4654' : '#C5DCE4'} />
 
         {/* 3 Poles */}
-        <rect x="28.5" y="32" width="3" height="42" rx="1.5" fill={isDark ? '#A3B9A5' : '#94A3B8'} opacity="0.85" />
-        <rect x="48.5" y="32" width="3" height="42" rx="1.5" fill={isDark ? '#A3B9A5' : '#94A3B8'} opacity="0.85" />
-        <rect x="68.5" y="32" width="3" height="42" rx="1.5" fill={isDark ? '#A3B9A5' : '#94A3B8'} opacity="0.85" />
+        <rect x="28.5" y="32" width="3" height="42" rx="1.5" fill={isDark ? '#63B8C6' : '#94A3B8'} opacity="0.85" />
+        <rect x="48.5" y="32" width="3" height="42" rx="1.5" fill={isDark ? '#63B8C6' : '#94A3B8'} opacity="0.85" />
+        <rect x="68.5" y="32" width="3" height="42" rx="1.5" fill={isDark ? '#63B8C6' : '#94A3B8'} opacity="0.85" />
 
         {/* Pole 1 Discs (Stacked: Large, Medium, Small) */}
-        <rect x="20" y="66" width="20" height="7" rx="3.5" fill="#354238" />
-        <rect x="22.5" y="58" width="15" height="7" rx="3.5" fill="#47564A" />
-        <rect x="25" y="50" width="10" height="7" rx="3.5" fill="#A3B9A5" />
+        <rect x="20" y="66" width="20" height="7" rx="3.5" fill="#263B46" />
+        <rect x="22.5" y="58" width="15" height="7" rx="3.5" fill="#4D91AD" />
+        <rect x="25" y="50" width="10" height="7" rx="3.5" fill="#63B8C6" />
 
         {/* Pole 3 Disc (Target placement demonstration) */}
-        <rect x="62" y="66" width="16" height="7" rx="3.5" fill={isDark ? '#A3B9A5' : '#354238'} opacity="0.4" strokeDasharray="2 2" stroke={isDark ? '#D7E0D8' : '#354238'} />
+        <rect x="62" y="66" width="16" height="7" rx="3.5" fill={isDark ? '#63B8C6' : '#4D91AD'} opacity="0.4" strokeDasharray="2 2" stroke={isDark ? '#EAF4F8' : '#4D91AD'} />
 
         {/* Subtle accent highlight glow */}
         <circle cx="30" cy="53.5" r="2" fill="#FFFFFF" opacity="0.8" />
@@ -86,8 +86,8 @@ export function CorsiVisual({ variant = 'light', size = 'md', className = '' }: 
         className="w-full h-full"
       >
         {/* Background concentric rings */}
-        <circle cx="50" cy="50" r="46" stroke={isDark ? '#0D9488' : '#0D9488'} strokeWidth="1" opacity={isDark ? '0.2' : '0.12'} />
-        <circle cx="50" cy="50" r="32" stroke={isDark ? '#14B8A6' : '#0D9488'} strokeWidth="1" strokeDasharray="3 3" opacity={isDark ? '0.3' : '0.18'} />
+        <circle cx="50" cy="50" r="46" stroke={isDark ? '#63B8C6' : '#4D91AD'} strokeWidth="1" opacity={isDark ? '0.25' : '0.15'} />
+        <circle cx="50" cy="50" r="32" stroke={isDark ? '#63B8C6' : '#4D91AD'} strokeWidth="1" strokeDasharray="3 3" opacity={isDark ? '0.35' : '0.2'} />
 
         {/* 3x3 Grid of rounded blocks */}
         {blocks.map(b => {
@@ -105,8 +105,8 @@ export function CorsiVisual({ variant = 'light', size = 'md', className = '' }: 
                   width="17"
                   height="17"
                   rx="4.5"
-                  fill="#0D9488"
-                  opacity={isDark ? '0.35' : '0.25'}
+                  fill="#63B8C6"
+                  opacity={isDark ? '0.4' : '0.3'}
                 />
               )}
               <rect
@@ -115,10 +115,10 @@ export function CorsiVisual({ variant = 'light', size = 'md', className = '' }: 
                 width="14"
                 height="14"
                 rx="3.5"
-                fill={b.active ? '#0D9488' : isDark ? '#1E293B' : '#E2E8F0'}
+                fill={b.active ? '#4D91AD' : isDark ? '#203541' : '#D5E8EF'}
               />
               {b.active && (
-                <circle cx={x + 7} cy={y + 7} r="2" fill="#FFFFFF" opacity="0.9" />
+                <circle cx={x + 7} cy={y + 7} r="2" fill="#FFFFFF" opacity="0.95" />
               )}
             </g>
           );

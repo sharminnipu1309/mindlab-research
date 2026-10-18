@@ -22,7 +22,7 @@ export default function ParticipantNav({
   currentStep,
 }: ParticipantNavProps) {
   return (
-    <nav className="w-full bg-white dark:bg-[#1D221E] border-b border-[#BAC8BD] dark:border-[#445448] px-3 sm:px-6 py-3 sm:py-4 sticky top-0 z-40 transition-colors">
+    <nav className="w-full bg-white dark:bg-[#111C23] border-b border-[#C5DCE4] dark:border-[#2D4654] px-3 sm:px-6 py-3 sm:py-4 sticky top-0 z-40 transition-colors">
       <div className="max-w-6xl mx-auto flex items-center justify-between gap-2">
         <div
           className="cursor-pointer shrink-0"
@@ -39,10 +39,10 @@ export default function ParticipantNav({
                 <div
                   className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[11px] sm:text-xs font-bold font-['Plus_Jakarta_Sans',sans-serif] transition-all ${
                     i + 1 < currentStep
-                      ? 'bg-[#282E28] text-[#D7E0D8] dark:bg-[#A3B9A5] dark:text-[#1D221E] shadow-xs'
+                      ? 'bg-[#4D91AD] text-white dark:bg-[#63B8C6] dark:text-[#111C23] shadow-xs'
                       : i + 1 === currentStep
-                      ? 'bg-[#282E28] text-[#D7E0D8] ring-2 sm:ring-4 ring-[#354238]/30 dark:bg-[#A3B9A5] dark:text-[#1D221E] dark:ring-[#A3B9A5]/30 shadow-sm'
-                      : 'bg-[#E4EBE5] text-[#47564A] dark:bg-[#354238] dark:text-[#B6C7B8]'
+                      ? 'bg-[#4D91AD] text-white ring-2 sm:ring-4 ring-[#4D91AD]/30 dark:bg-[#63B8C6] dark:text-[#111C23] dark:ring-[#63B8C6]/30 shadow-sm'
+                      : 'bg-[#D5E8EF] text-[#526E7B] dark:bg-[#203541] dark:text-[#9BB5C4]'
                   }`}
                 >
                   {i + 1 < currentStep ? '✓' : i + 1}
@@ -51,8 +51,8 @@ export default function ParticipantNav({
                   <div
                     className={`w-3 sm:w-6 md:w-10 h-0.5 rounded-full transition-all ${
                       i + 1 < currentStep
-                        ? 'bg-[#282E28] dark:bg-[#A3B9A5]'
-                        : 'bg-[#BAC8BD] dark:bg-[#445448]'
+                        ? 'bg-[#4D91AD] dark:bg-[#63B8C6]'
+                        : 'bg-[#C5DCE4] dark:bg-[#2D4654]'
                     }`}
                   />
                 )}
@@ -66,21 +66,21 @@ export default function ParticipantNav({
           <ThemeToggle />
           <button
             onClick={() => navigate('landing')}
-            className="group flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-white hover:bg-[#282E28] text-[#282E28] hover:text-[#D7E0D8] dark:bg-[#354238] dark:hover:bg-[#A3B9A5] dark:text-[#D7E0D8] dark:hover:text-[#1D221E] text-xs sm:text-sm font-extrabold border-2 border-[#BAC8BD] hover:border-[#282E28] dark:border-[#445448] dark:hover:border-[#A3B9A5] shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer"
+            className="group flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-white hover:bg-[#4D91AD] text-[#263B46] hover:text-white dark:bg-[#203541] dark:hover:bg-[#63B8C6] dark:text-[#EAF4F8] dark:hover:text-[#111C23] text-xs sm:text-sm font-extrabold border-2 border-[#C5DCE4] hover:border-[#4D91AD] dark:border-[#2D4654] dark:hover:border-[#63B8C6] shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer"
             title="Return to application homepage"
           >
-            <Home size={16} className="text-[#354238] group-hover:text-[#D7E0D8] dark:text-[#A3B9A5] dark:group-hover:text-[#1D221E] shrink-0 transition-colors" />
+            <Home size={16} className="text-[#4D91AD] group-hover:text-white dark:text-[#63B8C6] dark:group-hover:text-[#111C23] shrink-0 transition-colors" />
             <span className="font-bold font-['Plus_Jakarta_Sans',sans-serif]">Back to Home</span>
           </button>
           {participantId && (
-            <span className="text-xs sm:text-sm font-['JetBrains_Mono',monospace] text-[#47564A] dark:text-[#B6C7B8] bg-[#E4EBE5] dark:bg-[#354238] px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-[#BAC8BD] dark:border-[#445448] truncate max-w-[120px] sm:max-w-none">
+            <span className="text-xs sm:text-sm font-['JetBrains_Mono',monospace] text-[#526E7B] dark:text-[#9BB5C4] bg-[#D5E8EF] dark:bg-[#203541] px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-[#C5DCE4] dark:border-[#2D4654] truncate max-w-[120px] sm:max-w-none">
               {participantId}
             </span>
           )}
           {showExit && onExit && (
             <button
               onClick={onExit}
-              className="btn-ghost text-[#47564A] hover:text-[#DC2626] dark:text-[#B6C7B8] dark:hover:text-[#F87171] text-xs sm:text-sm px-2 sm:px-3 py-1.5 cursor-pointer"
+              className="btn-ghost text-[#526E7B] hover:text-[#DC2626] dark:text-[#9BB5C4] dark:hover:text-[#F87171] text-xs sm:text-sm px-2 sm:px-3 py-1.5 cursor-pointer"
             >
               <LogOut size={14} className="sm:w-[15px] sm:h-[15px]" />
               <span className="hidden xs:inline">Exit</span>
@@ -100,11 +100,11 @@ interface ConfirmExitModalProps {
 export function ConfirmExitModal({ onConfirm, onCancel }: ConfirmExitModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-[#1D221E]/75 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative bg-white dark:bg-[#354238] rounded-2xl p-5 sm:p-8 max-w-sm w-full mx-auto shadow-2xl animate-slide-up border border-[#BAC8BD] dark:border-[#445448] max-h-[90vh] overflow-y-auto">
+      <div className="absolute inset-0 bg-[#111C23]/75 backdrop-blur-sm" onClick={onCancel} />
+      <div className="relative bg-white dark:bg-[#203541] rounded-2xl p-5 sm:p-8 max-w-sm w-full mx-auto shadow-2xl animate-slide-up border border-[#C5DCE4] dark:border-[#2D4654] max-h-[90vh] overflow-y-auto">
         <button
           onClick={onCancel}
-          className="absolute top-4 right-4 text-[#47564A] dark:text-[#B6C7B8] hover:text-[#282E28] dark:hover:text-[#D7E0D8] p-1 rounded-lg hover:bg-[#E4EBE5] dark:hover:bg-[#282E28] cursor-pointer"
+          className="absolute top-4 right-4 text-[#526E7B] dark:text-[#9BB5C4] hover:text-[#263B46] dark:hover:text-[#EAF4F8] p-1 rounded-lg hover:bg-[#D5E8EF] dark:hover:bg-[#192831] cursor-pointer"
         >
           <X size={18} />
         </button>
@@ -113,8 +113,8 @@ export function ConfirmExitModal({ onConfirm, onCancel }: ConfirmExitModalProps)
           <LogOut size={20} className="text-[#D97706] dark:text-[#FBBF24] sm:w-[22px] sm:h-[22px]" />
         </div>
 
-        <h3 className="text-base sm:text-lg font-bold text-[#282E28] dark:text-[#D7E0D8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">Exit activity?</h3>
-        <p className="text-xs sm:text-sm text-[#47564A] dark:text-[#B6C7B8] leading-relaxed mb-5 sm:mb-6">
+        <h3 className="text-base sm:text-lg font-bold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">Exit activity?</h3>
+        <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#9BB5C4] leading-relaxed mb-5 sm:mb-6">
           Your current progress on this task will not be saved. You can return to the participant dashboard.
         </p>
 

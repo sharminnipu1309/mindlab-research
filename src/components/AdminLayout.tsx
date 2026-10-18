@@ -66,7 +66,7 @@ export default function AdminLayout({ currentPage, navigate, onLogout, children,
   const groups = ['main', 'analysis', 'data'];
 
   return (
-    <div className="flex h-screen bg-[#D7E0D8] dark:bg-[#282E28] overflow-hidden relative transition-colors duration-200">
+    <div className="flex h-screen bg-[#EAF4F8] dark:bg-[#111C23] overflow-hidden relative transition-colors duration-200">
       {/* Mobile Sidebar Overlay Backdrop */}
       {sidebarOpen && (
         <div
@@ -80,10 +80,10 @@ export default function AdminLayout({ currentPage, navigate, onLogout, children,
         onClick={e => e.stopPropagation()}
         className={`fixed md:relative inset-y-0 left-0 z-40 ${
           sidebarOpen ? 'w-60 translate-x-0' : '-translate-x-full md:translate-x-0 md:w-16'
-        } flex-shrink-0 bg-white dark:bg-[#354238] border-r border-[#BAC8BD] dark:border-[#445448] flex flex-col transition-all duration-300 overflow-hidden shadow-lg md:shadow-none`}
+        } flex-shrink-0 bg-white dark:bg-[#203541] border-r border-[#C5DCE4] dark:border-[#2D4654] flex flex-col transition-all duration-300 overflow-hidden shadow-lg md:shadow-none`}
       >
         {/* Logo area */}
-        <div className="p-4 sm:p-5 border-b border-[#BAC8BD] dark:border-[#445448] flex items-center justify-between min-h-[60px] sm:min-h-[65px] gap-2">
+        <div className="p-4 sm:p-5 border-b border-[#C5DCE4] dark:border-[#2D4654] flex items-center justify-between min-h-[60px] sm:min-h-[65px] gap-2">
           <button
             type="button"
             onClick={() => {
@@ -96,8 +96,8 @@ export default function AdminLayout({ currentPage, navigate, onLogout, children,
             {sidebarOpen ? (
               <Logo size="sm" />
             ) : (
-              <div className="w-8 h-8 rounded-lg bg-[#282E28] dark:bg-[#A3B9A5] flex items-center justify-center mx-auto shadow-xs">
-                <span className="text-[#D7E0D8] dark:text-[#1D221E] text-xs font-bold font-['Plus_Jakarta_Sans',sans-serif]">M</span>
+              <div className="w-8 h-8 rounded-lg bg-[#4D91AD] dark:bg-[#63B8C6] flex items-center justify-center mx-auto shadow-xs">
+                <span className="text-white dark:text-[#111C23] text-xs font-bold font-['Plus_Jakarta_Sans',sans-serif]">M</span>
               </div>
             )}
           </button>
@@ -105,7 +105,7 @@ export default function AdminLayout({ currentPage, navigate, onLogout, children,
             <button
               type="button"
               onClick={toggleSidebar}
-              className="text-[#47564A] dark:text-[#B6C7B8] hover:text-[#282E28] dark:hover:text-[#D7E0D8] p-1.5 rounded-md hover:bg-[#E4EBE5] dark:hover:bg-[#282E28] cursor-pointer"
+              className="text-[#526E7B] dark:text-[#9BB5C4] hover:text-[#263B46] dark:hover:text-[#EAF4F8] p-1.5 rounded-md hover:bg-[#D5E8EF] dark:hover:bg-[#192831] cursor-pointer"
               aria-label="Collapse navigation menu"
               title="Collapse sidebar"
             >
@@ -121,11 +121,11 @@ export default function AdminLayout({ currentPage, navigate, onLogout, children,
             return (
               <div key={group} className={gi > 0 ? 'mt-2' : ''}>
                 {sidebarOpen && (
-                  <div className="px-4 py-2 text-[10px] font-semibold text-[#47564A] dark:text-[#B6C7B8] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
+                  <div className="px-4 py-2 text-[10px] font-semibold text-[#526E7B] dark:text-[#9BB5C4] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
                     {groupLabels[group]}
                   </div>
                 )}
-                {!sidebarOpen && gi > 0 && <div className="my-2 mx-3 h-px bg-[#BAC8BD] dark:bg-[#445448]" />}
+                {!sidebarOpen && gi > 0 && <div className="my-2 mx-3 h-px bg-[#C5DCE4] dark:border-[#2D4654]" />}
                 {items.map(item => {
                   const Icon = item.icon;
                   const active = currentPage === item.id;
@@ -136,15 +136,15 @@ export default function AdminLayout({ currentPage, navigate, onLogout, children,
                         navigate(item.id as Page);
                         if (window.innerWidth < 768) setSidebarOpen(false);
                       }}
-                      className={`w-full flex items-center gap-3 px-4 py-2.5 mx-0 text-sm font-medium transition-all relative group ${
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 mx-0 text-sm font-medium transition-all relative group cursor-pointer ${
                         active
-                          ? 'text-[#282E28] dark:text-[#A3B9A5] bg-[#E4EBE5] dark:bg-[#1D221E] font-bold'
-                          : 'text-[#47564A] dark:text-[#B6C7B8] hover:text-[#282E28] dark:hover:text-[#D7E0D8] hover:bg-[#E4EBE5]/60 dark:hover:bg-[#282E28]/60'
+                          ? 'text-[#4D91AD] dark:text-[#63B8C6] bg-[#D5E8EF] dark:bg-[#192831] font-bold'
+                          : 'text-[#526E7B] dark:text-[#9BB5C4] hover:text-[#263B46] dark:hover:text-[#EAF4F8] hover:bg-[#EAF4F8] dark:hover:bg-[#192831]'
                       }`}
                       title={!sidebarOpen ? item.label : undefined}
                     >
                       {active && (
-                        <div className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-[#282E28] dark:bg-[#A3B9A5] rounded-r-full" />
+                        <div className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-[#4D91AD] dark:bg-[#63B8C6] rounded-r-full" />
                       )}
                       <Icon size={17} className="flex-shrink-0" />
                       {sidebarOpen && (
@@ -161,19 +161,19 @@ export default function AdminLayout({ currentPage, navigate, onLogout, children,
         </nav>
 
         {/* Admin profile */}
-        <div className={`border-t border-[#BAC8BD] dark:border-[#445448] p-4 ${sidebarOpen ? '' : 'flex justify-center'}`}>
+        <div className={`border-t border-[#C5DCE4] dark:border-[#2D4654] p-4 ${sidebarOpen ? '' : 'flex justify-center'}`}>
           {sidebarOpen ? (
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#282E28] dark:bg-[#A3B9A5] flex items-center justify-center flex-shrink-0">
-                <span className="text-[#D7E0D8] dark:text-[#1D221E] text-xs font-bold font-['Plus_Jakarta_Sans',sans-serif]">R</span>
+              <div className="w-8 h-8 rounded-full bg-[#4D91AD] dark:bg-[#63B8C6] flex items-center justify-center flex-shrink-0">
+                <span className="text-white dark:text-[#111C23] text-xs font-bold font-['Plus_Jakarta_Sans',sans-serif]">R</span>
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-xs font-semibold text-[#282E28] dark:text-[#D7E0D8] truncate font-['Plus_Jakarta_Sans',sans-serif]">Researcher</div>
-                <div className="text-[11px] text-[#47564A] dark:text-[#B6C7B8] truncate">admin@mindlab.io</div>
+                <div className="text-xs font-semibold text-[#263B46] dark:text-[#EAF4F8] truncate font-['Plus_Jakarta_Sans',sans-serif]">Researcher</div>
+                <div className="text-[11px] text-[#526E7B] dark:text-[#9BB5C4] truncate">admin@mindlab.io</div>
               </div>
               <button
                 onClick={onLogout}
-                className="ml-auto text-[#47564A] dark:text-[#B6C7B8] hover:text-[#EF4444] p-1.5 rounded transition-colors"
+                className="ml-auto text-[#526E7B] dark:text-[#9BB5C4] hover:text-[#EF4444] p-1.5 rounded transition-colors cursor-pointer"
                 title="Log out"
               >
                 <LogOut size={15} />
@@ -182,7 +182,7 @@ export default function AdminLayout({ currentPage, navigate, onLogout, children,
           ) : (
             <button
               onClick={onLogout}
-              className="text-[#47564A] dark:text-[#B6C7B8] hover:text-[#EF4444] p-1.5 rounded transition-colors"
+              className="text-[#526E7B] dark:text-[#9BB5C4] hover:text-[#EF4444] p-1.5 rounded transition-colors cursor-pointer"
               title="Log out"
             >
               <LogOut size={16} />
@@ -194,12 +194,12 @@ export default function AdminLayout({ currentPage, navigate, onLogout, children,
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top bar */}
-        <header className="bg-white dark:bg-[#354238] border-b border-[#BAC8BD] dark:border-[#445448] px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between flex-shrink-0 min-h-[60px] sm:min-h-[65px]">
+        <header className="bg-white dark:bg-[#192831] border-b border-[#C5DCE4] dark:border-[#2D4654] px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between flex-shrink-0 min-h-[60px] sm:min-h-[65px]">
           <div className="flex items-center gap-3 sm:gap-4 min-w-0">
             <button
               type="button"
               onClick={toggleSidebar}
-              className="text-[#47564A] dark:text-[#B6C7B8] hover:text-[#282E28] dark:hover:text-[#D7E0D8] p-1.5 rounded-lg hover:bg-[#E4EBE5] dark:hover:bg-[#282E28] flex-shrink-0 cursor-pointer"
+              className="text-[#526E7B] dark:text-[#9BB5C4] hover:text-[#263B46] dark:hover:text-[#EAF4F8] p-1.5 rounded-lg hover:bg-[#D5E8EF] dark:hover:bg-[#111C23] flex-shrink-0 cursor-pointer"
               aria-label="Toggle navigation menu"
               title="Toggle sidebar"
             >
@@ -207,13 +207,13 @@ export default function AdminLayout({ currentPage, navigate, onLogout, children,
             </button>
             <div className="min-w-0">
               {breadcrumb && (
-                <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-[#47564A] dark:text-[#B6C7B8] mb-0.5 font-['Plus_Jakarta_Sans',sans-serif] truncate">
+                <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-[#526E7B] dark:text-[#9BB5C4] mb-0.5 font-['Plus_Jakarta_Sans',sans-serif] truncate">
                   <span>Admin</span>
                   <ChevronRight size={12} />
                   <span className="truncate">{breadcrumb}</span>
                 </div>
               )}
-              <h1 className="text-sm sm:text-base font-bold text-[#282E28] dark:text-[#D7E0D8] font-['Plus_Jakarta_Sans',sans-serif] truncate">
+              <h1 className="text-sm sm:text-base font-bold text-[#263B46] dark:text-[#EAF4F8] font-['Plus_Jakarta_Sans',sans-serif] truncate">
                 {pageTitle}
               </h1>
             </div>
@@ -221,38 +221,38 @@ export default function AdminLayout({ currentPage, navigate, onLogout, children,
 
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             <ThemeToggle />
-            <div className="text-[11px] sm:text-xs text-[#47564A] dark:text-[#B6C7B8] bg-[#E4EBE5] dark:bg-[#1D221E] px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-[#BAC8BD] dark:border-[#445448] font-['Plus_Jakarta_Sans',sans-serif]">
-              <span className="text-[#354238] dark:text-[#A3B9A5] font-bold">●</span>{' '}
+            <div className="text-[11px] sm:text-xs text-[#526E7B] dark:text-[#9BB5C4] bg-[#D5E8EF] dark:bg-[#203541] px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-[#C5DCE4] dark:border-[#2D4654] font-['Plus_Jakarta_Sans',sans-serif]">
+              <span className="text-[#4D91AD] dark:text-[#63B8C6] font-bold">●</span>{' '}
               <span className="font-medium hidden xs:inline">Demo Data</span>
             </div>
             <div className="relative">
               <button
                 onClick={() => setNotifOpen(!notifOpen)}
-                className="relative p-2 text-[#47564A] dark:text-[#B6C7B8] hover:text-[#282E28] dark:hover:text-[#D7E0D8] rounded-lg hover:bg-[#E4EBE5] dark:hover:bg-[#282E28] transition-colors"
+                className="relative p-2 text-[#526E7B] dark:text-[#9BB5C4] hover:text-[#263B46] dark:hover:text-[#EAF4F8] rounded-lg hover:bg-[#D5E8EF] dark:hover:bg-[#111C23] transition-colors cursor-pointer"
               >
                 <Bell size={18} />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#282E28] dark:bg-[#A3B9A5] rounded-full" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#4D91AD] dark:bg-[#63B8C6] rounded-full" />
               </button>
               {notifOpen && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setNotifOpen(false)} />
-                  <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-[#354238] rounded-xl border border-[#BAC8BD] dark:border-[#445448] shadow-xl z-20 animate-fade-in-up">
-                    <div className="p-4 border-b border-[#BAC8BD] dark:border-[#445448]">
-                      <span className="text-sm font-semibold text-[#282E28] dark:text-[#D7E0D8] font-['Plus_Jakarta_Sans',sans-serif]">Notifications</span>
+                  <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-[#203541] rounded-xl border border-[#C5DCE4] dark:border-[#2D4654] shadow-xl z-20 animate-fade-in-up">
+                    <div className="p-4 border-b border-[#C5DCE4] dark:border-[#2D4654]">
+                      <span className="text-sm font-semibold text-[#263B46] dark:text-[#EAF4F8] font-['Plus_Jakarta_Sans',sans-serif]">Notifications</span>
                     </div>
                     <div className="p-4 space-y-3">
                       <div className="flex gap-3 items-start">
-                        <div className="w-2 h-2 bg-[#282E28] dark:bg-[#A3B9A5] rounded-full mt-1.5 flex-shrink-0" />
+                        <div className="w-2 h-2 bg-[#4D91AD] dark:bg-[#63B8C6] rounded-full mt-1.5 flex-shrink-0" />
                         <div>
-                          <p className="text-xs font-medium text-[#282E28] dark:text-[#D7E0D8]">New participant registered</p>
-                          <p className="text-xs text-[#47564A] dark:text-[#B6C7B8]">ML-0012 — 2 minutes ago</p>
+                          <p className="text-xs font-medium text-[#263B46] dark:text-[#EAF4F8]">New participant registered</p>
+                          <p className="text-xs text-[#526E7B] dark:text-[#9BB5C4]">ML-0012 — 2 minutes ago</p>
                         </div>
                       </div>
                       <div className="flex gap-3 items-start">
-                        <div className="w-2 h-2 bg-[#354238] dark:text-[#A3B9A5] rounded-full mt-1.5 flex-shrink-0" />
+                        <div className="w-2 h-2 bg-[#63B8C6] dark:text-[#63B8C6] rounded-full mt-1.5 flex-shrink-0" />
                         <div>
-                          <p className="text-xs font-medium text-[#282E28] dark:text-[#D7E0D8]">Session completed</p>
-                          <p className="text-xs text-[#47564A] dark:text-[#B6C7B8]">ML-0011 — 18 minutes ago</p>
+                          <p className="text-xs font-medium text-[#263B46] dark:text-[#EAF4F8]">Session completed</p>
+                          <p className="text-xs text-[#526E7B] dark:text-[#9BB5C4]">ML-0011 — 18 minutes ago</p>
                         </div>
                       </div>
                     </div>

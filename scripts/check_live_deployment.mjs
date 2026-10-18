@@ -39,12 +39,12 @@ async function verify() {
   }
 
   // Check for newly added strings and removed old strings
-  const checks = [
-    { label: 'Theme CSS contains Dark forest charcoal (#282E28)', pass: cssBody.includes('#282E28') || jsResp.body.includes('#282E28') },
-    { label: 'Theme CSS contains Soft sage white (#D7E0D8)', pass: cssBody.includes('#D7E0D8') || jsResp.body.includes('#D7E0D8') },
-    { label: 'Theme CSS contains Deep background (#1D221E)', pass: cssBody.includes('#1D221E') || jsResp.body.includes('#1D221E') },
-    { label: 'Theme CSS contains Deep sage surface (#354238)', pass: cssBody.includes('#354238') || jsResp.body.includes('#354238') },
-    { label: 'Theme CSS contains Soft sage accent (#A3B9A5)', pass: cssBody.includes('#A3B9A5') || jsResp.body.includes('#A3B9A5') },
+    { label: 'Theme CSS contains Icy blue (#EAF4F8)', pass: cssBody.includes('#EAF4F8') || jsResp.body.includes('#EAF4F8') },
+    { label: 'Theme CSS contains Deep blue-gray (#263B46)', pass: cssBody.includes('#263B46') || jsResp.body.includes('#263B46') },
+    { label: 'Theme CSS contains Ocean blue (#4D91AD)', pass: cssBody.includes('#4D91AD') || jsResp.body.includes('#4D91AD') },
+    { label: 'Theme CSS contains Teal accent (#63B8C6)', pass: cssBody.includes('#63B8C6') || jsResp.body.includes('#63B8C6') },
+    { label: 'Theme CSS contains Dark mode background (#111C23)', pass: cssBody.includes('#111C23') || jsResp.body.includes('#111C23') },
+    { label: 'Theme CSS contains Dark mode card (#203541)', pass: cssBody.includes('#203541') || jsResp.body.includes('#203541') },
     { label: 'Contains "Back to Home"', pass: jsResp.body.includes('Back to Home') },
     { label: 'Contains "Tasks can be completed in any order"', pass: jsResp.body.includes('Tasks can be completed in any order') },
     { label: 'Contains new Hero description: "Try four brain games that show how well you plan, remember, pay attention, and switch between ideas."', pass: jsResp.body.includes('Try four brain games that show how well you plan, remember, pay attention, and switch between ideas.') },
