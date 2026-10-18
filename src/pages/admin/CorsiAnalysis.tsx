@@ -200,7 +200,6 @@ export default function CorsiAnalysis({ navigate, onLogout, currentPage }: Props
           <div className="text-xs text-[#73758C] leading-relaxed space-y-1">
             <p><strong className="text-[#252640]">Product score</strong> = highest successfully completed sequence length × number of correct trials at that level.</p>
             <p><strong className="text-[#252640]">Trial accuracy</strong> = (correct trials / total scored trials) × 100.</p>
-            <p><strong className="text-[#252640]">Block-position accuracy</strong> = (correct positions / total scored positions) × 100.</p>
           </div>
         </div>
       </div>
@@ -210,7 +209,7 @@ export default function CorsiAnalysis({ navigate, onLogout, currentPage }: Props
           <Inbox size={36} className="text-[#C5C1F1] mx-auto mb-3" />
           <h3 className="text-base font-bold text-[#252640] font-['Plus_Jakarta_Sans',sans-serif]">No Participant Corsi Trials Yet</h3>
           <p className="text-xs text-[#73758C] mt-1 max-w-md mx-auto">
-            Spatial span metrics, block-position accuracy, and sequence reproductions will be aggregated here automatically once participants begin Room 02.
+            Spatial span metrics and sequence reproductions will be aggregated here automatically once participants begin Room 02.
           </p>
         </div>
       ) : (
@@ -332,7 +331,6 @@ export default function CorsiAnalysis({ navigate, onLogout, currentPage }: Props
                     <th>Seq. Length</th>
                     <th>Trial</th>
                     <th>Correct</th>
-                    <th>Block Positions</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -347,20 +345,6 @@ export default function CorsiAnalysis({ navigate, onLogout, currentPage }: Props
                         <span className={`badge text-[11px] ${t.correct ? 'bg-[#D1EDE5] text-[#4A9B7F]' : 'bg-[#FBDEDD] text-[#C4625A]'}`}>
                           {t.correct ? 'Correct' : 'Incorrect'}
                         </span>
-                      </td>
-                      <td>
-                        {t.positions !== null && t.positions !== undefined ? (
-                          <>
-                            <span className="font-['JetBrains_Mono',monospace] text-sm">
-                              {t.positions}/{t.seqLen}
-                            </span>
-                            <span className="text-[11px] text-[#9597AB] ml-1">
-                              ({t.seqLen > 0 ? Math.round((t.positions / t.seqLen) * 100) : 0}%)
-                            </span>
-                          </>
-                        ) : (
-                          <span className="text-xs text-[#9597AB] italic">Unrecorded</span>
-                        )}
                       </td>
                       <td><ChevronRight size={14} className="text-[#C5C1F1]" /></td>
                     </tr>
@@ -390,7 +374,6 @@ export default function CorsiAnalysis({ navigate, onLogout, currentPage }: Props
                 { label: 'Sequence length', value: String(selectedTrial.seqLen), mono: true },
                 { label: 'Trial number', value: `${selectedTrial.trial} of 6`, mono: true },
                 { label: 'Result', value: selectedTrial.correct ? 'Correct' : 'Incorrect', color: selectedTrial.correct ? '#4A9B7F' : '#C4625A' },
-                { label: 'Block positions correct', value: selectedTrial.positions !== null && selectedTrial.positions !== undefined ? `${selectedTrial.positions} / ${selectedTrial.seqLen}` : 'Unrecorded', mono: true },
               ].map(({ label, value, mono, color }) => (
                 <div key={label} className="flex justify-between items-center py-2.5 border-b border-[#F3F2FA] last:border-0">
                   <span className="text-xs text-[#73758C]">{label}</span>

@@ -64,6 +64,10 @@ async function verify() {
     { label: 'Image 3: Modal contains "These tests need you to focus without stopping."', pass: jsResp.body.includes('These tests need you to focus without stopping.') },
     { label: 'Image 3: Modal does NOT contain "Empirical cognitive metrics (working memory span"', pass: !jsResp.body.includes('Empirical cognitive metrics (working memory span') },
     { label: 'Image 3: Contains Hanoi dependent measure text', pass: jsResp.body.includes('The dependent measure for Tower of Hanoi was the total number of moves taken to complete the last five trials, including the wrong moves.') },
+    { label: 'Admin: Does NOT contain "Block-position accuracy"', pass: !jsResp.body.includes('Block-position accuracy') },
+    { label: 'Admin: Does NOT contain "RT Latency Distribution"', pass: !jsResp.body.includes('RT Latency Distribution') },
+    { label: 'Admin: Contains Stroop Effect RT diff definition', pass: jsResp.body.includes('The reaction time (RT) difference between correctly answered congruent and incongruent trials') },
+    { label: 'Admin: Contains "RT diff on correct trials"', pass: jsResp.body.includes('RT diff on correct trials') },
   ];
 
   let allPass = true;

@@ -489,12 +489,6 @@ export default function ExperimentConfig({ navigate, onLogout, currentPage }: Pr
                 enabled: dataMeasurements.recordInvalidMoveAttempts,
               },
               {
-                id: 'recordBlockPositionAccuracy' as const,
-                label: 'Block-position accuracy',
-                desc: 'Per-block position correctness in Corsi responses',
-                enabled: dataMeasurements.recordBlockPositionAccuracy,
-              },
-              {
                 id: 'recordSessionTimestamps' as const,
                 label: 'Record task completion timestamps',
                 desc: 'Record completion timestamps when participant finishes each activity and full study battery (session start is always recorded for audit)',

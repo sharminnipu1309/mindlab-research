@@ -44,7 +44,7 @@ export default function StroopAnalysis({ navigate, onLogout, currentPage }: Prop
   const [filterPid, setFilterPid] = useState('');
   const [filterCondition, setFilterCondition] = useState<'All' | 'congruent' | 'incongruent'>('All');
   const [filterPhase, setFilterPhase] = useState<'all' | 'experiment' | 'practice'>('all');
-  const [activeChart, setActiveChart] = useState<'rt-comparison' | 'accuracy' | 'distribution'>('rt-comparison');
+  const [activeChart, setActiveChart] = useState<'rt-comparison' | 'accuracy'>('rt-comparison');
   const [selectedTrial, setSelectedTrial] = useState<StroopTrialItem | null>(null);
 
   useEffect(() => {
@@ -185,7 +185,7 @@ export default function StroopAnalysis({ navigate, onLogout, currentPage }: Prop
           { label: 'Overall Accuracy', value: overallAccuracy !== null ? `${overallAccuracy.toFixed(1)}%` : '—', color: '#4A9B7F', sub: totalExpTrials > 0 ? `${correctExpTrials}/${totalExpTrials} correct` : 'No exp. data' },
           { label: 'Congruent Mean RT', value: meanCongruentRt !== null ? `${meanCongruentRt}ms` : '—', color: '#2563EB', sub: congruentAccuracy !== null ? `Acc: ${congruentAccuracy.toFixed(0)}%` : 'Correct trials only' },
           { label: 'Incongruent Mean RT', value: meanIncongruentRt !== null ? `${meanIncongruentRt}ms` : '—', color: '#DC2626', sub: incongruentAccuracy !== null ? `Acc: ${incongruentAccuracy.toFixed(0)}%` : 'Correct trials only' },
-          { label: 'Stroop Effect (Cost)', value: stroopEffectMs !== null ? `${stroopEffectMs >= 0 ? '+' : ''}${stroopEffectMs}ms` : '—', color: '#E11D48', sub: 'Incongruent − Congruent' },
+          { label: 'Stroop Effect (Cost)', value: stroopEffectMs !== null ? `${stroopEffectMs >= 0 ? '+' : ''}${stroopEffectMs}ms` : '—', color: '#E11D48', sub: 'RT diff on correct trials' },
         ].map(({ label, value, color, sub }) => (
           <div key={label} className="bg-white rounded-xl border border-[#E9E8F2] p-3.5 sm:p-4 text-center">
             <div className="text-lg sm:text-xl font-bold font-['JetBrains_Mono',monospace] mb-0.5" style={{ color }}>{value}</div>
@@ -201,7 +201,7 @@ export default function StroopAnalysis({ navigate, onLogout, currentPage }: Prop
           <Zap size={16} className="text-[#E11D48] flex-shrink-0 mt-0.5" />
           <div className="text-xs text-[#73758C] leading-relaxed space-y-1">
             <p>
-              <strong className="text-[#252640]">Stroop Effect (Interference Cost)</strong> = Mean Reaction Time (Incongruent) − Mean Reaction Time (Congruent). Evaluates selective attention and inhibitory control. Calculated strictly on correct experimental trials.
+              <strong className="text-[#252640]">Stroop Effect (Interference Cost)</strong> = The reaction time (RT) difference between correctly answered congruent and incongruent trials (Mean RT Incongruent − Mean RT Congruent). Evaluates selective attention and inhibitory control.
             </p>
             <p>
               <strong className="text-[#252640]">Trial Structure:</strong> 20 Practice trials (retained in raw data but excluded from research metrics) + 128 Experimental trials (96 Congruent [75%], 32 Incongruent [25%]).
@@ -246,7 +246,6 @@ export default function StroopAnalysis({ navigate, onLogout, currentPage }: Prop
                 {([
                   ['rt-comparison', 'RT Comparison (ms)'],
                   ['accuracy', 'Accuracy by Condition'],
-                  ['distribution', 'RT Latency Distribution'],
                 ] as const).map(([id, label]) => (
                   <button
                     key={id}
@@ -286,7 +285,7 @@ export default function StroopAnalysis({ navigate, onLogout, currentPage }: Prop
                       ))}
                     </Bar>
                   </BarChart>
-                ) : activeChart === 'accuracy' ? (
+                ) : (
                   <BarChart data={activeAccuracyChartData} margin={{ left: -10, right: 10, top: 10, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#F0EFFB" />
                     <XAxis dataKey="condition" tick={{ fontSize: 11, fill: '#9597AB', fontFamily: 'Inter' }} axisLine={false} tickLine={false} />
@@ -298,16 +297,6 @@ export default function StroopAnalysis({ navigate, onLogout, currentPage }: Prop
                     <Legend wrapperStyle={{ fontSize: 12, fontFamily: 'Inter' }} />
                     <Bar dataKey="accuracy" name="Accuracy %" fill="#4A9B7F" radius={[6, 6, 0, 0]} />
                     <Bar dataKey="errorRate" name="Error Rate %" fill="#FDA4AF" radius={[6, 6, 0, 0]} />
-                  </BarChart>
-                ) : (
-                  <BarChart data={chartData.stroopRtDistribution} margin={{ left: -10, right: 10, top: 10, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#F0EFFB" />
-                    <XAxis dataKey="bin" tick={{ fontSize: 11, fill: '#9597AB', fontFamily: 'Inter' }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 11, fill: '#9597AB', fontFamily: 'Inter' }} axisLine={false} tickLine={false} allowDecimals={false} />
-                    <Tooltip contentStyle={{ background: 'white', border: '1px solid #E9E8F2', borderRadius: 10, fontSize: 12 }} />
-                    <Legend wrapperStyle={{ fontSize: 12, fontFamily: 'Inter' }} />
-                    <Bar dataKey="congruent" name="Congruent Trials" fill="#2563EB" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="incongruent" name="Incongruent Trials" fill="#DC2626" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 )}
               </ResponsiveContainer>

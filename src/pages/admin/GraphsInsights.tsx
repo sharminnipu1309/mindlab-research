@@ -314,23 +314,6 @@ export default function GraphsInsights({ navigate, onLogout, currentPage }: Prop
       };
     }).filter(l => !corsiData.isLive || l.count > 0);
 
-    // Chart 4: Block Position Recall Accuracy vs Trial Accuracy
-    const positionAccuracyByLevel = [1, 2, 3, 4, 5, 6, 7, 8].map(lvl => {
-      const lvlTrials = trials.filter(t => t.level === lvl);
-      const trialAcc = lvlTrials.length > 0 ? Math.round((lvlTrials.filter(t => t.correct).length / lvlTrials.length) * 100) : 0;
-      const recordedPosTrials = lvlTrials.filter(t => t.positions !== null && t.positions !== undefined);
-      const hasPosRecordings = recordedPosTrials.length > 0;
-      const totalPos = recordedPosTrials.reduce((s, t) => s + (t.seqLen || (lvl + 1)), 0);
-      const correctPos = recordedPosTrials.reduce((s, t) => s + (t.positions || 0), 0);
-      const posAcc = hasPosRecordings && totalPos > 0 ? Math.round((correctPos / totalPos) * 100) : null;
-      return {
-        level: `L${lvl}`,
-        trialAccuracy: trialAcc,
-        positionAccuracy: posAcc,
-        n: lvlTrials.length,
-      };
-    }).filter(l => !corsiData.isLive || l.n > 0);
-
     return {
       participantsCount: completedCohort.length,
       totalTrials,
@@ -340,7 +323,6 @@ export default function GraphsInsights({ navigate, onLogout, currentPage }: Prop
       accuracyByLevel,
       latencyByLevel,
       maxLevelDistribution,
-      positionAccuracyByLevel,
     };
   }, [corsiData]);
 
@@ -928,22 +910,6 @@ export default function GraphsInsights({ navigate, onLogout, currentPage }: Prop
                         <Bar dataKey="count" name="Participants" fill="#0D9488" radius={[6, 6, 0, 0]} />
                       </BarChart>
                     </ChartCard>
-
-                    {/* Chart 4: Block Position vs Trial Accuracy */}
-                    <ChartCard
-                      title="Trial vs. Block-Position Accuracy"
-                      subtitle="Comparison of full-sequence accuracy vs individual block position accuracy"
-                    >
-                      <LineChart data={corsiMetrics.positionAccuracyByLevel} margin={{ left: -10 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#F0EFFB" />
-                        <XAxis dataKey="level" tick={{ fontSize: 11, fill: '#9597AB', fontFamily: 'Inter' }} axisLine={false} tickLine={false} />
-                        <YAxis tick={{ fontSize: 11, fill: '#9597AB', fontFamily: 'Inter' }} axisLine={false} tickLine={false} unit="%" domain={[0, 100]} />
-                        <Tooltip contentStyle={{ background: 'white', border: '1px solid #E9E8F2', borderRadius: 10, fontSize: 12 }} />
-                        <Legend wrapperStyle={{ fontSize: 12, fontFamily: 'Inter', paddingTop: 8 }} />
-                        <Line type="monotone" dataKey="trialAccuracy" name="Trial accuracy %" stroke="#0D9488" strokeWidth={2.5} dot={{ r: 4, fill: '#0D9488' }} />
-                        <Line type="monotone" dataKey="positionAccuracy" name="Position accuracy %" stroke="#6567C9" strokeWidth={2} strokeDasharray="4 3" dot={{ r: 3, fill: '#6567C9' }} />
-                      </LineChart>
-                    </ChartCard>
                   </div>
                 </>
               )}
@@ -969,7 +935,7 @@ export default function GraphsInsights({ navigate, onLogout, currentPage }: Prop
                     <SummaryCard label="Overall Accuracy" value={`${stroopMetrics.overallAccuracy}%`} color="#4A9B7F" sub="Correct trials" />
                     <SummaryCard label="Congruent RT" value={stroopMetrics.congruentMeanRt !== null ? `${stroopMetrics.congruentMeanRt}ms` : '—'} color="#2563EB" sub={`Acc: ${stroopMetrics.congruentAcc}%`} />
                     <SummaryCard label="Incongruent RT" value={stroopMetrics.incongruentMeanRt !== null ? `${stroopMetrics.incongruentMeanRt}ms` : '—'} color="#DC2626" sub={`Acc: ${stroopMetrics.incongruentAcc}%`} />
-                    <SummaryCard label="Stroop Effect" value={typeof stroopMetrics.stroopEffectMs === 'number' ? `${stroopMetrics.stroopEffectMs >= 0 ? '+' : ''}${stroopMetrics.stroopEffectMs}ms` : '—'} color="#EF4444" sub="Interference Cost" />
+                    <SummaryCard label="Stroop Effect" value={typeof stroopMetrics.stroopEffectMs === 'number' ? `${stroopMetrics.stroopEffectMs >= 0 ? '+' : ''}${stroopMetrics.stroopEffectMs}ms` : '—'} color="#EF4444" sub="RT diff on correct trials" />
                   </div>
 
                   {/* 4 Interactive Charts */}
@@ -1012,7 +978,7 @@ export default function GraphsInsights({ navigate, onLogout, currentPage }: Prop
                     {/* Chart 3: Stroop Interference by Participant */}
                     <ChartCard
                       title="Stroop Interference Cost by Participant"
-                      subtitle="Difference (ms) between incongruent and congruent RT"
+                      subtitle="RT difference between correct incongruent and congruent trials"
                     >
                       <BarChart data={stroopMetrics.participantCosts} margin={{ left: -10 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#F0EFFB" />
