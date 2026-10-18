@@ -26,27 +26,24 @@ export function HanoiVisual({ variant = 'light', size = 'md', className = '' }: 
         className="w-full h-full"
       >
         {/* Subtle background concentric rings / grid lines */}
-        <circle cx="50" cy="50" r="46" stroke={isDark ? '#63B8C6' : '#4D91AD'} strokeWidth="1" opacity={isDark ? '0.3' : '0.18'} />
-        <circle cx="50" cy="50" r="32" stroke={isDark ? '#EAF4F8' : '#4D91AD'} strokeWidth="1" strokeDasharray="3 3" opacity={isDark ? '0.35' : '0.22'} />
+        <circle cx="50" cy="50" r="46" stroke={isDark ? '#63B8C6' : '#245D72'} strokeWidth="1.5" opacity={isDark ? '0.35' : '0.22'} />
+        <circle cx="50" cy="50" r="32" stroke={isDark ? '#63B8C6' : '#4D91AD'} strokeWidth="1.5" strokeDasharray="3 3" opacity={isDark ? '0.45' : '0.32'} />
 
         {/* Base */}
-        <rect x="18" y="74" width="64" height="5" rx="2.5" fill={isDark ? '#2D4654' : '#C5DCE4'} />
+        <rect x="16" y="73" width="68" height="6" rx="3" fill={isDark ? '#314E62' : '#263B46'} />
 
         {/* 3 Poles */}
-        <rect x="28.5" y="32" width="3" height="42" rx="1.5" fill={isDark ? '#63B8C6' : '#94A3B8'} opacity="0.85" />
-        <rect x="48.5" y="32" width="3" height="42" rx="1.5" fill={isDark ? '#63B8C6' : '#94A3B8'} opacity="0.85" />
-        <rect x="68.5" y="32" width="3" height="42" rx="1.5" fill={isDark ? '#63B8C6' : '#94A3B8'} opacity="0.85" />
+        <rect x="28" y="30" width="4" height="43" rx="2" fill={isDark ? '#63B8C6' : '#526E7B'} />
+        <rect x="48" y="30" width="4" height="43" rx="2" fill={isDark ? '#63B8C6' : '#526E7B'} />
+        <rect x="68" y="30" width="4" height="43" rx="2" fill={isDark ? '#63B8C6' : '#526E7B'} />
 
         {/* Pole 1 Discs (Stacked: Large, Medium, Small) */}
-        <rect x="20" y="66" width="20" height="7" rx="3.5" fill="#263B46" />
-        <rect x="22.5" y="58" width="15" height="7" rx="3.5" fill="#4D91AD" />
-        <rect x="25" y="50" width="10" height="7" rx="3.5" fill="#63B8C6" />
-
-        {/* Pole 3 Disc (Target placement demonstration) */}
-        <rect x="62" y="66" width="16" height="7" rx="3.5" fill={isDark ? '#63B8C6' : '#4D91AD'} opacity="0.4" strokeDasharray="2 2" stroke={isDark ? '#EAF4F8' : '#4D91AD'} />
+        <rect x="18" y="65" width="24" height="8" rx="4" fill="#183B4A" stroke={isDark ? '#314E62' : '#0F2630'} strokeWidth="0.5" />
+        <rect x="21" y="56" width="18" height="8" rx="4" fill="#245D72" stroke={isDark ? '#4D91AD' : '#163A4A'} strokeWidth="0.5" />
+        <rect x="24" y="47" width="12" height="8" rx="4" fill="#0D9488" stroke={isDark ? '#5EEAD4' : '#0A7369'} strokeWidth="0.5" />
 
         {/* Subtle accent highlight glow */}
-        <circle cx="30" cy="53.5" r="2" fill="#FFFFFF" opacity="0.8" />
+        <circle cx="28" cy="51" r="1.5" fill="#FFFFFF" opacity="0.9" />
       </svg>
     </div>
   );
@@ -62,7 +59,6 @@ export function CorsiVisual({ variant = 'light', size = 'md', className = '' }: 
   const height = size === 'sm' ? 44 : size === 'lg' ? 140 : 80;
 
   // Blocks 0..8 (3x3 grid)
-  // Illuminated blocks at indices 1, 4, 8 to demonstrate spatial sequence
   const blocks = [
     { id: 0, active: false },
     { id: 1, active: true, order: 1 },
@@ -86,8 +82,8 @@ export function CorsiVisual({ variant = 'light', size = 'md', className = '' }: 
         className="w-full h-full"
       >
         {/* Background concentric rings */}
-        <circle cx="50" cy="50" r="46" stroke={isDark ? '#63B8C6' : '#4D91AD'} strokeWidth="1" opacity={isDark ? '0.25' : '0.15'} />
-        <circle cx="50" cy="50" r="32" stroke={isDark ? '#63B8C6' : '#4D91AD'} strokeWidth="1" strokeDasharray="3 3" opacity={isDark ? '0.35' : '0.2'} />
+        <circle cx="50" cy="50" r="46" stroke={isDark ? '#63B8C6' : '#245D72'} strokeWidth="1.5" opacity={isDark ? '0.35' : '0.22'} />
+        <circle cx="50" cy="50" r="32" stroke={isDark ? '#63B8C6' : '#4D91AD'} strokeWidth="1.5" strokeDasharray="3 3" opacity={isDark ? '0.45' : '0.32'} />
 
         {/* 3x3 Grid of rounded blocks */}
         {blocks.map(b => {
@@ -98,27 +94,40 @@ export function CorsiVisual({ variant = 'light', size = 'md', className = '' }: 
 
           return (
             <g key={b.id}>
-              {b.active && (
+              {b.active ? (
+                <>
+                  <rect
+                    x={x - 1.5}
+                    y={y - 1.5}
+                    width="17"
+                    height="17"
+                    rx="5"
+                    fill={b.order === 2 ? '#0D9488' : '#2563EB'}
+                    opacity="0.25"
+                  />
+                  <rect
+                    x={x}
+                    y={y}
+                    width="14"
+                    height="14"
+                    rx="4"
+                    fill={b.order === 2 ? '#0D9488' : '#2563EB'}
+                    stroke={b.order === 2 ? '#042F2E' : '#1E3A8A'}
+                    strokeWidth="0.5"
+                  />
+                  <circle cx={x + 7} cy={y + 7} r="2" fill="#FFFFFF" opacity="0.95" />
+                </>
+              ) : (
                 <rect
-                  x={x - 1.5}
-                  y={y - 1.5}
-                  width="17"
-                  height="17"
-                  rx="4.5"
-                  fill="#63B8C6"
-                  opacity={isDark ? '0.4' : '0.3'}
+                  x={x}
+                  y={y}
+                  width="14"
+                  height="14"
+                  rx="4"
+                  fill={isDark ? '#1A2B36' : '#E2EFF4'}
+                  stroke={isDark ? '#314E62' : '#94A3B8'}
+                  strokeWidth="1"
                 />
-              )}
-              <rect
-                x={x}
-                y={y}
-                width="14"
-                height="14"
-                rx="3.5"
-                fill={b.active ? '#4D91AD' : isDark ? '#203541' : '#D5E8EF'}
-              />
-              {b.active && (
-                <circle cx={x + 7} cy={y + 7} r="2" fill="#FFFFFF" opacity="0.95" />
               )}
             </g>
           );
@@ -148,25 +157,25 @@ export function StroopVisual({ variant = 'light', size = 'md', className = '' }:
         className="w-full h-full"
       >
         {/* Background concentric rings */}
-        <circle cx="50" cy="50" r="46" stroke={isDark ? '#EF4444' : '#EF4444'} strokeWidth="1" opacity={isDark ? '0.2' : '0.12'} />
-        <circle cx="50" cy="50" r="32" stroke={isDark ? '#F87171' : '#EF4444'} strokeWidth="1" strokeDasharray="3 3" opacity={isDark ? '0.3' : '0.18'} />
+        <circle cx="50" cy="50" r="46" stroke={isDark ? '#F87171' : '#DC2626'} strokeWidth="1.5" opacity={isDark ? '0.35' : '0.22'} />
+        <circle cx="50" cy="50" r="32" stroke={isDark ? '#F87171' : '#DC2626'} strokeWidth="1.5" strokeDasharray="3 3" opacity={isDark ? '0.45' : '0.32'} />
 
         {/* Attention eye / focus icon */}
         <path
           d="M24 50C24 50 33 34 50 34C67 34 76 50 76 50C76 50 67 66 50 66C33 66 24 50 24 50Z"
-          stroke="#EF4444"
+          stroke="#DC2626"
           strokeWidth="3.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        <circle cx="50" cy="50" r="8" fill="#EF4444" />
+        <circle cx="50" cy="50" r="8" fill="#DC2626" />
         <circle cx="52.5" cy="47.5" r="2.5" fill="#FFFFFF" />
 
-        {/* Small top/bottom calibration ticks */}
-        <line x1="50" y1="23" x2="50" y2="28" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" />
-        <line x1="50" y1="72" x2="50" y2="77" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" />
-        <line x1="23" y1="50" x2="18" y2="50" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" opacity="0.6" />
-        <line x1="82" y1="50" x2="77" y2="50" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" opacity="0.6" />
+        {/* Small calibration crosshair ticks */}
+        <line x1="50" y1="21" x2="50" y2="28" stroke="#DC2626" strokeWidth="2.5" strokeLinecap="round" />
+        <line x1="50" y1="72" x2="50" y2="79" stroke="#DC2626" strokeWidth="2.5" strokeLinecap="round" />
+        <line x1="21" y1="50" x2="15" y2="50" stroke="#DC2626" strokeWidth="2.5" strokeLinecap="round" />
+        <line x1="85" y1="50" x2="79" y2="50" stroke="#DC2626" strokeWidth="2.5" strokeLinecap="round" />
       </svg>
     </div>
   );
@@ -174,7 +183,7 @@ export function StroopVisual({ variant = 'light', size = 'md', className = '' }:
 
 /**
  * Task Switching Miniature Visual Representation
- * Letter + number classification with dynamic switching arrows in blue/violet.
+ * Letter + number classification with dynamic switching arrows in blue/teal.
  */
 export function TaskSwitchingVisual({ variant = 'light', size = 'md', className = '' }: VisualProps) {
   const isDark = variant === 'dark' || variant === 'node';
@@ -192,8 +201,8 @@ export function TaskSwitchingVisual({ variant = 'light', size = 'md', className 
         className="w-full h-full"
       >
         {/* Background concentric rings */}
-        <circle cx="50" cy="50" r="46" stroke={isDark ? '#2563EB' : '#2563EB'} strokeWidth="1" opacity={isDark ? '0.2' : '0.12'} />
-        <circle cx="50" cy="50" r="32" stroke={isDark ? '#60A5FA' : '#2563EB'} strokeWidth="1" strokeDasharray="3 3" opacity={isDark ? '0.3' : '0.18'} />
+        <circle cx="50" cy="50" r="46" stroke={isDark ? '#60A5FA' : '#2563EB'} strokeWidth="1.5" opacity={isDark ? '0.35' : '0.22'} />
+        <circle cx="50" cy="50" r="32" stroke={isDark ? '#60A5FA' : '#2563EB'} strokeWidth="1.5" strokeDasharray="3 3" opacity={isDark ? '0.45' : '0.32'} />
 
         {/* Dual arrows for dynamic cognitive switching */}
         {/* Top arrow pointing right */}
@@ -208,7 +217,7 @@ export function TaskSwitchingVisual({ variant = 'light', size = 'md', className 
         {/* Bottom arrow pointing left */}
         <path
           d="M68 58H36M36 58L44 50M36 58L44 66"
-          stroke="#3B82F6"
+          stroke="#0D9488"
           strokeWidth="3.5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -217,3 +226,4 @@ export function TaskSwitchingVisual({ variant = 'light', size = 'md', className 
     </div>
   );
 }
+
