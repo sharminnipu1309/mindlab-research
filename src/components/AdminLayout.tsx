@@ -169,7 +169,7 @@ export default function AdminLayout({ currentPage, navigate, onLogout, children,
               </div>
               <div className="min-w-0 flex-1">
                 <div className="text-xs font-semibold text-[#263B46] dark:text-[#EAF4F8] truncate font-['Plus_Jakarta_Sans',sans-serif]">Researcher</div>
-                <div className="text-[11px] text-[#526E7B] dark:text-[#9BB5C4] truncate">admin@mindlab.io</div>
+                <div className="text-[11px] text-[#526E7B] dark:text-[#9BB5C4] truncate">admin@memtiva.io</div>
               </div>
               <button
                 onClick={onLogout}

@@ -279,7 +279,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
               Rigorous Cognitive Science on the Modern Web
             </h2>
             <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#9BB5C4] leading-relaxed mb-4 sm:mb-6">
-              MindLab has brain tests built to measure how the mind works. Every click and answer is timed to the millisecond. The tests check how often you get things right, how fast you respond, and how long it takes to switch from one task to another.
+              Memtiva has brain tests built to measure how the mind works. Every click and answer is timed to the millisecond. The tests check how often you get things right, how fast you respond, and how long it takes to switch from one task to another.
             </p>
             <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#9BB5C4] leading-relaxed mb-6 sm:mb-8">
               Participation is voluntary, anonymous, and strictly non-diagnostic. Results are recorded for empirical behavioral research.
@@ -367,7 +367,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
             <Logo size="sm" variant="white" />
           </div>
           <p className="text-[11px] sm:text-xs text-[#9BB5C4] text-center">
-            MindLab Research Platform · For academic cognitive psychology research only · Not a diagnostic tool
+            Memtiva Research Platform · For academic cognitive psychology research only · Not a diagnostic tool
           </p>
           <button
             onClick={() => navigate('admin-login')}

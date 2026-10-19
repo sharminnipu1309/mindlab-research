@@ -81,6 +81,10 @@ export default function HanoiAnalysis({ navigate, onLogout, currentPage }: Props
     ? +(trials.reduce((s, t) => s + (t.validMoves || 0), 0) / total).toFixed(1)
     : null;
 
+  const avgInvalid = total > 0
+    ? +(trials.reduce((s, t) => s + (t.invalidMoves || 0), 0) / total).toFixed(1)
+    : null;
+
   const trialsWithReaction = trials.filter(t => t.firstReaction !== null && t.firstReaction !== undefined);
   const avgReaction = trialsWithReaction.length > 0
     ? Math.round(trialsWithReaction.reduce((s, t) => s + (t.firstReaction || 0), 0) / trialsWithReaction.length)
@@ -184,14 +188,15 @@ export default function HanoiAnalysis({ navigate, onLogout, currentPage }: Props
       breadcrumb="Analysis"
     >
       {/* Summary stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 sm:gap-4 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4 mb-6">
         {[
           { label: 'Total Attempts', value: total, color: '#252640', sub: 'All recorded attempts' },
           { label: 'Solved Puzzles', value: completed, color: '#4A9B7F', sub: 'Successful outcomes' },
           { label: 'Completion Rate', value: completionRate !== null ? `${completionRate}%` : '—', color: '#4A9B7F', sub: 'Solved / Attempts' },
           { label: 'Avg. Solved Time', value: avgSolvedTimeSec !== null ? `${avgSolvedTimeSec}s` : '—', color: '#6567C9', sub: 'Completed puzzles only' },
-          { label: 'Avg. Time (All Attempts)', value: avgAllAttemptsTimeSec !== null ? `${avgAllAttemptsTimeSec}s` : '—', color: '#73758C', sub: 'Includes move-limit trials' },
-          { label: 'Avg. Valid Moves', value: avgMoves !== null ? avgMoves : '—', color: '#69AFA8', sub: 'Moves per attempt' },
+          { label: 'Avg. Time (All Attempts)', value: avgAllAttemptsTimeSec !== null ? `${avgAllAttemptsTimeSec}s` : '—', color: '#73758C', sub: 'Includes timeout trials' },
+          { label: 'Avg. Moves', value: avgMoves !== null ? avgMoves : '—', color: '#69AFA8', sub: 'Valid moves per trial' },
+          { label: 'Avg. Wrong Moves', value: avgInvalid !== null ? avgInvalid : '—', color: '#C4625A', sub: 'Incorrect moves per trial' },
           { label: 'Avg. 1st Reaction', value: avgReaction !== null ? `${(avgReaction/1000).toFixed(1)}s` : '—', color: '#A9A2E8', sub: 'Initial planning latency' },
         ].map(({ label, value, color, sub }) => (
           <div key={label} className="bg-white rounded-xl border border-[#E9E8F2] p-3.5 sm:p-4 text-center">
@@ -321,8 +326,8 @@ export default function HanoiAnalysis({ navigate, onLogout, currentPage }: Props
                     <th>Discs</th>
                     <th>1st Reaction</th>
                     <th>Completion Time</th>
-                    <th>Valid Moves</th>
-                    <th>Invalid</th>
+                    <th>Moves</th>
+                    <th>Incorrect Moves</th>
                     <th>Outcome</th>
                     <th></th>
                   </tr>
@@ -401,8 +406,8 @@ export default function HanoiAnalysis({ navigate, onLogout, currentPage }: Props
                     : `— (${formatMs(selectedTrial.completionTime)} elapsed before ${selectedTrial.outcome.toLowerCase()})`,
                   mono: true,
                 },
-                { label: 'Valid moves', value: String(selectedTrial.validMoves), mono: true, color: '#4A9B7F' },
-                { label: 'Invalid attempts', value: String(selectedTrial.invalidMoves), mono: true, color: '#C4625A' },
+                { label: 'Moves', value: String(selectedTrial.validMoves), mono: true, color: '#4A9B7F' },
+                { label: 'Incorrect moves', value: String(selectedTrial.invalidMoves), mono: true, color: '#C4625A' },
                 { label: 'Outcome', value: selectedTrial.outcome },
               ].map(({ label, value, mono, color }) => (
                 <div key={label} className="flex justify-between items-center py-2.5 border-b border-[#F3F2FA] last:border-0">

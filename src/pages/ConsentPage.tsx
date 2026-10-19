@@ -120,6 +120,28 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
               </div>
             </div>
 
+            {/* Consent Statement Checklist */}
+            <div className="bg-white dark:bg-[#203541] rounded-2xl border border-[#C5DCE4] dark:border-[#2D4654] p-4 sm:p-7 mb-5 sm:mb-6 shadow-sm">
+              <h2 className="text-xs sm:text-sm font-bold text-[#263B46] dark:text-[#EAF4F8] mb-3 sm:mb-4 uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+                Consent Statement
+              </h2>
+              <div className="space-y-2.5 sm:space-y-3 text-xs sm:text-sm text-[#526E7B] dark:text-[#9BB5C4] leading-relaxed">
+                {[
+                  'I have read and understood the research information provided.',
+                  'I understand that this study contains 4 cognitive research tasks assessing planning and problem-solving, spatial working memory, selective attention and interference control, and cognitive flexibility, and that my task responses and performance may be recorded.',
+                  'I understand that participation is voluntary and I may withdraw at any time without consequence.',
+                  'I understand that my data will be used for academic research purposes and handled in accordance with ethical guidelines.',
+                  'I understand that this is a research study and not a diagnostic tool — my performance does not reflect my overall intelligence, cognitive ability, or health status.',
+                  'I am 16 years of age or older.',
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-2.5 sm:gap-3">
+                    <CheckCircle size={15} className="text-[#4D91AD] dark:text-[#63B8C6] flex-shrink-0 mt-0.5" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Consent checkbox */}
             <div
               className={`bg-white dark:bg-[#203541] rounded-xl border-2 p-4 sm:p-5 mb-5 sm:mb-6 cursor-pointer transition-all ${

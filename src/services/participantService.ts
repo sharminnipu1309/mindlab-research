@@ -277,10 +277,22 @@ export async function persistHanoiPuzzle(
       .single();
 
     if (pError && pError.message && (pError.message.includes('attempt_number') || pError.message.includes('column'))) {
-      // Safe fallback for unmigrated live database
+      // Safe fallback for unmigrated live database attempt_number column
       const retry = await supabase
         .from('hanoi_puzzles')
         .upsert(puzzlePayload, { onConflict: 'session_id,puzzle_index' })
+        .select('id')
+        .single();
+      puzzleRow = retry.data;
+      pError = retry.error;
+    }
+
+    if (pError && pError.message && (pError.message.includes('outcome') || pError.message.includes('check constraint'))) {
+      // Safe fallback if live database outcome check constraint has not been updated yet
+      const fallbackPayload = { ...puzzlePayload, outcome: 'Move Limit Reached' };
+      const retry = await supabase
+        .from('hanoi_puzzles')
+        .upsert(fallbackPayload, { onConflict: 'session_id,puzzle_index' })
         .select('id')
         .single();
       puzzleRow = retry.data;

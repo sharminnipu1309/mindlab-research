@@ -175,12 +175,12 @@ export default function Settings({ navigate, onLogout, currentPage }: Props) {
                 </div>
                 <div>
                   <div className="text-sm font-bold text-[#252640] font-['Plus_Jakarta_Sans',sans-serif]">Researcher Admin</div>
-                  <div className="text-xs text-[#73758C]">admin@mindlab.io</div>
+                  <div className="text-xs text-[#73758C]">admin@memtiva.io</div>
                 </div>
               </div>
               {[
                 { label: 'Display name', value: 'Researcher Admin', type: 'text' },
-                { label: 'Email address', value: 'admin@mindlab.io', type: 'email' },
+                { label: 'Email address', value: 'admin@memtiva.io', type: 'email' },
               ].map(({ label, value, type }) => (
                 <div key={label}>
                   <label className="block text-sm font-semibold text-[#252640] mb-2 font-['Plus_Jakarta_Sans',sans-serif]">{label}</label>

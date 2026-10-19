@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function AdminLogin({ navigate, onLogin }: Props) {
-  const [email, setEmail] = useState('admin@mindlab.io');
+  const [email, setEmail] = useState('admin@memtiva.io');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState('');
@@ -28,7 +28,7 @@ export default function AdminLogin({ navigate, onLogin }: Props) {
         onLogin();
         navigate('admin-dashboard');
       } else {
-        setError(result.error || 'Authentication failed. (Hint: try "mindlab2024")');
+        setError(result.error || 'Authentication failed. (Hint: try "memtiva2024")');
         setLoading(false);
       }
     } catch {
@@ -92,7 +92,7 @@ export default function AdminLogin({ navigate, onLogin }: Props) {
           </div>
 
           <div className="text-xs text-[#63B8C6]/70">
-            MindLab Research Platform · Academic use only
+            Memtiva Research Platform · Academic use only
           </div>
         </div>
       </div>
@@ -125,7 +125,7 @@ export default function AdminLogin({ navigate, onLogin }: Props) {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 className="ml-input"
-                placeholder="admin@mindlab.io"
+                placeholder="admin@memtiva.io"
               />
             </div>
 
@@ -180,7 +180,7 @@ export default function AdminLogin({ navigate, onLogin }: Props) {
               ← Back to participant site
             </button>
             <span className="bg-[#D5E8EF] dark:bg-[#192831] border border-[#C5DCE4] dark:border-[#2D4654] rounded px-2 py-1 font-['JetBrains_Mono',monospace] text-[#263B46] dark:text-[#EAF4F8]">
-              Demo: mindlab2024
+              Demo: memtiva2024
             </span>
           </div>
         </div>

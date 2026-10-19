@@ -24,7 +24,7 @@ export interface AdminAuthResult {
  * Authenticates admin researcher using Supabase Auth.
  * Falls back to demo credentials check if Supabase is unconfigured.
  */
-export async function signInAdmin(password: string, email: string = 'admin@mindlab.io'): Promise<AdminAuthResult> {
+export async function signInAdmin(password: string, email: string = 'admin@memtiva.io'): Promise<AdminAuthResult> {
   if (isSupabaseConfigured() && supabase) {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -59,11 +59,11 @@ export async function signInAdmin(password: string, email: string = 'admin@mindl
     }
   }
 
-  // Graceful local demo authentication fallback when Supabase env is not configured
-  if (password === 'mindlab2024') {
+  // Graceful local demo authentication fallback (supports memtiva2024 and mindlab2024)
+  if (password === 'memtiva2024' || password === 'mindlab2024') {
     return { success: true };
   }
-  return { success: false, error: 'Incorrect credentials. (Hint: try "mindlab2024")' };
+  return { success: false, error: 'Incorrect credentials. (Hint: try "memtiva2024")' };
 }
 
 /**

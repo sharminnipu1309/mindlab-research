@@ -65,7 +65,7 @@ export default function CognitiveNetworkHero({ onSelectTask }: Props) {
             </div>
 
             <div className="relative z-10 text-xs sm:text-sm font-extrabold text-[#263B46] dark:text-[#EAF4F8] font-['Plus_Jakarta_Sans',sans-serif] tracking-tight">
-              MindLab
+              Memtiva
             </div>
             <div className="relative z-10 text-[8px] sm:text-[9px] font-bold text-[#526E7B] dark:text-[#63B8C6] tracking-widest font-['Plus_Jakarta_Sans',sans-serif] uppercase">
               Cognitive Profile

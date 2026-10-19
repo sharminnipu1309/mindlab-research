@@ -37,7 +37,7 @@ export interface HanoiPuzzleResult {
   invalidMoves: number;
   completionTimeMs: number;
   firstReactionTimeMs: number | null;
-  outcome: 'Completed' | 'Move Limit Reached' | 'Skipped';
+  outcome: 'Completed' | 'Move Limit Reached' | 'Time Limit Reached' | 'Skipped';
   moveLog: HanoiMoveRecord[];
   initialState?: number[][];
   goalState?: number[][];

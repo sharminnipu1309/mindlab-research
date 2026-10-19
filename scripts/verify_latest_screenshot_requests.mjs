@@ -65,8 +65,7 @@ assert(consentCode.includes('Recordings are deleted.'), 'Must have recordings de
 assert(consentCode.includes('Your data is kept for 2 years and then securely destroyed.'), 'Must have 2 years retention statement');
 assert(consentCode.includes('You can stop at any time.'), 'Must have withdrawal statement');
 assert(consentCode.includes('mithila.3702@gmail.com'), 'Must have Mithila Tajmim contact email');
-assert(consentCode.includes('By continuing, you confirm that you have read this information and agree to take part.'), 'Must have confirmation sentence');
-assert(!consentCode.includes('I understand that this study contains 4 cognitive research tasks assessing planning and problem-solving'), 'Old consent bullets must be removed');
-console.log('   ✓ Consent: All 10 paragraphs of Confidentiality Bond & Data Protection Agreement verified with email link.');
+assert(consentCode.includes('I understand that this study contains 4 cognitive research tasks assessing planning and problem-solving'), 'Consent statement checklist must be present after confidentiality bond per user request');
+console.log('   ✓ Consent: Both Confidentiality Bond and Consent Statement checklist verified.');
 
 console.log('\n🎉 ALL LATEST USER REQUESTS AND SCREENSHOT REQUIREMENTS VERIFIED SUCCESSFULLY!');

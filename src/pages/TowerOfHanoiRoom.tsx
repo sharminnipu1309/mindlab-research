@@ -337,7 +337,8 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
 
   const puzzle = puzzles[puzzleIdx] || DEFAULT_HANOI_PUZZLES[puzzleIdx] || DEFAULT_HANOI_PUZZLES[0];
   const diskCount = puzzle.diskCount;
-  const moveLimit = puzzle.moveLimit;
+  const HANOI_TIME_LIMIT_MS = 180 * 1000; // Exactly 3 minutes per puzzle
+  const moveLimit = 0; // Moves are unlimited per protocol
   const boardHeight = diskCount === 3 ? 220 : diskCount === 4 ? 260 : 300;
   const goalPreviewHeight = diskCount === 5 ? 140 : diskCount === 4 ? 125 : 110;
 
@@ -345,19 +346,77 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
   const isTutorial = puzzleIdx < 2 && phase === 'playing';
   const tutorialMove = isTutorial ? getNextTutorialMove(rods, puzzle.goalState) : null;
 
-  // Timer
+  const handleTimeLimitExpired = useCallback(() => {
+    if (isSubmittingRef.current || phase !== 'playing') return;
+    isSubmittingRef.current = true;
+    if (timerRef.current) clearInterval(timerRef.current);
+
+    const finalElapsed = HANOI_TIME_LIMIT_MS;
+    setElapsedMs(finalElapsed);
+
+    const pResult: HanoiPuzzleResult = {
+      puzzleIndex: puzzleIdx,
+      diskCount,
+      moveLimit: 0,
+      validMoves: moves,
+      invalidMoves,
+      completionTimeMs: finalElapsed,
+      firstReactionTimeMs: dataConfig.recordFirstMoveRt ? firstReactionTimeMsRef.current : null,
+      outcome: 'Time Limit Reached',
+      moveLog: [...currentMoveLogRef.current],
+      initialState: puzzle.initialState,
+      goalState: puzzle.goalState,
+      attemptNumber,
+    };
+
+    const existingIdx = puzzleResultsRef.current.findIndex(r => r.puzzleIndex === puzzleIdx);
+    if (existingIdx >= 0) {
+      puzzleResultsRef.current[existingIdx] = pResult;
+    } else {
+      puzzleResultsRef.current.push(pResult);
+    }
+
+    const activeSid = sessionId || getStoredSessionContext()?.sessionId;
+    if (activeSid) {
+      persistHanoiPuzzle(activeSid, pResult);
+      if (puzzleIdx >= puzzles.length - 1) {
+        const sessionResult: HanoiSessionResult = {
+          puzzlesCompleted: puzzleResultsRef.current.filter(p => p.outcome === 'Completed').length,
+          totalPuzzles: puzzles.length,
+          totalTimeMs: puzzleResultsRef.current.reduce((s, p) => s + p.completionTimeMs, 0),
+          totalValidMoves: puzzleResultsRef.current.reduce((s, p) => s + p.validMoves, 0),
+          totalInvalidMoves: puzzleResultsRef.current.reduce((s, p) => s + p.invalidMoves, 0),
+          puzzles: puzzleResultsRef.current,
+        };
+        persistHanoiResults(activeSid, sessionResult).catch(err => {
+          console.error('[HanoiRoom] Error auto-persisting Hanoi session results on timeout:', err);
+        });
+      }
+    }
+
+    setPhase('limitReached');
+  }, [phase, puzzleIdx, diskCount, moves, invalidMoves, dataConfig, attemptNumber, puzzle, sessionId, puzzles.length]);
+
+  // 3-Minute Countdown Timer (auto-finishes task when 3 minutes expire)
   useEffect(() => {
     if (phase !== 'playing') {
       if (timerRef.current) clearInterval(timerRef.current);
       return;
     }
     timerRef.current = setInterval(() => {
-      setElapsedMs(Date.now() - startTimeRef.current);
+      const currentElapsed = Date.now() - startTimeRef.current;
+      if (currentElapsed >= HANOI_TIME_LIMIT_MS) {
+        setElapsedMs(HANOI_TIME_LIMIT_MS);
+        if (timerRef.current) clearInterval(timerRef.current);
+        handleTimeLimitExpired();
+      } else {
+        setElapsedMs(currentElapsed);
+      }
     }, 100);
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [phase]);
+  }, [phase, handleTimeLimitExpired]);
 
   const initPuzzle = useCallback((idx: number, customPuzzles?: HanoiPuzzleConfig[]) => {
     const list = customPuzzles || puzzles;
@@ -469,78 +528,21 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
         setTimeout(() => {
           setPhase('completed');
         }, 1300);
-      } else if (newMoves >= moveLimit) {
-        if (isSubmittingRef.current) return;
-        isSubmittingRef.current = true;
-
-        const pResult: HanoiPuzzleResult = {
-          puzzleIndex: puzzleIdx,
-          diskCount,
-          moveLimit,
-          validMoves: newMoves,
-          invalidMoves,
-          completionTimeMs: now - startTimeRef.current,
-          firstReactionTimeMs: dataConfig.recordFirstMoveRt ? firstReactionTimeMsRef.current : null,
-          outcome: 'Move Limit Reached',
-          moveLog: [...currentMoveLogRef.current],
-          initialState: puzzle.initialState,
-          goalState: puzzle.goalState,
-          attemptNumber,
-        };
-        const existingIdx = puzzleResultsRef.current.findIndex(r => r.puzzleIndex === puzzleIdx);
-        if (existingIdx >= 0) {
-          puzzleResultsRef.current[existingIdx] = pResult;
-        } else {
-          puzzleResultsRef.current.push(pResult);
-        }
-
-        // Immediate persistence for live research data collection
-        const activeSid = sessionId || getStoredSessionContext()?.sessionId;
-        if (activeSid) {
-          persistHanoiPuzzle(activeSid, pResult);
-        }
-
-        if (timerRef.current) clearInterval(timerRef.current);
-
-        setPhase('pausing');
-        setTimeout(() => {
-          if (attemptNumber >= MAX_HANOI_ATTEMPTS) {
-            // Discontinue / terminate Hanoi session after 3 unsuccessful attempts
-            if (activeSid) {
-              const sessionResult: HanoiSessionResult = {
-                puzzlesCompleted: puzzleResultsRef.current.filter(p => p.outcome === 'Completed').length,
-                totalPuzzles: puzzles.length,
-                totalTimeMs: puzzleResultsRef.current.reduce((s, p) => s + p.completionTimeMs, 0),
-                totalValidMoves: puzzleResultsRef.current.reduce((s, p) => s + p.validMoves, 0),
-                totalInvalidMoves: puzzleResultsRef.current.reduce((s, p) => s + p.invalidMoves, 0),
-                puzzles: puzzleResultsRef.current,
-              };
-              persistHanoiResults(activeSid, sessionResult).catch(err => {
-                console.error('[HanoiRoom] Error auto-persisting session results on discontinue:', err);
-              });
-            }
-            setPhase('maxAttemptsReached');
-          } else {
-            setPhase('limitReached');
-          }
-        }, 500);
       }
     } else {
-      // Invalid move: record only if configured
-      if (sessionOptions.recordInvalidMoves && dataConfig.recordInvalidMoveAttempts) {
-        const now = Date.now();
-        currentMoveLogRef.current.push({
-          moveNumber: moves + 1,
-          sourceRod: selectedRod,
-          destRod: rodIndex,
-          diskSize: movingDisk,
-          timestampMs: dataConfig.recordMoveTimestamps ? now : null,
-          isValid: false,
-        });
+      // Invalid / Incorrect move: always record move and increment invalidMoves count
+      const now = Date.now();
+      currentMoveLogRef.current.push({
+        moveNumber: moves + 1,
+        sourceRod: selectedRod,
+        destRod: rodIndex,
+        diskSize: movingDisk,
+        timestampMs: dataConfig.recordMoveTimestamps ? now : null,
+        isValid: false,
+      });
 
-        const newInvalid = invalidMoves + 1;
-        setInvalidMoves(newInvalid);
-      }
+      const newInvalid = invalidMoves + 1;
+      setInvalidMoves(newInvalid);
 
       setSelectedRod(null);
       setShowInvalid(true);
@@ -585,7 +587,6 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
     navigate('participant-dashboard');
   };
 
-  const remaining = moveLimit - moves;
   const isLastPuzzle = puzzleIdx >= puzzles.length - 1;
 
   // Calculate SVG arrow coordinates for tutorial
@@ -635,7 +636,7 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
                   Puzzle {puzzleIdx + 1} of {puzzles.length}
                 </span>
                 <span className="text-xs text-[#526E7B]">·</span>
-                <span className="text-xs font-semibold text-[#20748F]">Attempt {attemptNumber} of {MAX_HANOI_ATTEMPTS}</span>
+                <span className="text-xs font-semibold text-[#20748F]">3-Minute Timer</span>
                 <span className="text-xs text-[#526E7B]">·</span>
                 <span className="text-xs font-medium text-[#526E7B]">{diskCount} discs</span>
               </div>
@@ -671,43 +672,38 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
             </div>
           </div>
 
-          {/* HUD */}
-          <div className="flex items-center gap-4 sm:gap-6">
-            {sessionOptions.showMoveCounter && [
-              { label: 'ATTEMPT', value: `${attemptNumber}/${MAX_HANOI_ATTEMPTS}`, mono: true, colorClass: 'text-[#20748F]' },
-              { label: 'MOVES', value: moves, mono: true, colorClass: 'text-[#183B4A]' },
-              { label: 'LIMIT', value: moveLimit, mono: true, colorClass: 'text-[#183B4A]' },
-              {
-                label: 'REMAINING',
-                value: remaining,
-                mono: true,
-                colorClass: remaining <= 3 ? 'text-[#DC2626]' : remaining <= 8 ? 'text-[#D97706]' : 'text-[#183B4A]',
-              },
-            ].map(({ label, value, colorClass }) => (
-              <div key={label} className="text-center">
-                <div className="text-[8px] sm:text-[9px] font-bold text-[#526E7B] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
-                  {label}
-                </div>
-                <div
-                  className={`text-base sm:text-xl font-bold font-['JetBrains_Mono',monospace] leading-none mt-0.5 ${colorClass}`}
-                >
-                  {value}
-                </div>
+          {/* HUD: Moves, Incorrect Moves, Time Left (3-Min Countdown) */}
+          <div className="flex items-center gap-3 sm:gap-6">
+            <div className="text-center">
+              <div className="text-[8px] sm:text-[9px] font-bold text-[#526E7B] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
+                MOVES
               </div>
-            ))}
-            {sessionOptions.showTimer && (
-              <>
-                {sessionOptions.showMoveCounter && <div className="h-6 sm:h-8 w-px bg-[#C5DCE4]" />}
-                <div className="text-center">
-                  <div className="text-[8px] sm:text-[9px] font-bold text-[#526E7B] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
-                    <Clock size={9} className="inline mr-0.5" /> TIME
-                  </div>
-                  <div className="text-sm sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#183B4A] leading-none mt-0.5">
-                    {formatTime(elapsedMs)}
-                  </div>
-                </div>
-              </>
-            )}
+              <div className="text-base sm:text-xl font-bold font-['JetBrains_Mono',monospace] leading-none mt-0.5 text-[#183B4A]">
+                {moves}
+              </div>
+            </div>
+
+            <div className="text-center">
+              <div className="text-[8px] sm:text-[9px] font-bold text-[#526E7B] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
+                WRONG MOVES
+              </div>
+              <div className={`text-base sm:text-xl font-bold font-['JetBrains_Mono',monospace] leading-none mt-0.5 ${invalidMoves > 0 ? 'text-[#DC2626]' : 'text-[#526E7B]'}`}>
+                {invalidMoves}
+              </div>
+            </div>
+
+            <div className="h-6 sm:h-8 w-px bg-[#C5DCE4]" />
+
+            <div className="text-center">
+              <div className="text-[8px] sm:text-[9px] font-bold text-[#526E7B] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
+                <Clock size={9} className="inline mr-0.5" /> TIME LEFT
+              </div>
+              <div className={`text-sm sm:text-lg font-bold font-['JetBrains_Mono',monospace] leading-none mt-0.5 ${
+                HANOI_TIME_LIMIT_MS - elapsedMs <= 30000 ? 'text-[#DC2626] animate-pulse' : 'text-[#183B4A]'
+              }`}>
+                {formatTime(Math.max(0, HANOI_TIME_LIMIT_MS - elapsedMs))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -925,31 +921,58 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
         </div>
       )}
 
-      {/* MOVE LIMIT REACHED OVERLAY (Must Retry Same Puzzle, up to 3 attempts) */}
+      {/* 3-MINUTE TIME LIMIT REACHED OVERLAY */}
       {phase === 'limitReached' && (
         <div className="fixed inset-0 z-40 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-[#252640]/40 backdrop-blur-sm" />
           <div className="relative bg-white rounded-2xl p-5 sm:p-8 max-w-sm w-full mx-auto shadow-2xl text-center animate-slide-up max-h-[90vh] overflow-y-auto">
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#FCEFD9] rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-              <RotateCcw size={24} className="text-[#D4813A] sm:w-7 sm:h-7" />
+              <Clock size={26} className="text-[#D97706] sm:w-8 sm:h-8" />
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-[#252640] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
-              Move Limit Reached
+              Time's Up (3-Minute Limit)
             </h2>
-            <p className="text-xs sm:text-sm text-[#73758C] mb-2 font-medium">
-              Attempt {attemptNumber} of {MAX_HANOI_ATTEMPTS}
+            <p className="text-xs sm:text-sm text-[#73758C] mb-4">
+              The 3-minute time limit for this puzzle has ended.
             </p>
-            <p className="text-xs sm:text-sm text-[#73758C] mb-5 sm:mb-6">
-              You reached the {moveLimit}-move limit before matching the Goal State. You have {MAX_HANOI_ATTEMPTS - attemptNumber} {MAX_HANOI_ATTEMPTS - attemptNumber === 1 ? 'attempt' : 'attempts'} remaining.
-            </p>
-            <button
-              onClick={handleRetryPuzzle}
-              className="btn-primary w-full justify-center py-3 sm:py-3.5 text-xs sm:text-sm shadow-md"
-              style={{ background: 'linear-gradient(135deg, #6567C9, #5052AC)' }}
-            >
-              <RotateCcw size={16} />
-              Try Again (Attempt {attemptNumber + 1} of {MAX_HANOI_ATTEMPTS})
-            </button>
+            <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 mb-5 flex justify-around text-center">
+              <div>
+                <div className="text-[10px] font-bold text-[#64748B] uppercase">Moves Made</div>
+                <div className="text-lg font-bold text-[#0F172A] font-['JetBrains_Mono',monospace]">{moves}</div>
+              </div>
+              <div className="w-px bg-[#E2E8F0]" />
+              <div>
+                <div className="text-[10px] font-bold text-[#64748B] uppercase">Wrong Moves</div>
+                <div className="text-lg font-bold text-[#DC2626] font-['JetBrains_Mono',monospace]">{invalidMoves}</div>
+              </div>
+            </div>
+
+            {puzzleIdx < puzzles.length - 1 ? (
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={handleNextPuzzle}
+                  className="btn-primary w-full justify-center py-3 text-xs sm:text-sm shadow-md"
+                  style={{ background: 'linear-gradient(135deg, #6567C9, #5052AC)' }}
+                >
+                  Continue to Next Puzzle
+                  <ArrowRight size={16} />
+                </button>
+                <button
+                  onClick={handleFinishActivity}
+                  className="w-full py-2.5 text-xs text-[#64748B] hover:text-[#0F172A] font-medium transition-colors"
+                >
+                  Finish Activity Now
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={handleFinishActivity}
+                className="btn-primary w-full justify-center py-3 text-xs sm:text-sm shadow-md"
+                style={{ background: 'linear-gradient(135deg, #6567C9, #5052AC)' }}
+              >
+                Return to Dashboard →
+              </button>
+            )}
           </div>
         </div>
       )}

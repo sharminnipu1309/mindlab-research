@@ -573,7 +573,7 @@ export default function GraphsInsights({ navigate, onLogout, currentPage }: Prop
   const handleExportTabCharts = () => {
     let rows: any[] = [];
     const sanitizedTab = activeTab === 'task-switching' ? 'task_switching' : activeTab;
-    const filename = `mindlab_graph_data_${sanitizedTab}_insights.csv`;
+    const filename = `memtiva_graph_data_${sanitizedTab}_insights.csv`;
 
     if (activeTab === 'hanoi' && hanoiMetrics) {
       rows = hanoiMetrics.completionByPuzzle.map(p => ({
