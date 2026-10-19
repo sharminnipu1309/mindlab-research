@@ -81,22 +81,42 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
 
             <div className="bg-white dark:bg-[#203541] rounded-2xl border border-[#C5DCE4] dark:border-[#2D4654] p-4 sm:p-7 mb-5 sm:mb-6 shadow-sm">
               <h2 className="text-xs sm:text-sm font-bold text-[#263B46] dark:text-[#EAF4F8] mb-3 sm:mb-4 uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
-                Consent Statement
+                CONFIDENTIALITY BOND AND DATA PROTECTION AGREEMENT
               </h2>
-              <div className="space-y-2.5 sm:space-y-3 text-xs sm:text-sm text-[#526E7B] dark:text-[#9BB5C4] leading-relaxed">
-                {[
-                  'I have read and understood the research information provided.',
-                  'I understand that this study contains 4 cognitive research tasks assessing planning and problem-solving, spatial working memory, selective attention and interference control, and cognitive flexibility, and that my task responses and performance may be recorded.',
-                  'I understand that participation is voluntary and I may withdraw at any time without consequence.',
-                  'I understand that my data will be used for academic research purposes and handled in accordance with ethical guidelines.',
-                  'I understand that this is a research study and not a diagnostic tool — my performance does not reflect my overall intelligence, cognitive ability, or health status.',
-                  'I am 16 years of age or older.',
-                ].map((item, i) => (
-                  <div key={i} className="flex gap-2.5 sm:gap-3">
-                    <CheckCircle size={15} className="text-[#4D91AD] dark:text-[#63B8C6] flex-shrink-0 mt-0.5" />
-                    <span>{item}</span>
-                  </div>
-                ))}
+              <div className="space-y-3 text-xs sm:text-sm text-[#526E7B] dark:text-[#9BB5C4] leading-relaxed">
+                <p>
+                  Thank you for taking part in this study. We want you to know how your information will be protected.
+                </p>
+                <p>
+                  <strong className="text-[#263B46] dark:text-[#EAF4F8]">Your answers are confidential.</strong> We will not share anything that could identify you with anyone outside the research team.
+                </p>
+                <p>
+                  <strong className="text-[#263B46] dark:text-[#EAF4F8]">We don't use your name.</strong> Your responses are linked to a code number, not your name. The list linking codes to names is kept separately and locked. (The username you will create for this purpose can always be a random word.)
+                </p>
+                <p>
+                  <strong className="text-[#263B46] dark:text-[#EAF4F8]">Only the research team sees your data.</strong> Everyone on the team has agreed in writing to keep it private.
+                </p>
+                <p>
+                  <strong className="text-[#263B46] dark:text-[#EAF4F8]">Your data is stored securely.</strong> All data is kept on a password-protected server.
+                </p>
+                <p>
+                  <strong className="text-[#263B46] dark:text-[#EAF4F8]">Results are reported as groups.</strong> When we publish the study, we report combined results, never individual answers.
+                </p>
+                <p>
+                  <strong className="text-[#263B46] dark:text-[#EAF4F8]">Recordings are deleted.</strong> If we record any interviews, the recordings are deleted after they have been transcribed, within 180 days.
+                </p>
+                <p>
+                  <strong className="text-[#263B46] dark:text-[#EAF4F8]">Your data is kept for 2 years and then securely destroyed.</strong>
+                </p>
+                <p>
+                  <strong className="text-[#263B46] dark:text-[#EAF4F8]">You can stop at any time.</strong> You can withdraw from the study, and you can ask us to delete your data.
+                </p>
+                <p>
+                  If you have questions or concerns, please contact Mithila Tajmim [<a href="mailto:mithila.3702@gmail.com" className="text-[#4D91AD] dark:text-[#63B8C6] underline hover:opacity-80 font-medium">mithila.3702@gmail.com</a>].
+                </p>
+                <p className="font-semibold text-[#263B46] dark:text-[#EAF4F8] pt-1">
+                  By continuing, you confirm that you have read this information and agree to take part.
+                </p>
               </div>
             </div>
 
@@ -225,11 +245,10 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
                 <label className="block text-xs sm:text-sm font-semibold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
                   Are you clinically diagnosed with ADHD? <span className="text-[#EF4444]">*</span>
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   {[
                     { value: 'yes', label: 'Yes' },
                     { value: 'no', label: 'No' },
-                    { value: 'prefer_not_to_say', label: 'Prefer not to say' },
                   ].map(opt => {
                     const isSelected = form.adhdDiagnosis === opt.value;
                     return (

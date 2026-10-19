@@ -992,10 +992,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
               <p className="text-[11px] sm:text-xs text-[#526E7B] dark:text-[#526E7B] leading-relaxed">
                 These tests need you to focus without stopping. The tests measure how well you remember, recall, and switch tasks. Resuming an old session would make the results less accurate.
               </p>
-              <div className="mt-2.5 p-2.5 rounded-xl bg-[#FEF3C7] border border-[#FDE68A] text-[11px] sm:text-xs text-[#D97706] font-medium leading-relaxed">
-                The dependent measure for Tower of Hanoi was the total number of moves taken to complete the last five trials, including the wrong moves.
-              </div>
-              <div className="mt-2 text-[11px] text-[#2B7F8C] font-medium flex items-center gap-1.5">
+              <div className="mt-2.5 text-[11px] text-[#2B7F8C] font-medium flex items-center gap-1.5">
                 <CheckCircle size={13} className="flex-shrink-0" />
                 <span>Your previous trial records remain preserved in research logs.</span>
               </div>

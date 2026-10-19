@@ -7,7 +7,6 @@ import {
   ArrowRight,
   Eye,
   MousePointerClick,
-  AlertTriangle,
   RotateCcw,
   Undo2,
   Sparkles,
@@ -945,48 +944,26 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
         {/* 3. PRE-EXPERIMENT WARNING SECTION */}
         {phase === 'preExperiment' && (
           <div className="text-center max-w-lg w-full animate-fade-in-up p-2 sm:p-4">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-amber-100 dark:bg-amber-950/60 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-amber-300 dark:border-amber-700">
-              <AlertTriangle size={26} className="text-amber-600 dark:text-amber-400" />
-            </div>
-
-            <div className="inline-block px-3 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">
+            <div className="inline-block px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 text-xs font-bold uppercase tracking-wider mb-4">
               Practice Complete — Official Study Session
             </div>
 
-            <h2 className="text-lg sm:text-2xl font-bold text-[#252640] dark:text-white mb-1.5 font-['Plus_Jakarta_Sans',sans-serif]">
-              Pre-Experiment Briefing
-            </h2>
-
-            <p className="text-xs sm:text-sm text-[#73758C] dark:text-slate-300 leading-relaxed mb-3.5">
-              You have completed all 3 practice trials. Please read the following requirement carefully before starting the official research session.
-            </p>
-
-            {/* Prominent Warning Callout - Exact requirement wording with "trials" */}
-            <div className="bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400 dark:border-amber-500 rounded-2xl p-4 sm:p-5 mb-4 shadow-sm text-center">
-              <div className="flex items-center justify-center gap-1.5 mb-1.5 text-amber-800 dark:text-amber-300">
-                <AlertTriangle size={18} className="flex-shrink-0" />
-                <span className="text-xs font-black uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
-                  Critical Assessment Rule
-                </span>
-              </div>
-              <p className="text-sm sm:text-base text-amber-950 dark:text-amber-100 leading-snug">
-                <strong>Important: You must correctly complete at least 4 trials to proceed to the next level.</strong>
+            {/* Prominent Warning Callout */}
+            <div className="bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400 dark:border-amber-500 rounded-2xl p-5 sm:p-6 mb-4 shadow-sm text-center">
+              <p className="text-base sm:text-lg md:text-xl font-extrabold text-amber-950 dark:text-amber-100 leading-snug">
+                Important: You must correctly complete at least 4 trials to proceed to the next level.
               </p>
             </div>
 
             {/* Protocol Summary Card */}
-            <div className="bg-white dark:bg-[#15193B] rounded-xl border border-[#E9E8F2] dark:border-[#252E63] p-3.5 text-left text-xs sm:text-sm text-[#474864] dark:text-slate-300 space-y-2 mb-4">
+            <div className="bg-white dark:bg-[#15193B] rounded-xl border border-[#E9E8F2] dark:border-[#252E63] p-3.5 text-left text-xs sm:text-sm text-[#474864] dark:text-slate-300 space-y-2.5 mb-4">
               <div className="flex items-start gap-2">
                 <CheckCircle size={15} className="text-[#4A9B7F] flex-shrink-0 mt-0.5" />
-                <span><strong>6 trials per level:</strong> Each level presents 6 sequence trials of the same span length.</span>
+                <span>Each level presents 6 sequence trials of the same span length.</span>
               </div>
               <div className="flex items-start gap-2">
                 <CheckCircle size={15} className="text-[#4A9B7F] flex-shrink-0 mt-0.5" />
-                <span><strong>Advancement threshold:</strong> You must correctly complete at least 4 out of 6 trials (4/6) to advance to the next level.</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <CheckCircle size={15} className="text-[#6567C9] flex-shrink-0 mt-0.5" />
-                <span><strong>Official research records:</strong> All responses in this phase will be recorded in the research database.</span>
+                <span>You must correctly complete at least 4 out of 6 trials (4/6) to advance to the next level.</span>
               </div>
             </div>
 

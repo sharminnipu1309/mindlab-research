@@ -17,7 +17,7 @@ import {
   TASK_SWITCHING_EVEN_NUMBERS,
 } from '../types';
 import ParticipantNav, { ConfirmExitModal } from '../components/ParticipantNav';
-import { CheckCircle, X, ArrowRight, ArrowLeft, RefreshCw, Zap, Layers, Lock, HelpCircle, BookOpen, RotateCw, ArrowUp, ArrowDown, LogOut } from 'lucide-react';
+import { CheckCircle, X, ArrowRight, ArrowLeft, RefreshCw, Zap, Layers, Lock, HelpCircle, BookOpen, ArrowUp, ArrowDown, LogOut } from 'lucide-react';
 import {
   persistTaskSwitchingTrial,
   persistTaskSwitchingResults,
@@ -43,6 +43,7 @@ const TOTAL_EXPERIMENTAL_TRIALS = PURE_LETTER_COUNT + PURE_NUMBER_COUNT + MIXED_
 
 const FIXATION_DURATION = 400; // ms
 const PRACTICE_FEEDBACK_DURATION = 900; // ms (gives participant time to read educational feedback)
+const EXPERIMENT_FEEDBACK_DURATION = 600; // ms (visible feedback for both practice and experimental phases)
 const EXPERIMENT_INTER_TRIAL_DURATION = 150; // ms
 
 interface TrialItem {
@@ -382,12 +383,6 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
       explanation = isCorrect
         ? "Correct! The stimulus is in the bottom row, so you respond according to the number. '7' is an odd number (1, 3, 5, 7, 9), which maps to B. The letter 'M' is ignored."
         : "Try again! The stimulus is in the bottom row, so choose your response based on the number. '7' is an odd number, so the correct key is B.";
-    } else if (step === 3) {
-      // Step 3: Mixed Switching Rule (Bottom-Left: K 2)
-      isCorrect = key === 'N';
-      explanation = isCorrect
-        ? "Correct! The stimulus is in the bottom-left quadrant (bottom row), so you use the number rule. '2' is an even number (2, 4, 6, 8), which maps to N."
-        : "Try again! The stimulus is in the bottom row, so choose your response based on the number rule. '2' is even, so the correct key is N.";
     }
 
     setTutorialFeedback({
@@ -677,12 +672,17 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
       }, PRACTICE_FEEDBACK_DURATION);
     } else {
       experimentalRecordsRef.current.push(record);
-      // Real experiment: no educational feedback or hints shown
-      setFeedback(null);
-      setTrialStage('interTrial');
+      // Real experiment: show visual feedback (Correct! / Incorrect) on every trial
+      setFeedback({
+        isCorrect,
+        title: isCorrect ? 'Correct!' : 'Incorrect',
+        explanation: '',
+      });
+      setTrialStage('feedback');
 
       clearActiveTimer();
       timerRef.current = setTimeout(() => {
+        setFeedback(null);
         const currentBlockTrials = blocksRef.current[currentBlockIndex] || [];
         if (trialIndexInBlock + 1 < currentBlockTrials.length) {
           // Next trial in current block
@@ -695,7 +695,7 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             setCurrentBlockIndex(prev => prev + 1);
             setPhase('blockIntro');
           } else {
-            // All 3 blocks finished (64 trials total)
+            // All 3 blocks finished (128 trials total)
             setPhase('taskComplete');
             // Auto-persist full results immediately on task completion
             const finalRes = computeTaskSwitchingResult();
@@ -706,7 +706,7 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             }
           }
         }
-      }, EXPERIMENT_INTER_TRIAL_DURATION);
+      }, EXPERIMENT_FEEDBACK_DURATION);
     }
 
     // Immediately persist each trial to Supabase
@@ -733,7 +733,7 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
       const key = e.key.toUpperCase();
       if (key === 'B' || key === 'N') {
         if (phase === 'tutorial') {
-          if (tutorialStep >= 1 && tutorialStep <= 3) {
+          if (tutorialStep >= 1 && tutorialStep <= 2) {
             handleTutorialResponse(tutorialStep, key as TaskSwitchingKey);
           }
         } else if (phase === 'practice' || phase === 'experiment') {
@@ -792,7 +792,7 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             <div className="flex items-center gap-3 mt-0.5">
               <span className="text-xs sm:text-sm font-bold text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif]">
                 {phase === 'tutorial'
-                  ? `Interactive Tutorial (Step ${tutorialStep + 1} of 4)`
+                  ? `Interactive Tutorial (Step ${tutorialStep + 1} of 3)`
                   : phase === 'practice'
                   ? `Practice Phase (${trialIndexInBlock + 1} of ${PRACTICE_COUNT})`
                   : phase === 'experiment'
@@ -847,11 +847,10 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                     Interactive Tutorial
                   </div>
                   <div className="text-xs font-semibold text-[#183B4A]">
-                    Step {tutorialStep + 1} of 4: {
+                    Step {tutorialStep + 1} of 3: {
                       tutorialStep === 0 ? 'The 2×2 Grid' :
                       tutorialStep === 1 ? 'Letter Rule (Top Row)' :
-                      tutorialStep === 2 ? 'Number Rule (Bottom Row)' :
-                      'Mixed Switching (Clockwise)'
+                      'Number Rule (Bottom Row)'
                     }
                   </div>
                 </div>
@@ -859,7 +858,7 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
 
               {/* Step indicator pills */}
               <div className="flex gap-1.5">
-                {[0, 1, 2, 3].map(step => (
+                {[0, 1, 2].map(step => (
                   <button
                     key={step}
                     onClick={() => goToTutorialStep(step)}
@@ -871,14 +870,6 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                     title={`Step ${step + 1}`}
                   />
                 ))}
-              </div>
-            </div>
-
-            {/* Prominent Speed Instruction */}
-            <div className="bg-[#FFFBEB] dark:bg-[#FFFBEB] rounded-2xl border border-[#FDE68A] p-3 sm:p-3.5 mb-6 text-center shadow-xs">
-              <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold text-[#B45309]">
-                <Zap size={16} className="text-[#D97706] animate-pulse flex-shrink-0" />
-                <span>Respond as quickly and accurately as possible.</span>
               </div>
             </div>
 
@@ -1027,6 +1018,14 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                     </div>
                   )}
                 </div>
+
+                {/* Speed Instruction kept at the last of Rule 1 */}
+                <div className="bg-[#FFFBEB] dark:bg-[#FFFBEB] rounded-2xl border border-[#FDE68A] p-3 text-center shadow-xs">
+                  <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold text-[#B45309]">
+                    <Zap size={16} className="text-[#D97706] animate-pulse flex-shrink-0" />
+                    <span>Respond as quickly and accurately as possible.</span>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -1113,117 +1112,13 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                     </div>
                   )}
                 </div>
-              </div>
-            )}
 
-            {/* STEP 3: MIXED SWITCHING (CLOCKWISE FLOW) */}
-            {tutorialStep === 3 && (
-              <div className="space-y-4 animate-fade-in text-left">
-                <div className="text-center">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EAF4F8] text-[#245D72] mb-1">
-                    <RotateCw size={13} />
-                    Mixed Trials: Clockwise Rotation
+                {/* Speed Instruction kept at the last of Rule 2 */}
+                <div className="bg-[#FFFBEB] dark:bg-[#FFFBEB] rounded-2xl border border-[#FDE68A] p-3 text-center shadow-xs">
+                  <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-extrabold text-[#B45309]">
+                    <Zap size={16} className="text-[#D97706] animate-pulse flex-shrink-0" />
+                    <span>Respond as quickly and accurately as possible.</span>
                   </div>
-                  <h3 className="text-lg sm:text-xl font-bold text-[#183B4A] mb-1 font-['Plus_Jakarta_Sans',sans-serif]">
-                    Rule 3 — Mixed Task Switching
-                  </h3>
-                  <p className="text-xs sm:text-sm text-[#335667] max-w-lg mx-auto">
-                    In mixed trials, the stimulus moves <strong>clockwise</strong> around the 4 quadrants on every turn. Identify which rule applies based on where the stimulus appears:
-                  </p>
-                </div>
-
-                {/* Clockwise Flow Graphic */}
-                <div className="p-3.5 rounded-2xl bg-[#EAF4F8] border border-[#C5DCE4] text-xs">
-                  <div className="flex items-center justify-between text-center font-bold">
-                    <span className="text-[#245D72]">1. Top-Left (Letter)</span>
-                    <ArrowRight size={14} className="text-[#4D91AD]" />
-                    <span className="text-[#245D72]">2. Top-Right (Letter)</span>
-                    <ArrowRight size={14} className="text-[#4D91AD]" />
-                    <span className="text-[#0D9488]">3. Bottom-Right (Number)</span>
-                    <ArrowRight size={14} className="text-[#4D91AD]" />
-                    <span className="text-[#0D9488]">4. Bottom-Left (Number)</span>
-                  </div>
-                </div>
-
-                {/* Quick Reference Summary */}
-                <div className="bg-white dark:bg-white rounded-2xl border border-[#C5DCE4] overflow-hidden text-xs">
-                  <table className="w-full text-left">
-                    <thead className="bg-[#EAF4F8] border-b border-[#C5DCE4] text-[11px] font-bold text-[#335667]">
-                      <tr>
-                        <th className="p-2.5">Key</th>
-                        <th className="p-2.5 text-[#245D72]">Top Row: Letter Rule</th>
-                        <th className="p-2.5 text-[#0D9488]">Bottom Row: Number Rule</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#C5DCE4] text-[#183B4A] font-medium">
-                      <tr>
-                        <td className="p-2.5 font-bold font-mono text-[#245D72]">B</td>
-                        <td className="p-2.5">Vowel (A, E, I, O, U)</td>
-                        <td className="p-2.5">Odd (1, 3, 5, 7, 9)</td>
-                      </tr>
-                      <tr>
-                        <td className="p-2.5 font-bold font-mono text-[#245D72]">N</td>
-                        <td className="p-2.5">Consonant (all others)</td>
-                        <td className="p-2.5">Even (2, 4, 6, 8)</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Interactive Practice Stimulus: K 2 in Bottom-Left */}
-                <div className="bg-[#F8FBFC] dark:bg-[#F8FBFC] rounded-2xl border border-[#C5DCE4] p-4 text-center">
-                  <div className="text-[11px] font-bold text-[#245D72] uppercase tracking-wider mb-2">
-                    Try It: Identify Rule &amp; Respond
-                  </div>
-
-                  {/* Mini 2x2 grid showing K 2 in Bottom-Left */}
-                  <div className="w-44 h-44 mx-auto border-2 border-[#C5DCE4] rounded-xl grid grid-cols-2 grid-rows-2 relative overflow-hidden bg-white dark:bg-white mb-3">
-                    <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[1px] bg-[#C5DCE4]" />
-                    <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[1px] bg-[#C5DCE4]" />
-
-                    <div className="bg-transparent" />
-                    <div className="bg-transparent" />
-                    {/* Bottom-Left with K 2 */}
-                    <div className="p-2 bg-[#E4F5F2] flex items-center justify-center font-black text-2xl text-[#183B4A] border-t border-r border-[#8DC4BE] animate-pop-in">
-                      K&nbsp;&nbsp;2
-                    </div>
-                    <div className="bg-transparent" />
-                  </div>
-
-                  <p className="text-xs text-[#183B4A] font-medium mb-3">
-                    The stimulus rotated to <strong>bottom-left</strong>. The number is <strong>2 (Even)</strong>. What do you press?
-                  </p>
-
-                  <div className="flex justify-center gap-3">
-                    <button
-                      onClick={() => handleTutorialResponse(3, 'B')}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                        tutorialFeedback?.step === 3 && tutorialFeedback.userKey === 'B'
-                          ? 'bg-[#FCE8EB] border-[#E11D48] text-[#DC2626]'
-                          : 'bg-white border-[#C5DCE4] text-[#335667] hover:bg-[#EAF4F8]'
-                      }`}
-                    >
-                      <kbd className="px-1.5 py-0.5 bg-slate-100 rounded mr-1 font-mono">B</kbd> Odd
-                    </button>
-                    <button
-                      onClick={() => handleTutorialResponse(3, 'N')}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                        tutorialFeedback?.step === 3 && tutorialFeedback.userKey === 'N'
-                          ? 'bg-[#D1EDE5] border-[#4A9B7F] text-[#0D9488]'
-                          : 'bg-white border-[#8DC4BE] text-[#0D9488] hover:bg-[#E4F5F2]'
-                      }`}
-                    >
-                      <kbd className="px-1.5 py-0.5 bg-slate-100 rounded mr-1 font-mono">N</kbd> Even
-                    </button>
-                  </div>
-
-                  {tutorialFeedback?.step === 3 && (
-                    <div className={`mt-3 p-2.5 rounded-xl text-xs font-medium animate-pop-in ${
-                      tutorialFeedback.isCorrect ? 'bg-[#D1EDE5] text-[#0D9488] border border-emerald-300' : 'bg-[#FCE8EB] text-[#DC2626] border border-rose-300'
-                    }`}>
-                      {tutorialFeedback.explanation}
-                    </div>
-                  )}
                 </div>
               </div>
             )}
@@ -1242,7 +1137,7 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                 <div />
               )}
 
-              {tutorialStep < 3 ? (
+              {tutorialStep < 2 ? (
                 <button
                   onClick={() => goToTutorialStep(tutorialStep + 1)}
                   className="px-6 py-2.5 text-xs font-bold shadow-sm rounded-xl text-white bg-gradient-to-r from-[#245D72] to-[#4D91AD] hover:opacity-95 transition-all flex items-center gap-2 cursor-pointer"
@@ -1393,9 +1288,9 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
               )}
             </div>
 
-            {/* Practice Educational Feedback Area */}
-            <div className={`${phase === 'practice' ? 'min-h-[2.5rem]' : 'hidden'} flex items-center justify-center w-full px-2`}>
-              {phase === 'practice' && trialStage === 'feedback' && feedback && (
+            {/* Feedback Area for Both Practice and Experimental Phase */}
+            <div className="min-h-[2.5rem] flex items-center justify-center w-full px-2">
+              {trialStage === 'feedback' && feedback && (
                 <div
                   className={`flex items-center gap-2 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold animate-pop-in border shadow-xs text-center ${
                     feedback.isCorrect
@@ -1409,7 +1304,7 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                     <X size={16} className="text-[#DC2626] flex-shrink-0" />
                   )}
                   <span className="font-['Plus_Jakarta_Sans',sans-serif] break-words">
-                    {feedback.title} — {feedback.explanation}
+                    {feedback.explanation ? `${feedback.title} — ${feedback.explanation}` : feedback.title}
                   </span>
                 </div>
               )}

@@ -49,12 +49,12 @@ const hanoiDependentMeasure = 'The dependent measure for Tower of Hanoi was the 
 
 assert(!dashboardContent.includes(oldProtocol), 'ParticipantDashboard does not contain old empirical metric paragraph');
 assert(dashboardContent.includes(newProtocol), 'ParticipantDashboard contains new continuous focus protocol text');
-assert(dashboardContent.includes(hanoiDependentMeasure), 'ParticipantDashboard modal contains Hanoi dependent measure');
+assert(!dashboardContent.includes(hanoiDependentMeasure), 'ParticipantDashboard modal does not contain Hanoi dependent measure');
 assert(dashboardContent.includes('Your previous trial records remain preserved in research logs.'), 'ParticipantDashboard modal contains research logs preservation message');
 assert(dashboardContent.includes('Interrupted Session Notice'), 'ParticipantDashboard contains Interrupted Session Notice header');
 
 const hanoiContent = fs.readFileSync('src/pages/TowerOfHanoiRoom.tsx', 'utf-8');
-assert(hanoiContent.includes(hanoiDependentMeasure), 'TowerOfHanoiRoom contains Hanoi dependent measure banner');
+assert(!hanoiContent.includes(hanoiDependentMeasure), 'TowerOfHanoiRoom does not contain Hanoi dependent measure banner');
 
 console.log(`\n==================================================`);
 if (failed === 0) {

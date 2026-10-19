@@ -11,7 +11,7 @@ import {
   STROOP_COLOR_LABELS,
 } from '../types';
 import ParticipantNav, { ConfirmExitModal } from '../components/ParticipantNav';
-import { CheckCircle, X, ArrowRight, Sparkles, Zap, Clock, Monitor, Volume2, LogOut } from 'lucide-react';
+import { CheckCircle, X, ArrowRight, Sparkles, Zap, Clock, LogOut } from 'lucide-react';
 import {
   persistStroopTrial,
   persistStroopResults,
@@ -29,16 +29,12 @@ interface Props {
 type Phase = 'intro' | 'practice' | 'practiceComplete' | 'experiment' | 'taskComplete';
 type TrialStage = 'fixation' | 'stimulus' | 'feedback' | 'interTrial';
 
-// Neutral stimulus words (concrete common words without intrinsic color associations)
-const NEUTRAL_WORDS = ['EGG', 'BED', 'SHIP', 'FORK', 'DESK', 'LAMP', 'DOOR', 'BOOK', 'PEN', 'CAT'];
-
-// Trial counts: balanced 3 conditions (Congruent, Incongruent, Neutral) across 4 colors (R, G, B, Y)
-const PRACTICE_COUNT = 12; // 4 Congruent, 4 Incongruent, 4 Neutral (1 for each ink color)
-const EXPERIMENTAL_COUNT = 84; // 28 Congruent, 28 Incongruent, 28 Neutral (7 for each ink color)
+// Trial counts: 128 experimental trials (96 Congruent, 32 Incongruent; 75%/25% ratio) and 20 practice trials
+const PRACTICE_COUNT = 20; // 12 Congruent, 8 Incongruent
+const EXPERIMENTAL_COUNT = 128; // 96 Congruent, 32 Incongruent (24 congruent per color, 8 incongruent per ink color)
 
 // Timings in milliseconds
 const FIXATION_DURATION = 400; // ms
-const RESPONSE_TIMEOUT_MS = 1500; // 1500ms response window (times out if no response made)
 const FEEDBACK_DURATION = 650; // ms (visible text and sound feedback)
 const INTER_TRIAL_DURATION = 150; // ms
 
@@ -48,95 +44,36 @@ interface TrialItem {
   condition: StroopCondition;
 }
 
-/**
- * Web Audio API synthesized sounds:
- * - Jingle: pleasant, cheerful ascending chime for correct response
- * - Buzzer: low downward buzz for incorrect response or timeout
- * Works offline, cross-platform, with zero asset loading latency.
- */
-function playJingleSound() {
-  try {
-    const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    if (!AudioContextClass) return;
-    const ctx = new AudioContextClass();
-    if (ctx.state === 'suspended') ctx.resume();
 
-    // Ascending melodic chime: C5 (523Hz) -> E5 (659Hz) -> G5 (784Hz) -> C6 (1046Hz)
-    const notes = [523.25, 659.25, 783.99, 1046.5];
-    notes.forEach((freq, idx) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.07);
-
-      gain.gain.setValueAtTime(0.18, ctx.currentTime + idx * 0.07);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.07 + 0.22);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(ctx.currentTime + idx * 0.07);
-      osc.stop(ctx.currentTime + idx * 0.07 + 0.22);
-    });
-  } catch (e) {
-    console.warn('[StroopAudio] Jingle error:', e);
-  }
-}
-
-function playBuzzerSound() {
-  try {
-    const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    if (!AudioContextClass) return;
-    const ctx = new AudioContextClass();
-    if (ctx.state === 'suspended') ctx.resume();
-
-    // Distinctive downward sawtooth buzzer
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(140, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(90, ctx.currentTime + 0.28);
-
-    gain.gain.setValueAtTime(0.24, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.28);
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.28);
-  } catch (e) {
-    console.warn('[StroopAudio] Buzzer error:', e);
-  }
-}
 
 /**
- * Generates 12 practice trials balanced across 3 conditions:
- * - 4 Congruent (RED in Red, GREEN in Green, BLUE in Blue, YELLOW in Yellow)
- * - 4 Incongruent (GREEN in Red, RED in Green, YELLOW in Blue, BLUE in Yellow)
- * - 4 Neutral (EGG in Red, BED in Green, SHIP in Blue, FORK in Yellow)
+ * Generates 20 practice trials balanced across 2 conditions (12 Congruent, 8 Incongruent):
+ * - 12 Congruent (3 for each of the 4 colors: RED, GREEN, BLUE, YELLOW)
+ * - 8 Incongruent (2 for each of the 4 ink colors)
  * Shuffled with constraint that no consecutive trials have the same ink color.
  */
 function generatePracticeTrials(): TrialItem[] {
   const list: TrialItem[] = [];
 
-  // 1. Congruent practice items (1 for each of 4 colors)
+  // 1. 12 Congruent practice items (3 for each of 4 colors)
   STROOP_COLORS.forEach(color => {
-    list.push({ word: color, inkColor: color, condition: 'congruent' });
+    for (let i = 0; i < 3; i++) {
+      list.push({ word: color, inkColor: color, condition: 'congruent' });
+    }
   });
 
-  // 2. Incongruent practice items (1 for each of 4 ink colors)
+  // 2. 8 Incongruent practice items (2 for each of 4 ink colors)
   const incongruentBase: Array<{ word: string; inkColor: StroopColor }> = [
     { word: 'GREEN', inkColor: 'RED' },
+    { word: 'YELLOW', inkColor: 'RED' },
     { word: 'RED', inkColor: 'GREEN' },
+    { word: 'BLUE', inkColor: 'GREEN' },
     { word: 'YELLOW', inkColor: 'BLUE' },
+    { word: 'RED', inkColor: 'BLUE' },
     { word: 'BLUE', inkColor: 'YELLOW' },
+    { word: 'GREEN', inkColor: 'YELLOW' },
   ];
   incongruentBase.forEach(pair => list.push({ ...pair, condition: 'incongruent' }));
-
-  // 3. Neutral practice items (1 for each of 4 ink colors)
-  list.push({ word: 'EGG', inkColor: 'RED', condition: 'neutral' });
-  list.push({ word: 'BED', inkColor: 'GREEN', condition: 'neutral' });
-  list.push({ word: 'SHIP', inkColor: 'BLUE', condition: 'neutral' });
-  list.push({ word: 'FORK', inkColor: 'YELLOW', condition: 'neutral' });
 
   // Shuffle ensuring no consecutive same ink color
   for (let attempt = 0; attempt < 200; attempt++) {
@@ -160,50 +97,46 @@ function generatePracticeTrials(): TrialItem[] {
 }
 
 /**
- * Generates 84 experimental trials:
- * - 28 Congruent trials (7 for each of the 4 colors)
- * - 28 Incongruent trials (7 for each of the 4 ink colors)
- * - 28 Neutral trials (7 for each of the 4 ink colors)
+ * Generates exactly 128 experimental trials:
+ * - 96 Congruent trials (24 for each of the 4 colors: RED, GREEN, BLUE, YELLOW)
+ * - 32 Incongruent trials (8 for each of the 4 ink colors, 8 for each word color)
+ * - Ratio: 75% Congruent, 25% Incongruent
  * Strictly enforces: NO consecutive trials have the same ink color
  */
 function generateExperimentalTrials(): TrialItem[] {
   const pool: TrialItem[] = [];
 
-  // 1. 28 Congruent trials (7 per color)
+  // 1. 96 Congruent trials (24 per color)
   STROOP_COLORS.forEach(color => {
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 24; i++) {
       pool.push({ word: color, inkColor: color, condition: 'congruent' });
     }
   });
 
-  // 2. 28 Incongruent trials (7 per ink color)
+  // 2. 32 Incongruent trials (8 per ink color, 8 per word color)
+  // All 12 distinct incongruent pairs repeated twice = 24 trials (6 per ink color)
   const incPairs: Array<{ word: string; inkColor: StroopColor }> = [];
   STROOP_COLORS.forEach(w => {
     STROOP_COLORS.forEach(ink => {
       if (w !== ink) incPairs.push({ word: w, inkColor: ink });
     });
   });
-  // 12 distinct incongruent pairs * 2 = 24 trials (6 per ink color)
   incPairs.forEach(pair => {
     for (let i = 0; i < 2; i++) {
       pool.push({ ...pair, condition: 'incongruent' });
     }
   });
-  // 4 extra incongruent pairs (1 per ink color) -> 28 total
+  // 8 extra balanced incongruent trials (2 per ink color, 2 per word color) -> 32 total
   pool.push({ word: 'YELLOW', inkColor: 'RED', condition: 'incongruent' });
-  pool.push({ word: 'BLUE', inkColor: 'GREEN', condition: 'incongruent' });
+  pool.push({ word: 'BLUE', inkColor: 'RED', condition: 'incongruent' });
+  pool.push({ word: 'RED', inkColor: 'GREEN', condition: 'incongruent' });
+  pool.push({ word: 'YELLOW', inkColor: 'GREEN', condition: 'incongruent' });
+  pool.push({ word: 'GREEN', inkColor: 'BLUE', condition: 'incongruent' });
   pool.push({ word: 'RED', inkColor: 'BLUE', condition: 'incongruent' });
+  pool.push({ word: 'BLUE', inkColor: 'YELLOW', condition: 'incongruent' });
   pool.push({ word: 'GREEN', inkColor: 'YELLOW', condition: 'incongruent' });
 
-  // 3. 28 Neutral trials (7 per ink color)
-  STROOP_COLORS.forEach((ink, inkIdx) => {
-    for (let i = 0; i < 7; i++) {
-      const neutralWord = NEUTRAL_WORDS[(i + inkIdx * 2) % NEUTRAL_WORDS.length];
-      pool.push({ word: neutralWord, inkColor: ink, condition: 'neutral' });
-    }
-  });
-
-  // 4. Shuffle with max-frequency heuristic ensuring no two consecutive trials have the same ink color
+  // 3. Shuffle with max-frequency heuristic ensuring no two consecutive trials have the same ink color
   for (let attempt = 0; attempt < 500; attempt++) {
     const remaining = [...pool];
     for (let i = remaining.length - 1; i > 0; i--) {
@@ -264,10 +197,9 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
   const sessionOptionsRef = useRef(getExperimentSessionOptions());
   const sessionOptions = sessionOptionsRef.current;
 
-  // Visual feedback state (shown for both correct, incorrect, and timeout)
+  // Visual feedback state (shown for both correct and incorrect)
   const [feedback, setFeedback] = useState<{
     isCorrect: boolean;
-    isTimeout?: boolean;
   } | null>(null);
 
   // Stable trial lists
@@ -282,7 +214,6 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
   const stimulusStartTimeRef = useRef<number>(0);
   const isAcceptingResponseRef = useRef<boolean>(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const responseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Initialize trial lists once on mount
   useEffect(() => {
@@ -294,10 +225,6 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
     if (timerRef.current) {
       clearTimeout(timerRef.current);
       timerRef.current = null;
-    }
-    if (responseTimeoutRef.current) {
-      clearTimeout(responseTimeoutRef.current);
-      responseTimeoutRef.current = null;
     }
   };
 
@@ -314,7 +241,6 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
 
     const congruentTrialsList = trials.filter(t => t.condition === 'congruent');
     const incongruentTrialsList = trials.filter(t => t.condition === 'incongruent');
-    const neutralTrialsList = trials.filter(t => t.condition === 'neutral');
 
     const congruentTrials = congruentTrialsList.length;
     const congruentCorrect = congruentTrialsList.filter(t => t.isCorrect).length;
@@ -324,29 +250,20 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
     const incongruentCorrect = incongruentTrialsList.filter(t => t.isCorrect).length;
     const incongruentAccuracy = incongruentTrials > 0 ? (incongruentCorrect / incongruentTrials) * 100 : 0;
 
-    const neutralTrials = neutralTrialsList.length;
-    const neutralCorrect = neutralTrialsList.filter(t => t.isCorrect).length;
-    const neutralAccuracy = neutralTrials > 0 ? (neutralCorrect / neutralTrials) * 100 : 0;
-
     // Reaction times calculated on valid correct trials
     const correctCongruent = congruentTrialsList.filter(t => t.isCorrect);
     const correctIncongruent = incongruentTrialsList.filter(t => t.isCorrect);
-    const correctNeutral = neutralTrialsList.filter(t => t.isCorrect);
 
     const congruentMeanRtMs = correctCongruent.length > 0
-      ? correctCongruent.reduce((sum, t) => sum + t.reactionTimeMs, 0) / correctCongruent.length
+      ? Math.round(correctCongruent.reduce((sum, t) => sum + t.reactionTimeMs, 0) / correctCongruent.length)
       : 0;
 
     const incongruentMeanRtMs = correctIncongruent.length > 0
-      ? correctIncongruent.reduce((sum, t) => sum + t.reactionTimeMs, 0) / correctIncongruent.length
-      : 0;
-
-    const neutralMeanRtMs = correctNeutral.length > 0
-      ? correctNeutral.reduce((sum, t) => sum + t.reactionTimeMs, 0) / correctNeutral.length
+      ? Math.round(correctIncongruent.reduce((sum, t) => sum + t.reactionTimeMs, 0) / correctIncongruent.length)
       : 0;
 
     const stroopEffectMs = (correctCongruent.length > 0 && correctIncongruent.length > 0)
-      ? incongruentMeanRtMs - congruentMeanRtMs
+      ? Math.round(incongruentMeanRtMs - congruentMeanRtMs)
       : 0;
 
     return {
@@ -359,12 +276,12 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
       incongruentTrials,
       incongruentCorrect,
       incongruentAccuracy,
-      neutralTrials,
-      neutralCorrect,
-      neutralAccuracy,
+      neutralTrials: 0,
+      neutralCorrect: 0,
+      neutralAccuracy: 0,
       congruentMeanRtMs,
       incongruentMeanRtMs,
-      neutralMeanRtMs,
+      neutralMeanRtMs: 0,
       stroopEffectMs,
       trials,
       practiceTrials: practiceRecordsRef.current,
@@ -398,60 +315,6 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
     }
   }, [phase, trialIndex, sessionId]);
 
-  // Timeout handler: triggered when participant fails to respond within RESPONSE_TIMEOUT_MS
-  const handleTimeout = useCallback(() => {
-    if (!isAcceptingResponseRef.current) return;
-    isAcceptingResponseRef.current = false;
-    if (responseTimeoutRef.current) {
-      clearTimeout(responseTimeoutRef.current);
-      responseTimeoutRef.current = null;
-    }
-
-    const isPracticePhase = phase === 'practice';
-    const trialList = isPracticePhase ? practiceTrialsRef.current : experimentalTrialsRef.current;
-    const currentItem = trialList[trialIndex];
-    if (!currentItem) return;
-
-    // Play wrong buzzer sound for timeout
-    playBuzzerSound();
-
-    const record: StroopTrialRecord = {
-      trialNumber: trialIndex + 1,
-      phase: isPracticePhase ? 'practice' : 'experiment',
-      word: currentItem.word,
-      inkColor: currentItem.inkColor,
-      condition: currentItem.condition,
-      correctResponse: currentItem.inkColor,
-      participantResponse: 'TIMEOUT',
-      isCorrect: false,
-      reactionTimeMs: RESPONSE_TIMEOUT_MS,
-      timestampMs: Date.now(),
-    };
-
-    if (isPracticePhase) {
-      practiceRecordsRef.current.push(record);
-    } else {
-      experimentalRecordsRef.current.push(record);
-    }
-
-    const activeSid = sessionId || getStoredSessionContext()?.sessionId;
-    if (activeSid) {
-      persistStroopTrial(activeSid, record).catch(err => {
-        console.error('[StroopRoom] Failed to persist timeout trial:', err);
-      });
-    }
-
-    // Show visual timeout feedback
-    setFeedback({ isCorrect: false, isTimeout: true });
-    setTrialStage('feedback');
-
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      setFeedback(null);
-      advanceTrial();
-    }, FEEDBACK_DURATION);
-  }, [phase, trialIndex, sessionId, advanceTrial]);
-
   // Start trial stage flow
   const runTrialStage = useCallback((stage: TrialStage) => {
     clearActiveTimers();
@@ -463,14 +326,9 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
         setTrialStage('stimulus');
         stimulusStartTimeRef.current = performance.now();
         isAcceptingResponseRef.current = true;
-
-        // Set response timeout window (e.g. 1500ms)
-        responseTimeoutRef.current = setTimeout(() => {
-          handleTimeout();
-        }, RESPONSE_TIMEOUT_MS);
       }, FIXATION_DURATION);
     }
-  }, [handleTimeout]);
+  }, []);
 
   // Begin practice
   const handleStartPractice = () => {
@@ -496,10 +354,6 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
 
     // Immediately close the response window
     isAcceptingResponseRef.current = false;
-    if (responseTimeoutRef.current) {
-      clearTimeout(responseTimeoutRef.current);
-      responseTimeoutRef.current = null;
-    }
 
     const reactionTimeMs = performance.now() - stimulusStartTimeRef.current;
 
@@ -510,13 +364,6 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
 
     // Correct response is ALWAYS the printed font ink color
     const isCorrect = responseColor === currentItem.inkColor;
-
-    // Audio feedback: Jingle for correct, Buzzer for wrong
-    if (isCorrect) {
-      playJingleSound();
-    } else {
-      playBuzzerSound();
-    }
 
     const record: StroopTrialRecord = {
       trialNumber: trialIndex + 1,
@@ -546,7 +393,7 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
     }
 
     // Visual text feedback displayed on EVERY trial (for both practice and experimental)
-    setFeedback({ isCorrect, isTimeout: false });
+    setFeedback({ isCorrect });
     setTrialStage('feedback');
 
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -671,38 +518,21 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
               <strong className="text-[#E11D48]">ignoring what the word means</strong>.
             </p>
 
-            {/* Desktop / PC Recommendation Banner */}
-            <div className="bg-[#EFF6FF] dark:bg-white border-2 border-[#93C5FD] dark:border-[#93C5FD] rounded-xl p-3 sm:p-3.5 mb-5 text-center shadow-xs">
-              <div className="flex items-center justify-center gap-2 text-[#1E3A8A] dark:text-[#1E3A8A]">
-                <Monitor size={17} className="text-[#2563EB] dark:text-[#2563EB] flex-shrink-0" />
-                <p className="text-xs sm:text-sm font-bold leading-snug">
-                  For the best experience, please complete this task on a desktop or PC.
-                </p>
-              </div>
-            </div>
-
-            {/* 3 Stimulus Types Educational Card */}
+            {/* 2 Stimulus Types Educational Card */}
             <div className="bg-white dark:bg-white rounded-2xl border-2 border-[#C5DCE4] dark:border-[#C5DCE4] p-4 sm:p-6 mb-5 text-left shadow-xs">
               <div className="text-xs font-bold text-[#E11D48] uppercase tracking-wider mb-2.5">
-                3 STIMULUS TYPES IN THIS TASK
+                2 STIMULUS TYPES IN THIS TASK
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-4 text-xs">
                 <div className="p-3 rounded-xl bg-[#F8FBFC] dark:bg-[#F8FBFC] border border-[#C5DCE4] dark:border-[#C5DCE4]">
-                  <div className="font-bold text-[#183B4A] dark:text-[#183B4A] mb-1">1. Neutral</div>
-                  <div className="text-[#2563EB] font-black text-sm tracking-wide mb-1 font-['Plus_Jakarta_Sans',sans-serif]">EGG / BED</div>
-                  <p className="text-[#526E7B] dark:text-[#526E7B] text-[11px] leading-snug">
-                    Random word written in blue 🔵. Correct response = <strong className="text-[#2563EB]">Blue</strong>.
-                  </p>
-                </div>
-                <div className="p-3 rounded-xl bg-[#F8FBFC] dark:bg-[#F8FBFC] border border-[#C5DCE4] dark:border-[#C5DCE4]">
-                  <div className="font-bold text-[#183B4A] dark:text-[#183B4A] mb-1">2. Congruent</div>
+                  <div className="font-bold text-[#183B4A] dark:text-[#183B4A] mb-1">1. Congruent</div>
                   <div className="text-[#2563EB] font-black text-sm tracking-wide mb-1 font-['Plus_Jakarta_Sans',sans-serif]">BLUE</div>
                   <p className="text-[#526E7B] dark:text-[#526E7B] text-[11px] leading-snug">
                     Word name matches ink color. Correct response = <strong className="text-[#2563EB]">Blue</strong>.
                   </p>
                 </div>
                 <div className="p-3 rounded-xl bg-[#F8FBFC] dark:bg-[#F8FBFC] border border-[#C5DCE4] dark:border-[#C5DCE4]">
-                  <div className="font-bold text-[#183B4A] dark:text-[#183B4A] mb-1">3. Incongruent</div>
+                  <div className="font-bold text-[#183B4A] dark:text-[#183B4A] mb-1">2. Incongruent</div>
                   <div className="text-[#2563EB] font-black text-sm tracking-wide mb-1 font-['Plus_Jakarta_Sans',sans-serif]">RED</div>
                   <p className="text-[#526E7B] dark:text-[#526E7B] text-[11px] leading-snug">
                     Word says &quot;RED&quot; in blue ink 🔵. Correct response = <strong className="text-[#2563EB]">Blue</strong>.
@@ -724,22 +554,6 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
                 <p className="text-xs sm:text-sm text-[#183B4A] dark:text-[#183B4A] font-medium">
                   Correct response = <strong className="text-[#183B4A] dark:text-[#183B4A] font-['JetBrains_Mono',monospace]">R</strong> <strong className="text-[#183B4A] dark:text-[#183B4A] font-semibold">(Red)</strong>
                 </p>
-              </div>
-
-              {/* Feedback & Timer Highlights */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-[#183B4A] dark:text-[#183B4A]">
-                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-50 border border-emerald-200 dark:border-emerald-200">
-                  <Volume2 size={16} className="text-emerald-600 dark:text-emerald-600 flex-shrink-0" />
-                  <span>
-                    <strong>Instant Feedback:</strong> Jingle sound &amp; text for correct; Buzzer &amp; text for wrong.
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-50 dark:bg-amber-50 border border-amber-200 dark:border-amber-200">
-                  <Clock size={16} className="text-amber-600 dark:text-amber-600 flex-shrink-0" />
-                  <span>
-                    <strong>1.5s Response Limit:</strong> Respond quickly before the timer runs out!
-                  </span>
-                </div>
               </div>
 
               {/* Response Key Mapping Legend */}
@@ -818,27 +632,13 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
                   >
                     {currentTrial.word}
                   </div>
-                  {/* Shrinking visual countdown timer bar */}
-                  <div className="w-44 sm:w-60 h-1.5 bg-[#EAF4F8] dark:bg-[#EAF4F8] rounded-full overflow-hidden mt-3">
-                    <div
-                      className="h-full bg-gradient-to-r from-emerald-500 via-amber-500 to-rose-500 rounded-full"
-                      style={{
-                        animation: `shrinkWidth ${RESPONSE_TIMEOUT_MS}ms linear forwards`,
-                      }}
-                    />
-                  </div>
                 </div>
               )}
 
               {/* Visual Text Feedback: Visible for both sound & silent environments on EVERY trial */}
               {trialStage === 'feedback' && feedback && (
                 <div className="flex flex-col items-center justify-center gap-2 animate-pop-in">
-                  {feedback.isTimeout ? (
-                    <div className="flex items-center gap-2.5 px-5 py-2 sm:py-2.5 rounded-2xl bg-amber-100 dark:bg-amber-100 border-2 border-amber-400 dark:border-amber-400 text-amber-900 dark:text-amber-900 text-base sm:text-lg font-black shadow-md">
-                      <Clock size={22} className="text-amber-600 dark:text-amber-600 animate-pulse" />
-                      <span>Time Out! Respond Faster</span>
-                    </div>
-                  ) : feedback.isCorrect ? (
+                  {feedback.isCorrect ? (
                     <div className="flex items-center gap-2.5 px-6 py-2 sm:py-2.5 rounded-2xl bg-emerald-100 dark:bg-emerald-100 border-2 border-emerald-500 dark:border-emerald-500 text-emerald-900 dark:text-emerald-900 text-base sm:text-lg font-black shadow-md">
                       <CheckCircle size={22} className="text-emerald-600 dark:text-emerald-600" />
                       <span>Correct!</span>
@@ -926,7 +726,7 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
               <div className="flex gap-2.5 items-start">
                 <Clock size={16} className="text-[#205266] flex-shrink-0 mt-0.5" />
                 <span>
-                  You will complete <strong>{EXPERIMENTAL_COUNT} trials</strong> (Neutral, Congruent, and Incongruent).
+                  You will complete <strong>{EXPERIMENTAL_COUNT} trials</strong> (Congruent and Incongruent).
                 </span>
               </div>
               <div className="flex gap-2.5 items-start">
