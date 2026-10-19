@@ -13,11 +13,13 @@ async function check() {
     const jsText = await jsRes.text();
     console.log('Bundle length:', jsText.length);
     const hasNipuBasher = jsText.includes('Nipu Basher');
+    const hasBlueHeart = jsText.includes('💙');
     const hasAdmin2026 = jsText.includes('admin2026');
     console.log('Live bundle checks:');
     console.log('  - Has "Nipu Basher":', hasNipuBasher);
+    console.log('  - Has "💙":', hasBlueHeart);
     console.log('  - Has "admin2026":', hasAdmin2026);
-    return hasNipuBasher && hasAdmin2026;
+    return hasNipuBasher && hasBlueHeart && hasAdmin2026;
   } catch (err) {
     console.error('Error fetching live site:', err.message);
     return false;
