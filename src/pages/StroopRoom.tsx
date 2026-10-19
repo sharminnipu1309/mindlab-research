@@ -11,7 +11,7 @@ import {
   STROOP_COLOR_LABELS,
 } from '../types';
 import ParticipantNav, { ConfirmExitModal } from '../components/ParticipantNav';
-import { CheckCircle, X, ArrowRight, Sparkles, Zap, Clock, Monitor, Volume2 } from 'lucide-react';
+import { CheckCircle, X, ArrowRight, Sparkles, Zap, Clock, Monitor, Volume2, LogOut } from 'lucide-react';
 import {
   persistStroopTrial,
   persistStroopResults,
@@ -609,13 +609,24 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
       {/* Header strip */}
       <div className="bg-white dark:bg-white border-b border-[#C5DCE4] px-4 sm:px-8 py-3 sm:py-4 transition-colors">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
-          <div className="text-center sm:text-left">
-            <div className="text-[10px] font-black text-[#183B4A] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
-              Room 03 — Stroop Color-Word Task
+          <div className="flex items-center justify-between w-full sm:w-auto">
+            <div className="text-left">
+              <div className="text-[10px] font-black text-[#183B4A] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
+                Room 03 — Stroop Color-Word Task
+              </div>
+              <div className="text-xs sm:text-sm font-bold text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif] mt-0.5">
+                Selective Attention & Cognitive Inhibition
+              </div>
             </div>
-            <div className="text-xs sm:text-sm font-bold text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif] mt-0.5">
-              Selective Attention & Cognitive Inhibition
-            </div>
+            {/* Mobile Exit Option in room header */}
+            <button
+              onClick={() => setShowExit(true)}
+              className="sm:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#DC2626] border border-rose-200 text-xs font-bold transition-all shadow-2xs active:scale-95 cursor-pointer ml-auto"
+              title="Exit task and return to dashboard"
+            >
+              <LogOut size={13} />
+              <span>Exit</span>
+            </button>
           </div>
 
           {(phase === 'practice' || phase === 'experiment') && (
@@ -880,6 +891,17 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
                   );
                 })}
               </div>
+            </div>
+
+            {/* Mobile Exit Option below trial area */}
+            <div className="sm:hidden mt-3 pt-2 flex justify-center w-full">
+              <button
+                onClick={() => setShowExit(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-[#DC2626] bg-rose-50/90 hover:bg-rose-100 border border-rose-200 transition-all cursor-pointer active:scale-95 shadow-2xs"
+              >
+                <LogOut size={13} />
+                <span>Exit Task</span>
+              </button>
             </div>
           </div>
         )}

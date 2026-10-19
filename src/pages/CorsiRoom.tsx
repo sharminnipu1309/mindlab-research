@@ -12,6 +12,7 @@ import {
   Undo2,
   Sparkles,
   Info,
+  LogOut,
 } from 'lucide-react';
 import {
   persistCorsiTrial,
@@ -569,9 +570,20 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
       {/* Header strip - compact vertical height */}
       <div className="bg-white dark:bg-white border-b border-[#C5DCE4] px-3 sm:px-8 py-2.5 sm:py-3 transition-colors">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
-          <div className="text-center sm:text-left">
-            <div className="text-[10px] font-black text-[#183B4A] dark:text-[#183B4A] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
-              Room 02 — Backward Corsi Block Task
+          <div className="w-full sm:w-auto text-center sm:text-left">
+            <div className="flex items-center justify-between w-full">
+              <div className="text-[10px] font-black text-[#183B4A] dark:text-[#183B4A] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
+                Room 02 — Backward Corsi Block Task
+              </div>
+              {/* Mobile Exit Option in room header */}
+              <button
+                onClick={() => setShowExit(true)}
+                className="sm:hidden flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#DC2626] border border-rose-200 text-xs font-bold transition-all shadow-2xs active:scale-95 cursor-pointer ml-auto"
+                title="Exit task and return to dashboard"
+              >
+                <LogOut size={13} />
+                <span>Exit</span>
+              </button>
             </div>
             <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mt-0.5 flex-wrap">
               {isPracticeMode ? (
@@ -1106,6 +1118,17 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
                   </span>
                 )}
               </div>
+            </div>
+
+            {/* Mobile Exit Option below board */}
+            <div className="sm:hidden mt-3 pt-2 flex justify-center w-full">
+              <button
+                onClick={() => setShowExit(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-[#DC2626] bg-rose-50/90 hover:bg-rose-100 border border-rose-200 transition-all cursor-pointer active:scale-95 shadow-2xs"
+              >
+                <LogOut size={13} />
+                <span>Exit Task</span>
+              </button>
             </div>
           </div>
         )}

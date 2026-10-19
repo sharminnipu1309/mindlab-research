@@ -1081,7 +1081,7 @@ export async function resumeParticipantSession(
 
   const query = (nameOrCode || emailOrName || maybeEmail || '').trim();
   if (!query) {
-    return { success: false, error: 'Please enter your Participant ID or Full Name.' };
+    return { success: false, error: 'Please enter your Participant ID or Username.' };
   }
 
   // 1. Check local session context on this device

@@ -62,28 +62,30 @@ export default function ParticipantNav({
         )}
 
         {/* Right side */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           <ThemeToggle />
           <button
             onClick={() => navigate('landing')}
-            className="group flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-white hover:bg-[#4D91AD] text-[#263B46] hover:text-white dark:bg-[#203541] dark:hover:bg-[#63B8C6] dark:text-[#EAF4F8] dark:hover:text-[#111C23] text-xs sm:text-sm font-extrabold border-2 border-[#C5DCE4] hover:border-[#4D91AD] dark:border-[#2D4654] dark:hover:border-[#63B8C6] shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer"
+            className="group flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-white hover:bg-[#4D91AD] text-[#263B46] hover:text-white dark:bg-[#203541] dark:hover:bg-[#63B8C6] dark:text-[#EAF4F8] dark:hover:text-[#111C23] text-xs sm:text-sm font-extrabold border-2 border-[#C5DCE4] hover:border-[#4D91AD] dark:border-[#2D4654] dark:hover:border-[#63B8C6] shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer shrink-0"
             title="Return to application homepage"
           >
-            <Home size={16} className="text-[#4D91AD] group-hover:text-white dark:text-[#63B8C6] dark:group-hover:text-[#111C23] shrink-0 transition-colors" />
-            <span className="font-bold font-['Plus_Jakarta_Sans',sans-serif]">Back to Home</span>
+            <Home size={15} className="text-[#4D91AD] group-hover:text-white dark:text-[#63B8C6] dark:group-hover:text-[#111C23] shrink-0 transition-colors" />
+            <span className="hidden sm:inline font-bold font-['Plus_Jakarta_Sans',sans-serif]">Back to Home</span>
+            <span className="sm:hidden font-bold font-['Plus_Jakarta_Sans',sans-serif]">Home</span>
           </button>
           {participantId && (
-            <span className="text-xs sm:text-sm font-['JetBrains_Mono',monospace] text-[#526E7B] dark:text-[#9BB5C4] bg-[#D5E8EF] dark:bg-[#203541] px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-[#C5DCE4] dark:border-[#2D4654] truncate max-w-[120px] sm:max-w-none">
+            <span className="hidden sm:inline-block text-xs sm:text-sm font-['JetBrains_Mono',monospace] text-[#526E7B] dark:text-[#9BB5C4] bg-[#D5E8EF] dark:bg-[#203541] px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg border border-[#C5DCE4] dark:border-[#2D4654] truncate max-w-[120px] sm:max-w-none">
               {participantId}
             </span>
           )}
           {showExit && onExit && (
             <button
               onClick={onExit}
-              className="btn-ghost text-[#526E7B] hover:text-[#DC2626] dark:text-[#9BB5C4] dark:hover:text-[#F87171] text-xs sm:text-sm px-2 sm:px-3 py-1.5 cursor-pointer"
+              className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-[#DC2626] dark:text-[#F87171] border border-rose-200 dark:border-rose-900/50 text-xs sm:text-sm font-bold shadow-2xs transition-all active:scale-95 cursor-pointer shrink-0"
+              title="Exit current activity"
             >
-              <LogOut size={14} className="sm:w-[15px] sm:h-[15px]" />
-              <span className="hidden xs:inline">Exit</span>
+              <LogOut size={14} className="shrink-0" />
+              <span className="font-bold font-['Plus_Jakarta_Sans',sans-serif]">Exit</span>
             </button>
           )}
         </div>

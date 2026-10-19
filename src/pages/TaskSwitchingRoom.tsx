@@ -17,7 +17,7 @@ import {
   TASK_SWITCHING_EVEN_NUMBERS,
 } from '../types';
 import ParticipantNav, { ConfirmExitModal } from '../components/ParticipantNav';
-import { CheckCircle, X, ArrowRight, ArrowLeft, RefreshCw, Zap, Layers, Lock, HelpCircle, BookOpen, RotateCw, ArrowUp, ArrowDown } from 'lucide-react';
+import { CheckCircle, X, ArrowRight, ArrowLeft, RefreshCw, Zap, Layers, Lock, HelpCircle, BookOpen, RotateCw, ArrowUp, ArrowDown, LogOut } from 'lucide-react';
 import {
   persistTaskSwitchingTrial,
   persistTaskSwitchingResults,
@@ -802,19 +802,31 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
             </div>
           </div>
 
-          {phase !== 'tutorial' && phase !== 'taskComplete' && (
+          <div className="flex items-center gap-2">
+            {phase !== 'tutorial' && phase !== 'taskComplete' && (
+              <button
+                onClick={() => {
+                  clearActiveTimer();
+                  setPhase('tutorial');
+                  goToTutorialStep(0);
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#EAF4F8] dark:bg-[#EAF4F8] border border-[#C5DCE4] text-xs font-bold text-[#183B4A] hover:bg-white transition-all cursor-pointer"
+              >
+                <BookOpen size={14} />
+                <span className="hidden sm:inline">Tutorial</span>
+              </button>
+            )}
+
+            {/* Mobile Exit Option in room header */}
             <button
-              onClick={() => {
-                clearActiveTimer();
-                setPhase('tutorial');
-                goToTutorialStep(0);
-              }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#EAF4F8] dark:bg-[#EAF4F8] border border-[#C5DCE4] text-xs font-bold text-[#183B4A] hover:bg-white transition-all cursor-pointer"
+              onClick={() => setShowExit(true)}
+              className="sm:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#DC2626] border border-rose-200 text-xs font-bold transition-all shadow-2xs active:scale-95 cursor-pointer ml-auto"
+              title="Exit task and return to dashboard"
             >
-              <BookOpen size={14} />
-              <span>Tutorial</span>
+              <LogOut size={13} />
+              <span>Exit</span>
             </button>
-          )}
+          </div>
         </div>
       </div>
 
@@ -1593,6 +1605,17 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                   </button>
                 </div>
               )}
+
+              {/* Mobile Exit Option below trial area */}
+              <div className="sm:hidden mt-4 pt-2 flex justify-center w-full">
+                <button
+                  onClick={() => setShowExit(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-[#DC2626] bg-rose-50/90 hover:bg-rose-100 border border-rose-200 transition-all cursor-pointer active:scale-95 shadow-2xs"
+                >
+                  <LogOut size={13} />
+                  <span>Exit Task</span>
+                </button>
+              </div>
             </div>
           </div>
         )}

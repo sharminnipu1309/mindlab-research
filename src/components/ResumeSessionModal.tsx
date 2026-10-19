@@ -42,7 +42,7 @@ export default function ResumeSessionModal({ isOpen, onClose, onResume }: Props)
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!identifier.trim()) {
-      setError('Please enter your Participant ID or Full Name.');
+      setError('Please enter your Participant ID or Full Name / Username.');
       return;
     }
 
@@ -55,7 +55,7 @@ export default function ResumeSessionModal({ isOpen, onClose, onResume }: Props)
         onResume(res.participant, res.sessionId);
         onClose();
       } else {
-        setError(res.error || 'No active session found matching this Participant ID or Name.');
+        setError(res.error || 'No active session found matching this Participant ID or Username.');
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'An unexpected error occurred.';
@@ -135,11 +135,11 @@ export default function ResumeSessionModal({ isOpen, onClose, onResume }: Props)
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-[#263B46] dark:text-[#EAF4F8] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] mb-2">
-              Participant ID or Full Name
+              Participant ID or Full Name / Username
             </label>
             <input
               type="text"
-              placeholder="e.g. ML-1001 or Jane Doe"
+              placeholder="e.g. ML-1001 or Username"
               value={identifier}
               onChange={e => {
                 setIdentifier(e.target.value);
@@ -149,7 +149,7 @@ export default function ResumeSessionModal({ isOpen, onClose, onResume }: Props)
               autoFocus={!localSession}
             />
             <p className="text-[11px] text-[#526E7B] dark:text-[#9BB5C4] mt-1.5">
-              Enter the exact participant code (e.g. ML-4821) or full name used during registration.
+              Enter the exact participant code (e.g. ML-4821) or username used during registration.
             </p>
           </div>
 

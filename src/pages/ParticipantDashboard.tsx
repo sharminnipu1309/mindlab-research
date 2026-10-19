@@ -176,7 +176,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
 
   return (
     <div className="min-h-screen bg-[#EAF4F8] dark:bg-[#111C23] text-[#263B46] dark:text-[#EAF4F8] font-['Inter',sans-serif] transition-colors duration-200">
-      {/* Participant Navigation */}
+      {/* Participant Navigation with Back to Home */}
       <ParticipantNav navigate={navigate} participantId={currentParticipant.id} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-10 py-6 sm:py-10">

@@ -11,7 +11,7 @@ import {
   HanoiSessionResult,
 } from '../types';
 import ParticipantNav, { ConfirmExitModal } from '../components/ParticipantNav';
-import { AlertTriangle, CheckCircle, ArrowRight, RotateCcw, Clock, Sparkles } from 'lucide-react';
+import { AlertTriangle, CheckCircle, ArrowRight, RotateCcw, Clock, Sparkles, LogOut } from 'lucide-react';
 import {
   persistHanoiPuzzle,
   persistHanoiResults,
@@ -625,7 +625,7 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
       {/* Header strip */}
       <div className="bg-white dark:bg-white border-b border-[#C5DCE4] px-4 sm:px-8 py-3 sm:py-4 transition-colors">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-6">
+          <div className="flex flex-wrap items-center justify-between sm:justify-start w-full sm:w-auto gap-3 sm:gap-6">
             <div>
               <div className="text-[10px] font-black text-[#183B4A] dark:text-[#183B4A] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
                 Room 01 — Tower of Hanoi
@@ -640,6 +640,19 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
                 <span className="text-xs font-medium text-[#526E7B]">{diskCount} discs</span>
               </div>
             </div>
+
+            {/* Mobile Exit Option in room header */}
+            <button
+              onClick={() => setShowExit(true)}
+              className="sm:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#DC2626] border border-rose-200 text-xs font-bold transition-all shadow-2xs active:scale-95 cursor-pointer ml-auto"
+              title="Exit puzzle and return to dashboard"
+            >
+              <LogOut size={13} />
+              <span>Exit</span>
+            </button>
+          </div>
+
+          <div className="hidden sm:flex items-center gap-1.5 sm:gap-2">
             {/* Puzzle progress dots */}
             <div className="flex items-center gap-1.5 sm:gap-2">
               {puzzles.map((p, i) => (
@@ -848,6 +861,17 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
           <span>
             Invalid attempts: <strong className="text-[#DC2626] dark:text-[#F87171] font-['JetBrains_Mono',monospace]">{invalidMoves}</strong>
           </span>
+        </div>
+
+        {/* Mobile quick exit button */}
+        <div className="sm:hidden mt-5 mb-2 flex justify-center w-full">
+          <button
+            onClick={() => setShowExit(true)}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-[#DC2626] bg-rose-50/90 hover:bg-rose-100 border border-rose-200 transition-all cursor-pointer active:scale-95 shadow-2xs"
+          >
+            <LogOut size={14} />
+            <span>Exit Puzzle</span>
+          </button>
         </div>
       </div>
 

@@ -30,7 +30,7 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
 
   const validateForm = () => {
     const errs: Record<string, string> = {};
-    if (!form.name.trim()) errs.name = 'Name is required';
+    if (!form.name.trim()) errs.name = 'Username is required';
     if (!form.age || isNaN(Number(form.age)) || Number(form.age) < 16 || Number(form.age) > 100)
       errs.age = 'Please enter a valid age (16–100)';
     if (!form.gender) errs.gender = 'Please select a gender option';
@@ -160,14 +160,14 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
             </p>
 
             <div className="bg-white dark:bg-[#203541] rounded-2xl border border-[#C5DCE4] dark:border-[#2D4654] p-4 sm:p-7 space-y-4 sm:space-y-5 shadow-sm">
-              {/* Name */}
+              {/* Username */}
               <div>
                 <label className="block text-xs sm:text-sm font-semibold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
-                  Full name <span className="text-[#EF4444]">*</span>
+                  Username <span className="text-[#EF4444]">*</span>
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter your full name"
+                  placeholder="Enter your username"
                   value={form.name}
                   onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setErrors(err => ({ ...err, name: '' })); }}
                   className={`ml-input ${errors.name ? 'error' : ''}`}
