@@ -12,9 +12,12 @@ async function check() {
     const jsRes = await fetch(scriptUrl);
     const jsText = await jsRes.text();
     console.log('Bundle length:', jsText.length);
-    const hasPopup = jsText.includes('Cancel & choose another');
-    console.log('Has latest popupRoomId / "Cancel & choose another":', hasPopup);
-    return hasPopup;
+    const hasNipuBasher = jsText.includes('Nipu Basher');
+    const hasAdmin2026 = jsText.includes('admin2026');
+    console.log('Live bundle checks:');
+    console.log('  - Has "Nipu Basher":', hasNipuBasher);
+    console.log('  - Has "admin2026":', hasAdmin2026);
+    return hasNipuBasher && hasAdmin2026;
   } catch (err) {
     console.error('Error fetching live site:', err.message);
     return false;
