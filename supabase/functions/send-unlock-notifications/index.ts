@@ -20,8 +20,8 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || '';
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') || '';
 const SENDGRID_API_KEY = Deno.env.get('SENDGRID_API_KEY') || '';
-const EMAIL_FROM = Deno.env.get('RESEND_FROM_EMAIL') || Deno.env.get('EMAIL_FROM') || 'MindLab Study <onboarding@resend.dev>';
-const APP_BASE_URL = Deno.env.get('APP_BASE_URL') || Deno.env.get('SITE_URL') || Deno.env.get('VITE_APP_URL') || 'https://mindlab-research.vercel.app';
+const EMAIL_FROM = Deno.env.get('RESEND_FROM_EMAIL') || Deno.env.get('EMAIL_FROM') || 'Memtiva Study <onboarding@resend.dev>';
+const APP_BASE_URL = Deno.env.get('APP_BASE_URL') || Deno.env.get('SITE_URL') || Deno.env.get('VITE_APP_URL') || 'https://memtiva.vercel.app';
 const CRON_SECRET = Deno.env.get('CRON_SECRET') || '';
 
 function generateTemplates({ firstName, participantCode, appUrl = APP_BASE_URL, isTest = false }: {

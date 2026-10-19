@@ -15,8 +15,8 @@ const SMTP_SECURE = process.env.SMTP_SECURE === 'true' || SMTP_PORT === 465;
 const SMTP_USER = process.env.SMTP_USER || process.env.GMAIL_USER || '';
 const SMTP_PASS = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD || '';
 
-const EMAIL_FROM = process.env.EMAIL_FROM || (SMTP_USER ? `MindLab Study <${SMTP_USER}>` : 'MindLab Study <noreply@mindlab.io>');
-const APP_BASE_URL = process.env.APP_BASE_URL || process.env.SITE_URL || 'https://mindlab-research.vercel.app';
+const EMAIL_FROM = process.env.EMAIL_FROM || (SMTP_USER ? `Memtiva Study <${SMTP_USER}>` : 'Memtiva Study <noreply@memtiva.io>');
+const APP_BASE_URL = process.env.APP_BASE_URL || process.env.SITE_URL || 'https://memtiva.vercel.app';
 
 // Fallback HTTP providers
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';

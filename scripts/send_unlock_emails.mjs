@@ -19,8 +19,8 @@ const SMTP_PASS = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD || '';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '';
 
-const EMAIL_FROM = process.env.EMAIL_FROM || process.env.RESEND_FROM_EMAIL || (SMTP_USER ? `MindLab Study <${SMTP_USER}>` : 'MindLab Study <onboarding@resend.dev>');
-const APP_BASE_URL = process.env.APP_BASE_URL || process.env.SITE_URL || process.env.VITE_APP_URL || 'https://mindlab-research.vercel.app';
+const EMAIL_FROM = process.env.EMAIL_FROM || process.env.RESEND_FROM_EMAIL || (SMTP_USER ? `Memtiva Study <${SMTP_USER}>` : 'Memtiva Study <onboarding@resend.dev>');
+const APP_BASE_URL = process.env.APP_BASE_URL || process.env.SITE_URL || process.env.VITE_APP_URL || 'https://memtiva.vercel.app';
 
 export function createSmtpTransporter() {
   if (!SMTP_USER || !SMTP_PASS) return null;
