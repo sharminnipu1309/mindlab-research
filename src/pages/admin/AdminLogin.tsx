@@ -28,7 +28,7 @@ export default function AdminLogin({ navigate, onLogin }: Props) {
         onLogin();
         navigate('admin-dashboard');
       } else {
-        setError(result.error || 'Authentication failed. (Hint: try "memtiva2024")');
+        setError(result.error || 'Authentication failed. (Hint: try "admin2026")');
         setLoading(false);
       }
     } catch {
@@ -91,8 +91,16 @@ export default function AdminLogin({ navigate, onLogin }: Props) {
             </div>
           </div>
 
-          <div className="text-xs text-[#63B8C6]/70">
-            Memtiva Research Platform · Academic use only
+          <div className="space-y-1.5">
+            <div className="text-xs text-[#63B8C6]/70">
+              Memtiva Research Platform · Academic use only
+            </div>
+            <div className="text-[11px] text-[#9BB5C4]/80 flex items-center gap-1.5 font-['Plus_Jakarta_Sans',sans-serif]">
+              <span>Designed &amp; Developed with Care</span>
+              <span role="img" aria-label="brain">🧠</span>
+              <span>by</span>
+              <span className="text-white font-semibold">Nipu Basher</span>
+            </div>
           </div>
         </div>
       </div>
@@ -180,8 +188,15 @@ export default function AdminLogin({ navigate, onLogin }: Props) {
               ← Back to participant site
             </button>
             <span className="bg-[#D5E8EF] dark:bg-[#192831] border border-[#C5DCE4] dark:border-[#2D4654] rounded px-2 py-1 font-['JetBrains_Mono',monospace] text-[#263B46] dark:text-[#EAF4F8]">
-              Demo: memtiva2024
+              Demo: admin2026
             </span>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-[#C5DCE4]/50 dark:border-[#2D4654]/50 text-center text-[11px] text-[#526E7B] dark:text-[#9BB5C4] flex items-center justify-center gap-1.5 font-['Plus_Jakarta_Sans',sans-serif]">
+            <span>Designed &amp; Developed with Care</span>
+            <span role="img" aria-label="brain">🧠</span>
+            <span>by</span>
+            <span className="font-semibold text-[#263B46] dark:text-[#EAF4F8]">Nipu Basher</span>
           </div>
         </div>
       </div>

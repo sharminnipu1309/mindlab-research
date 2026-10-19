@@ -932,11 +932,17 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
         )}
 
         {/* ─── CONFIDENTIALITY / PROTOCOL FOOTER NOTE ──────────────────── */}
-        <div className="flex items-start gap-3 text-xs text-[#526E7B] dark:text-[#9BB5C4] px-2 py-4">
-          <Lock size={14} className="mt-0.5 flex-shrink-0 text-[#4D91AD] dark:text-[#63B8C6]" />
-          <span>
-            Challenges are configured for this academic research session. Performance metrics are recorded for empirical study purposes and protected under university research ethics standards.
-          </span>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#526E7B] dark:text-[#9BB5C4] px-2 py-4 border-t border-[#C5DCE4]/60 dark:border-[#2D4654]/60 mt-4">
+          <div className="flex items-start gap-2.5">
+            <Lock size={14} className="mt-0.5 flex-shrink-0 text-[#4D91AD] dark:text-[#63B8C6]" />
+            <span>
+              Challenges are configured for this academic research session. Performance metrics are recorded for empirical study purposes and protected under university research ethics standards.
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 flex-shrink-0 text-[11px] text-[#526E7B] dark:text-[#9BB5C4] font-['Plus_Jakarta_Sans',sans-serif]">
+            <span>Designed &amp; Developed with Care 🧠 by</span>
+            <span className="font-semibold text-[#183B4A] dark:text-[#EAF4F8]">Nipu Basher</span>
+          </div>
         </div>
       </div>
 
