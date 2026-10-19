@@ -380,10 +380,9 @@ export default function LandingPage({ navigate, onResume }: Props) {
         {/* Developer Credit & Copyright */}
         <div className="max-w-7xl mx-auto mt-6 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#9BB5C4]">
           <div className="flex items-center gap-1.5 text-center sm:text-left font-['Plus_Jakarta_Sans',sans-serif]">
-            <span>Designed &amp; Developed with Care</span>
-            <span role="img" aria-label="brain" className="text-sm select-none">🧠</span>
-            <span>by</span>
+            <span>Designed &amp; Developed with Care by</span>
             <span className="font-semibold text-white tracking-wide">Nipu Basher</span>
+            <span role="img" aria-label="blue heart" className="text-sm select-none">💙</span>
           </div>
           <span className="text-[11px] text-[#9BB5C4]/70">
             © {new Date().getFullYear()} Memtiva Research Platform. All rights reserved.

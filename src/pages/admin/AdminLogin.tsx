@@ -96,10 +96,9 @@ export default function AdminLogin({ navigate, onLogin }: Props) {
               Memtiva Research Platform · Academic use only
             </div>
             <div className="text-[11px] text-[#9BB5C4]/80 flex items-center gap-1.5 font-['Plus_Jakarta_Sans',sans-serif]">
-              <span>Designed &amp; Developed with Care</span>
-              <span role="img" aria-label="brain">🧠</span>
-              <span>by</span>
+              <span>Designed &amp; Developed with Care by</span>
               <span className="text-white font-semibold">Nipu Basher</span>
+              <span role="img" aria-label="blue heart">💙</span>
             </div>
           </div>
         </div>
@@ -193,10 +192,9 @@ export default function AdminLogin({ navigate, onLogin }: Props) {
           </div>
 
           <div className="mt-4 pt-3 border-t border-[#C5DCE4]/50 dark:border-[#2D4654]/50 text-center text-[11px] text-[#526E7B] dark:text-[#9BB5C4] flex items-center justify-center gap-1.5 font-['Plus_Jakarta_Sans',sans-serif]">
-            <span>Designed &amp; Developed with Care</span>
-            <span role="img" aria-label="brain">🧠</span>
-            <span>by</span>
+            <span>Designed &amp; Developed with Care by</span>
             <span className="font-semibold text-[#263B46] dark:text-[#EAF4F8]">Nipu Basher</span>
+            <span role="img" aria-label="blue heart">💙</span>
           </div>
         </div>
       </div>

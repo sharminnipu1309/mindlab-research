@@ -16,17 +16,17 @@ console.log('=== Verifying Admin Password & Developer Credit (Nipu Basher) ===\n
 // 1. Verify Code Text in UI Files
 console.log('1. Checking Developer Credit across UI components:');
 const landing = fs.readFileSync('src/pages/LandingPage.tsx', 'utf-8');
-assert(landing.includes('Designed &amp; Developed with Care') && landing.includes('Nipu Basher'), 'LandingPage footer contains "Designed & Developed with Care 🧠 by Nipu Basher"');
+assert(!landing.includes('🧠') && landing.includes('💙') && landing.includes('Nipu Basher'), 'LandingPage footer contains "Designed & Developed with Care by Nipu Basher 💙"');
 
 const adminLogin = fs.readFileSync('src/pages/admin/AdminLogin.tsx', 'utf-8');
 assert(adminLogin.includes('Demo: admin2026'), 'AdminLogin has Demo: admin2026');
-assert(adminLogin.includes('Designed &amp; Developed with Care') && adminLogin.includes('Nipu Basher'), 'AdminLogin contains "Designed & Developed with Care 🧠 by Nipu Basher"');
+assert(!adminLogin.includes('🧠') && adminLogin.includes('💙') && adminLogin.includes('Nipu Basher'), 'AdminLogin contains "Designed & Developed with Care by Nipu Basher 💙"');
 
 const adminLayout = fs.readFileSync('src/components/AdminLayout.tsx', 'utf-8');
-assert(adminLayout.includes('Designed &amp; Developed with Care') && adminLayout.includes('Nipu Basher'), 'AdminLayout sidebar contains "Designed & Developed with Care 🧠 by Nipu Basher"');
+assert(!adminLayout.includes('🧠') && adminLayout.includes('💙') && adminLayout.includes('Nipu Basher'), 'AdminLayout sidebar contains "Designed & Developed with Care by Nipu Basher 💙"');
 
 const dashboard = fs.readFileSync('src/pages/ParticipantDashboard.tsx', 'utf-8');
-assert(dashboard.includes('Designed &amp; Developed with Care') && dashboard.includes('Nipu Basher'), 'ParticipantDashboard contains "Designed & Developed with Care 🧠 by Nipu Basher"');
+assert(!dashboard.includes('🧠') && dashboard.includes('💙') && dashboard.includes('Nipu Basher'), 'ParticipantDashboard contains "Designed & Developed with Care by Nipu Basher 💙"');
 
 // 2. Test Supabase Auth with admin2026
 console.log('\n2. Testing Supabase Auth with password "admin2026":');

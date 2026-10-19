@@ -179,8 +179,9 @@ export default function AdminLayout({ currentPage, navigate, onLogout, children,
                 <LogOut size={15} />
               </button>
               <div className="w-full mt-2 pt-2 border-t border-[#C5DCE4]/50 dark:border-[#2D4654]/50 text-[10px] text-[#526E7B] dark:text-[#9BB5C4] text-center font-['Plus_Jakarta_Sans',sans-serif]">
-                <span>Designed &amp; Developed with Care 🧠 by</span>
+                <span>Designed &amp; Developed with Care by</span>
                 <span className="font-semibold text-[#263B46] dark:text-[#EAF4F8] ml-1">Nipu Basher</span>
+                <span className="ml-1" role="img" aria-label="blue heart">💙</span>
               </div>
             </div>
           ) : (

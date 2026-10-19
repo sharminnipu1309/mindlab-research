@@ -940,8 +940,9 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             </span>
           </div>
           <div className="flex items-center gap-1.5 flex-shrink-0 text-[11px] text-[#526E7B] dark:text-[#9BB5C4] font-['Plus_Jakarta_Sans',sans-serif]">
-            <span>Designed &amp; Developed with Care 🧠 by</span>
+            <span>Designed &amp; Developed with Care by</span>
             <span className="font-semibold text-[#183B4A] dark:text-[#EAF4F8]">Nipu Basher</span>
+            <span role="img" aria-label="blue heart">💙</span>
           </div>
         </div>
       </div>
