@@ -266,37 +266,41 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                         roomPage: stage.roomPage,
                         recordedTrials: stage.progressCount,
                       });
-                      // navigate(stage.roomPage);
+                    } else {
+                      navigate(stage.roomPage as Page);
                     }
                   }}
                   onKeyDown={e => {
-                    if (isInProgress && (e.key === 'Enter' || e.key === ' ')) {
+                    if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
-                      setInterruptedModalTask({
-                        id: stage.id,
-                        title: stage.title,
-                        roomPage: stage.roomPage,
-                        recordedTrials: stage.progressCount,
-                      });
-                      // navigate(stage.roomPage);
+                      if (isInProgress) {
+                        setInterruptedModalTask({
+                          id: stage.id,
+                          title: stage.title,
+                          roomPage: stage.roomPage,
+                          recordedTrials: stage.progressCount,
+                        });
+                      } else {
+                        navigate(stage.roomPage as Page);
+                      }
                     }
                   }}
-                  role={isInProgress ? 'button' : undefined}
-                  tabIndex={isInProgress ? 0 : undefined}
+                  role="button"
+                  tabIndex={0}
                   aria-label={
                     isInProgress
                       ? `Resume ${stage.title} challenge`
                       : isCompleted
-                      ? `${stage.title} completed`
-                      : `${stage.title} (${stage.label})`
+                      ? `Open completed ${stage.title}`
+                      : `Open ${stage.title} (${stage.label})`
                   }
-                  title={isInProgress ? `Click to resume ${stage.title}` : undefined}
-                  className={`p-3.5 sm:p-4 rounded-2xl border transition-all duration-200 flex items-center gap-2.5 sm:gap-3.5 select-none ${
+                  title={`Click to open ${stage.title}`}
+                  className={`p-3.5 sm:p-4 rounded-2xl border transition-all duration-200 flex items-center gap-2.5 sm:gap-3.5 select-none cursor-pointer hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] ${
                     isCompleted
-                      ? 'border-[#63B8C6]/50 bg-[#EAF4F8] shadow-xs cursor-default'
+                      ? 'border-[#63B8C6]/50 bg-[#EAF4F8] hover:border-[#63B8C6]'
                       : isInProgress
-                      ? 'border-[#FDE68A] bg-[#FEFDF2] shadow-xs cursor-pointer hover:border-[#D97706] hover:bg-[#FEF3C7]/40 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] ring-2 ring-[#D97706]/15'
-                      : 'border-[#C5DCE4] bg-[#F8FCFD] hover:border-[#4D91AD]/60'
+                      ? 'border-[#FDE68A] bg-[#FEFDF2] hover:border-[#D97706] hover:bg-[#FEF3C7]/40 ring-2 ring-[#D97706]/15'
+                      : 'border-[#C5DCE4] bg-[#F8FCFD] hover:border-[#4D91AD] hover:bg-[#EAF4F8]/70'
                   }`}
                 >
                   <div
