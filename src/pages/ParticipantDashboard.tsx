@@ -18,6 +18,7 @@ import {
   Info,
   AlertTriangle,
   Home,
+  X,
 } from 'lucide-react';
 import {
   refreshParticipantSessionStatus,
@@ -60,6 +61,7 @@ function formatRemainingShort(seconds: number): string {
 export default function ParticipantDashboard({ navigate, participant }: Props) {
   const [currentParticipant, setCurrentParticipant] = useState<ParticipantSession>(participant);
   const [interruptedModalTask, setInterruptedModalTask] = useState<InterruptedModalData | null>(null);
+  const [popupRoomId, setPopupRoomId] = useState<string | null>(null);
 
   // Sync latest session status and trial counts directly from Supabase on mount
   useEffect(() => {
@@ -259,42 +261,18 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                 <div
                   key={stage.id}
                   onClick={() => {
-                    if (isInProgress) {
-                      setInterruptedModalTask({
-                        id: stage.id,
-                        title: stage.title,
-                        roomPage: stage.roomPage,
-                        recordedTrials: stage.progressCount,
-                      });
-                    } else {
-                      navigate(stage.roomPage as Page);
-                    }
+                    setPopupRoomId(stage.id);
                   }}
                   onKeyDown={e => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
-                      if (isInProgress) {
-                        setInterruptedModalTask({
-                          id: stage.id,
-                          title: stage.title,
-                          roomPage: stage.roomPage,
-                          recordedTrials: stage.progressCount,
-                        });
-                      } else {
-                        navigate(stage.roomPage as Page);
-                      }
+                      setPopupRoomId(stage.id);
                     }
                   }}
                   role="button"
                   tabIndex={0}
-                  aria-label={
-                    isInProgress
-                      ? `Resume ${stage.title} challenge`
-                      : isCompleted
-                      ? `Open completed ${stage.title}`
-                      : `Open ${stage.title} (${stage.label})`
-                  }
-                  title={`Click to open ${stage.title}`}
+                  aria-label={`View details and enter ${stage.title}`}
+                  title={`Click to view ${stage.title} room details`}
                   className={`p-3.5 sm:p-4 rounded-2xl border transition-all duration-200 flex items-center gap-2.5 sm:gap-3.5 select-none cursor-pointer hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] ${
                     isCompleted
                       ? 'border-[#63B8C6]/50 bg-[#EAF4F8] hover:border-[#63B8C6]'
@@ -1024,6 +1002,226 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
           </div>
         </div>
       )}
+
+      {/* ─── ROOM CARD POPUP MODAL ────────────────────────────────────── */}
+      {popupRoomId && (() => {
+        const stage = challengeStages.find(s => s.id === popupRoomId);
+        if (!stage) return null;
+
+        const roomCardData: Record<string, {
+          roomNumber: string;
+          category: string;
+          title: string;
+          subtitle: string;
+          description: string;
+          chips: Array<{ icon: React.ReactNode; text: string }>;
+          visual: React.ReactNode;
+        }> = {
+          hanoi: {
+            roomNumber: 'Room 01',
+            category: 'Strategy Challenge',
+            title: 'Tower of Hanoi',
+            subtitle: 'Planning & problem-solving',
+            description: 'Solve 6 disc puzzles. Each one harder than the last. Rules need to be followed exactly.',
+            chips: [
+              { icon: <Layers size={14} className="text-[#245D72]" />, text: '6 puzzles' },
+              { icon: <Clock size={14} className="text-[#245D72]" />, text: '~12 min' },
+            ],
+            visual: <HanoiVisual size="md" variant="card" />,
+          },
+          corsi: {
+            roomNumber: 'Room 02',
+            category: 'Memory Challenge',
+            title: 'Backward Corsi Block',
+            subtitle: 'Spatial working memory',
+            description: 'Watch the squares light up on a 3×3 grid. Then tap them back in the opposite order.',
+            chips: [
+              { icon: <Grid3X3 size={14} className="text-[#245D72]" />, text: '8 levels' },
+              { icon: <Clock size={14} className="text-[#245D72]" />, text: '~8–10 min' },
+            ],
+            visual: <CorsiVisual size="md" variant="card" />,
+          },
+          stroop: {
+            roomNumber: 'Room 03',
+            category: 'Attention Challenge',
+            title: 'Stroop Task',
+            subtitle: 'Selective attention & control',
+            description: 'Click the button that matches the COLOR of the displayed word. Ignore the word\'s meaning, focus only on the display color.',
+            chips: [
+              { icon: <Zap size={14} className="text-[#245D72]" />, text: '128 trials' },
+              { icon: <Clock size={14} className="text-[#245D72]" />, text: '~7 min' },
+            ],
+            visual: <StroopVisual size="md" variant="card" />,
+          },
+          'task-switching': {
+            roomNumber: 'Room 04',
+            category: 'Flexibility Challenge',
+            title: 'Task Switching',
+            subtitle: 'Cognitive flexibility & set-shifting',
+            description: 'Follow Rule 1 (Top: Number) or Rule 2 (Bottom: Letter) depending on where the character appears.',
+            chips: [
+              { icon: <Repeat size={14} className="text-[#245D72]" />, text: '128 trials' },
+              { icon: <Clock size={14} className="text-[#245D72]" />, text: '~8–10 min' },
+            ],
+            visual: <TaskSwitchingVisual size="md" variant="card" />,
+          },
+        };
+
+        const info = roomCardData[stage.id] || {
+          roomNumber: `Room 0${challengeStages.findIndex(s => s.id === stage.id) + 1}`,
+          category: stage.label,
+          title: stage.title,
+          subtitle: 'Cognitive Research Task',
+          description: 'Complete the cognitive evaluation according to standard instructions.',
+          chips: [{ icon: <Clock size={14} className="text-[#245D72]" />, text: '~10 min' }],
+          visual: <HanoiVisual size="md" variant="card" />,
+        };
+
+        const isCompleted = stage.status === 'completed';
+        const isInProgress = stage.status === 'in_progress';
+
+        return (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#111C23]/80 backdrop-blur-sm animate-fade-in"
+            onClick={() => setPopupRoomId(null)}
+          >
+            <div
+              className="bg-white dark:bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-[#C5DCE4] overflow-hidden animate-slide-up text-[#183B4A] relative"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setPopupRoomId(null)}
+                className="absolute top-3.5 right-3.5 z-30 p-2 rounded-full bg-white/80 hover:bg-white text-[#183B4A] shadow-md transition-all cursor-pointer hover:scale-105 active:scale-95"
+                aria-label="Close popup"
+              >
+                <X size={18} strokeWidth={2.5} />
+              </button>
+
+              <div className="flex flex-col sm:flex-row">
+                {/* Left Visual Panel - Dark Vibrant Gradient matching the room card */}
+                <div className="sm:w-[42%] bg-gradient-to-br from-[#205266] via-[#2E6B82] to-[#458BA9] p-5 sm:p-6 relative flex flex-col items-center justify-between min-h-[190px] sm:min-h-[290px] overflow-hidden shadow-inner">
+                  <div className="w-full flex items-center justify-between relative z-10">
+                    <span className="text-xs font-black text-white uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif] drop-shadow-xs">
+                      {info.roomNumber}
+                    </span>
+                    {isCompleted ? (
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white text-[#0D9488] border border-white/60 font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1 shadow-sm">
+                        <Check size={11} strokeWidth={3} /> Completed
+                      </span>
+                    ) : isInProgress ? (
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#FEF3C7] text-[#D97706] border border-[#FDE68A] font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1.5 shadow-sm">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] animate-pulse" /> In Progress
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white/95 text-[#183B4A] border border-white/60 font-['Plus_Jakarta_Sans',sans-serif] shadow-sm">
+                        Ready to Start
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Visual Circle */}
+                  <div className="my-auto relative z-10 w-22 h-22 sm:w-24 sm:h-24 rounded-full bg-white shadow-lg border-2 border-white ring-2 ring-white/30 flex items-center justify-center p-2.5">
+                    {info.visual}
+                  </div>
+
+                  {/* Bottom Pill Badge */}
+                  <div className="relative z-10 px-3 py-1 rounded-full bg-white/95 border border-white/60 text-[#183B4A] text-[10px] font-bold uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif] shadow-sm">
+                    {info.category}
+                  </div>
+                </div>
+
+                {/* Right Details Panel */}
+                <div className="sm:w-[58%] p-5 sm:p-7 flex flex-col justify-between bg-white text-[#183B4A]">
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[11px] sm:text-xs font-extrabold text-[#245D72] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+                        {info.category}
+                      </span>
+                      {isInProgress && (
+                        <span className="text-[11px] font-bold text-[#D97706] bg-[#FEF3C7] border border-[#FDE68A] px-2 py-0.5 rounded-md">
+                          {stage.progressCount} recorded
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="text-xl sm:text-2xl font-extrabold text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
+                      {info.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[#385563] font-semibold leading-relaxed mb-2">
+                      {info.subtitle}
+                    </p>
+                    <p className="text-xs text-[#526E7B] leading-relaxed mb-4">
+                      {info.description}
+                    </p>
+                  </div>
+
+                  <div>
+                    {/* Divider and stats chips */}
+                    <div className="border-t border-[#C5DCE4] pt-3 mb-4 sm:mb-5 flex items-center gap-4 text-xs text-[#526E7B] font-medium font-['Plus_Jakarta_Sans',sans-serif]">
+                      {info.chips.map((chip, i) => (
+                        <div key={i} className="flex items-center gap-1.5 text-[#183B4A] font-bold">
+                          {chip.icon}
+                          <span>{chip.text}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="flex flex-col gap-2.5">
+                      {isCompleted ? (
+                        <button
+                          disabled
+                          className="w-full py-3 px-5 rounded-xl font-bold text-xs font-['Plus_Jakarta_Sans',sans-serif] bg-[#EAF4F8] text-[#526E7B] border border-[#C5DCE4] cursor-not-allowed flex items-center justify-center gap-2 opacity-90 shadow-none"
+                        >
+                          <CheckCircle size={15} className="text-[#245D72]" />
+                          Challenge Completed
+                        </button>
+                      ) : isInProgress ? (
+                        <button
+                          onClick={() => {
+                            const curStage = stage;
+                            setPopupRoomId(null);
+                            setInterruptedModalTask({
+                              id: curStage.id,
+                              title: curStage.title,
+                              roomPage: curStage.roomPage,
+                              recordedTrials: curStage.progressCount,
+                            });
+                          }}
+                          className="w-full py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl font-bold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-[#B47836] hover:bg-[#9B642A] text-white flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all cursor-pointer"
+                        >
+                          <RotateCcw size={15} />
+                          Continue Challenge
+                          <ArrowRight size={15} />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            const page = stage.roomPage;
+                            setPopupRoomId(null);
+                            navigate(page);
+                          }}
+                          className="w-full py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl font-bold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-gradient-to-r from-[#4D91AD] to-[#63B8C6] hover:brightness-105 text-white flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all cursor-pointer"
+                        >
+                          Enter challenge
+                          <ArrowRight size={16} />
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => setPopupRoomId(null)}
+                        className="w-full py-2 px-4 rounded-xl font-semibold text-xs text-[#526E7B] hover:text-[#183B4A] hover:bg-[#EAF4F8] transition-all cursor-pointer text-center"
+                      >
+                        Cancel & choose another
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
     </div>
   );
