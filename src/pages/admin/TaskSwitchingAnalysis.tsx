@@ -196,7 +196,7 @@ export default function TaskSwitchingAnalysis({ navigate, onLogout, currentPage 
     const pShiftCost = (inconsistentMean !== null && consistentMean !== null) ? inconsistentMean - consistentMean : null;
 
     const acc = (pExpTrials.filter(t => t.isCorrect).length / pExpTrials.length) * 100;
-    const isFull = pExpTrials.length >= 64;
+    const isFull = pExpTrials.length >= 128 || (pExpTrials.length >= 64 && Boolean(participants.find(p => p.id === pid)?.taskSwitchingDone));
 
     return {
       id: pid,
@@ -212,7 +212,7 @@ export default function TaskSwitchingAnalysis({ navigate, onLogout, currentPage 
       shiftCost: pShiftCost,
       totalExpTrials: pExpTrials.length,
       totalPracticeTrials: pPracticeTrials.length,
-      status: isFull ? 'Complete' : `Incomplete (${pExpTrials.length}/64)`,
+      status: isFull ? 'Complete' : `Incomplete (${pExpTrials.length}/128)`,
     };
   });
 

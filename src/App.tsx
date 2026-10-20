@@ -66,7 +66,7 @@ const VALID_PAGES: Page[] = [
 const CURRENT_PAGE_STORAGE_KEY = 'mindlab_current_page';
 
 function getInitialPage(): Page {
-  // 1. Check URL hash (e.g. #participant-dashboard)
+  // 1. Check URL hash (e.g. #admin-dashboard, #participant-dashboard, #stroop-room)
   if (typeof window !== 'undefined' && window.location.hash) {
     const hash = window.location.hash.replace(/^#/, '') as Page;
     if (VALID_PAGES.includes(hash)) {
@@ -74,22 +74,7 @@ function getInitialPage(): Page {
     }
   }
 
-  // 2. Check saved page from sessionStorage or localStorage
-  try {
-    const saved = (sessionStorage.getItem(CURRENT_PAGE_STORAGE_KEY) || localStorage.getItem(CURRENT_PAGE_STORAGE_KEY)) as Page;
-    if (saved && VALID_PAGES.includes(saved)) {
-      return saved;
-    }
-  } catch {}
-
-  // 3. Fallback: if active participant session is stored, return dashboard
-  try {
-    const stored = getStoredSessionContext();
-    if (stored?.participantData) {
-      return 'participant-dashboard';
-    }
-  } catch {}
-
+  // Root URL / no explicit hash must always open the landing page
   return 'landing';
 }
 
@@ -107,20 +92,26 @@ export default function App() {
       const h = window.location.hash.replace(/^#/, '') as Page;
       if (h && VALID_PAGES.includes(h)) {
         setPage(h);
+      } else if (!h) {
+        setPage('landing');
       }
     };
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  // Synchronize hash with initial page on mount if not already present
+  // Synchronize hash with current page
   useEffect(() => {
-    if (page && typeof window !== 'undefined' && window.location.hash !== '#' + page) {
-      try {
-        window.history.replaceState(null, '', '#' + page);
-        sessionStorage.setItem(CURRENT_PAGE_STORAGE_KEY, page);
-        localStorage.setItem(CURRENT_PAGE_STORAGE_KEY, page);
-      } catch {}
+    if (page && typeof window !== 'undefined') {
+      const targetHash = page === 'landing' ? '' : '#' + page;
+      const currentHash = window.location.hash;
+      if (currentHash !== targetHash && !(page === 'landing' && (currentHash === '' || currentHash === '#'))) {
+        try {
+          window.history.replaceState(null, '', targetHash || window.location.pathname);
+          sessionStorage.setItem(CURRENT_PAGE_STORAGE_KEY, page);
+          localStorage.setItem(CURRENT_PAGE_STORAGE_KEY, page);
+        } catch {}
+      }
     }
   }, [page]);
 
@@ -143,8 +134,11 @@ export default function App() {
     try {
       sessionStorage.setItem(CURRENT_PAGE_STORAGE_KEY, p);
       localStorage.setItem(CURRENT_PAGE_STORAGE_KEY, p);
-      if (typeof window !== 'undefined' && window.location.hash !== '#' + p) {
-        window.history.replaceState(null, '', '#' + p);
+      if (typeof window !== 'undefined') {
+        const targetHash = p === 'landing' ? '' : '#' + p;
+        if (window.location.hash !== targetHash) {
+          window.history.pushState(null, '', targetHash || window.location.pathname);
+        }
       }
     } catch {}
     window.scrollTo({ top: 0, behavior: 'smooth' });

@@ -323,14 +323,16 @@ export default function ParticipantManagement({ navigate, onLogout, currentPage 
                     let tsDetail: string;
                     let tsStatusLabel = tsDone ? 'Done' : 'Not Done';
                     let tsStatusColor = tsDone ? 'text-[#4A9B7F]' : 'text-[#9597AB]';
-                    if (tsExp >= 64) {
-                      tsDetail = '64/64 experimental trials completed';
+                    if (tsExp >= 128) {
+                      tsDetail = '128/128 experimental trials completed';
+                    } else if (tsExp >= 64 && tsDone) {
+                      tsDetail = '64/64 experimental trials completed (protocol v1)';
                     } else if (tsExp > 0) {
-                      tsDetail = `${tsExp}/64 experimental trials completed`;
+                      tsDetail = `${tsExp}/128 experimental trials completed`;
                       tsStatusLabel = 'Partial';
                       tsStatusColor = 'text-[#D97706]';
                     } else if (tsPractice > 0) {
-                      tsDetail = `Incomplete: ${tsPractice} practice trial(s) only (0/64 experimental trials)`;
+                      tsDetail = `Incomplete: ${tsPractice} practice trial(s) only (0/128 experimental trials)`;
                       tsStatusLabel = 'Practice Only';
                       tsStatusColor = 'text-[#D97706]';
                     } else {

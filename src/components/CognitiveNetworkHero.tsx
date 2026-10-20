@@ -77,16 +77,16 @@ export default function CognitiveNetworkHero({ onSelectTask }: Props) {
       {/* ─── SATELLITE NODE 1: TOWER OF HANOI (Top Left) ────────────────── */}
       <div
         onClick={() => onSelectTask?.('hanoi-room')}
-        className="absolute top-[4%] sm:top-[6%] left-[2%] sm:left-[4%] z-20 flex items-center gap-1.5 sm:gap-3 p-1.5 sm:p-2.5 pr-2.5 sm:pr-4 rounded-xl sm:rounded-2xl bg-white/95 dark:bg-[#203541]/95 border border-[#C5DCE4] dark:border-[#2D4654] hover:border-[#4D91AD] dark:hover:border-[#63B8C6] shadow-md backdrop-blur-md transition-all duration-200 cursor-pointer group hover:-translate-y-0.5"
+        className="absolute top-[3%] sm:top-[6%] left-[1%] sm:left-[4%] z-20 flex items-center gap-1.5 sm:gap-3 p-1.5 sm:p-2.5 pr-2 sm:pr-4 rounded-xl sm:rounded-2xl bg-white/95 dark:bg-[#203541]/95 border border-[#C5DCE4] dark:border-[#2D4654] hover:border-[#4D91AD] dark:hover:border-[#63B8C6] shadow-md backdrop-blur-md transition-all duration-200 cursor-pointer group hover:-translate-y-0.5 max-w-[46%] sm:max-w-none"
       >
-        <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-[#D5E8EF] dark:bg-[#111C23] border border-[#C5DCE4] dark:border-[#2D4654] flex items-center justify-center p-1 sm:p-1.5 flex-shrink-0">
+        <div className="w-7 h-7 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-[#D5E8EF] dark:bg-[#111C23] border border-[#C5DCE4] dark:border-[#2D4654] flex items-center justify-center p-0.5 sm:p-1.5 flex-shrink-0">
           <HanoiVisual size="sm" variant="dark" />
         </div>
-        <div className="text-left">
-          <div className="text-[10px] sm:text-xs font-bold text-[#263B46] dark:text-[#EAF4F8] font-['Plus_Jakarta_Sans',sans-serif] leading-tight">
+        <div className="text-left min-w-0">
+          <div className="text-[10px] sm:text-xs font-bold text-[#263B46] dark:text-[#EAF4F8] font-['Plus_Jakarta_Sans',sans-serif] leading-tight truncate">
             Tower of Hanoi
           </div>
-          <div className="text-[8px] sm:text-[9.5px] font-bold text-[#526E7B] dark:text-[#63B8C6] tracking-wider sm:tracking-widest font-['Plus_Jakarta_Sans',sans-serif] uppercase">
+          <div className="text-[8px] sm:text-[9.5px] font-bold text-[#526E7B] dark:text-[#63B8C6] tracking-wider sm:tracking-widest font-['Plus_Jakarta_Sans',sans-serif] uppercase truncate">
             Planning
           </div>
         </div>
@@ -95,16 +95,16 @@ export default function CognitiveNetworkHero({ onSelectTask }: Props) {
       {/* ─── SATELLITE NODE 2: BACKWARD CORSI (Top Right) ───────────────── */}
       <div
         onClick={() => onSelectTask?.('corsi-room')}
-        className="absolute top-[4%] sm:top-[6%] right-[2%] sm:right-[4%] z-20 flex items-center gap-1.5 sm:gap-3 p-1.5 sm:p-2.5 pr-2.5 sm:pr-4 rounded-xl sm:rounded-2xl bg-white/95 dark:bg-[#203541]/95 border border-[#C5DCE4] dark:border-[#2D4654] hover:border-[#4D91AD] dark:hover:border-[#63B8C6] shadow-md backdrop-blur-md transition-all duration-200 cursor-pointer group hover:-translate-y-0.5"
+        className="absolute top-[3%] sm:top-[6%] right-[1%] sm:right-[4%] z-20 flex items-center gap-1.5 sm:gap-3 p-1.5 sm:p-2.5 pr-2 sm:pr-4 rounded-xl sm:rounded-2xl bg-white/95 dark:bg-[#203541]/95 border border-[#C5DCE4] dark:border-[#2D4654] hover:border-[#4D91AD] dark:hover:border-[#63B8C6] shadow-md backdrop-blur-md transition-all duration-200 cursor-pointer group hover:-translate-y-0.5 max-w-[46%] sm:max-w-none"
       >
-        <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-[#D5E8EF] dark:bg-[#111C23] border border-[#C5DCE4] dark:border-[#2D4654] flex items-center justify-center p-1 sm:p-1.5 flex-shrink-0">
+        <div className="w-7 h-7 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-[#D5E8EF] dark:bg-[#111C23] border border-[#C5DCE4] dark:border-[#2D4654] flex items-center justify-center p-0.5 sm:p-1.5 flex-shrink-0">
           <CorsiVisual size="sm" variant="dark" />
         </div>
-        <div className="text-left">
-          <div className="text-[10px] sm:text-xs font-bold text-[#263B46] dark:text-[#EAF4F8] font-['Plus_Jakarta_Sans',sans-serif] leading-tight">
+        <div className="text-left min-w-0">
+          <div className="text-[10px] sm:text-xs font-bold text-[#263B46] dark:text-[#EAF4F8] font-['Plus_Jakarta_Sans',sans-serif] leading-tight truncate">
             Backward Corsi
           </div>
-          <div className="text-[8px] sm:text-[9.5px] font-bold text-[#526E7B] dark:text-[#63B8C6] tracking-wider sm:tracking-widest font-['Plus_Jakarta_Sans',sans-serif] uppercase">
+          <div className="text-[8px] sm:text-[9.5px] font-bold text-[#526E7B] dark:text-[#63B8C6] tracking-wider sm:tracking-widest font-['Plus_Jakarta_Sans',sans-serif] uppercase truncate">
             Working Memory
           </div>
         </div>
@@ -113,16 +113,16 @@ export default function CognitiveNetworkHero({ onSelectTask }: Props) {
       {/* ─── SATELLITE NODE 3: STROOP TASK (Bottom Left) ────────────────── */}
       <div
         onClick={() => onSelectTask?.('stroop-room')}
-        className="absolute bottom-[4%] sm:bottom-[6%] left-[2%] sm:left-[4%] z-20 flex items-center gap-1.5 sm:gap-3 p-1.5 sm:p-2.5 pr-2.5 sm:pr-4 rounded-xl sm:rounded-2xl bg-white/95 dark:bg-[#203541]/95 border border-[#C5DCE4] dark:border-[#2D4654] hover:border-[#4D91AD] dark:hover:border-[#63B8C6] shadow-md backdrop-blur-md transition-all duration-200 cursor-pointer group hover:-translate-y-0.5"
+        className="absolute bottom-[3%] sm:bottom-[6%] left-[1%] sm:left-[4%] z-20 flex items-center gap-1.5 sm:gap-3 p-1.5 sm:p-2.5 pr-2 sm:pr-4 rounded-xl sm:rounded-2xl bg-white/95 dark:bg-[#203541]/95 border border-[#C5DCE4] dark:border-[#2D4654] hover:border-[#4D91AD] dark:hover:border-[#63B8C6] shadow-md backdrop-blur-md transition-all duration-200 cursor-pointer group hover:-translate-y-0.5 max-w-[46%] sm:max-w-none"
       >
-        <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-[#D5E8EF] dark:bg-[#111C23] border border-[#C5DCE4] dark:border-[#2D4654] flex items-center justify-center p-1 sm:p-1.5 flex-shrink-0">
+        <div className="w-7 h-7 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-[#D5E8EF] dark:bg-[#111C23] border border-[#C5DCE4] dark:border-[#2D4654] flex items-center justify-center p-0.5 sm:p-1.5 flex-shrink-0">
           <StroopVisual size="sm" variant="dark" />
         </div>
-        <div className="text-left">
-          <div className="text-[10px] sm:text-xs font-bold text-[#263B46] dark:text-[#EAF4F8] font-['Plus_Jakarta_Sans',sans-serif] leading-tight">
+        <div className="text-left min-w-0">
+          <div className="text-[10px] sm:text-xs font-bold text-[#263B46] dark:text-[#EAF4F8] font-['Plus_Jakarta_Sans',sans-serif] leading-tight truncate">
             Stroop Task
           </div>
-          <div className="text-[8px] sm:text-[9.5px] font-bold text-[#526E7B] dark:text-[#63B8C6] tracking-wider sm:tracking-widest font-['Plus_Jakarta_Sans',sans-serif] uppercase">
+          <div className="text-[8px] sm:text-[9.5px] font-bold text-[#526E7B] dark:text-[#63B8C6] tracking-wider sm:tracking-widest font-['Plus_Jakarta_Sans',sans-serif] uppercase truncate">
             Attention Control
           </div>
         </div>
@@ -131,16 +131,16 @@ export default function CognitiveNetworkHero({ onSelectTask }: Props) {
       {/* ─── SATELLITE NODE 4: TASK SWITCHING (Bottom Right) ─────────────── */}
       <div
         onClick={() => onSelectTask?.('task-switching-room')}
-        className="absolute bottom-[4%] sm:bottom-[6%] right-[2%] sm:right-[4%] z-20 flex items-center gap-1.5 sm:gap-3 p-1.5 sm:p-2.5 pr-2.5 sm:pr-4 rounded-xl sm:rounded-2xl bg-white/95 dark:bg-[#203541]/95 border border-[#C5DCE4] dark:border-[#2D4654] hover:border-[#4D91AD] dark:hover:border-[#63B8C6] shadow-md backdrop-blur-md transition-all duration-200 cursor-pointer group hover:-translate-y-0.5"
+        className="absolute bottom-[3%] sm:bottom-[6%] right-[1%] sm:right-[4%] z-20 flex items-center gap-1.5 sm:gap-3 p-1.5 sm:p-2.5 pr-2 sm:pr-4 rounded-xl sm:rounded-2xl bg-white/95 dark:bg-[#203541]/95 border border-[#C5DCE4] dark:border-[#2D4654] hover:border-[#4D91AD] dark:hover:border-[#63B8C6] shadow-md backdrop-blur-md transition-all duration-200 cursor-pointer group hover:-translate-y-0.5 max-w-[46%] sm:max-w-none"
       >
-        <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-[#D5E8EF] dark:bg-[#111C23] border border-[#C5DCE4] dark:border-[#2D4654] flex items-center justify-center p-1 sm:p-1.5 flex-shrink-0">
+        <div className="w-7 h-7 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-[#D5E8EF] dark:bg-[#111C23] border border-[#C5DCE4] dark:border-[#2D4654] flex items-center justify-center p-0.5 sm:p-1.5 flex-shrink-0">
           <TaskSwitchingVisual size="sm" variant="dark" />
         </div>
-        <div className="text-left">
-          <div className="text-[10px] sm:text-xs font-bold text-[#263B46] dark:text-[#EAF4F8] font-['Plus_Jakarta_Sans',sans-serif] leading-tight">
+        <div className="text-left min-w-0">
+          <div className="text-[10px] sm:text-xs font-bold text-[#263B46] dark:text-[#EAF4F8] font-['Plus_Jakarta_Sans',sans-serif] leading-tight truncate">
             Task Switching
           </div>
-          <div className="text-[8px] sm:text-[9.5px] font-bold text-[#526E7B] dark:text-[#63B8C6] tracking-wider sm:tracking-widest font-['Plus_Jakarta_Sans',sans-serif] uppercase">
+          <div className="text-[8px] sm:text-[9.5px] font-bold text-[#526E7B] dark:text-[#63B8C6] tracking-wider sm:tracking-widest font-['Plus_Jakarta_Sans',sans-serif] uppercase truncate">
             Flexibility
           </div>
         </div>

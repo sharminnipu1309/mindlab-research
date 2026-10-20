@@ -55,7 +55,7 @@ export default function Logo({
               letterSpacing: '0.12em',
               textTransform: 'uppercase',
             }}
-            className={isWhite ? 'text-white/80' : 'text-[#526E7B] dark:text-[#9BB5C4]'}
+            className={`hidden sm:inline-block ${isWhite ? 'text-white/80' : 'text-[#526E7B] dark:text-[#9BB5C4]'}`}
           >
             Cognitive Research & Analytics
           </span>

@@ -33,8 +33,8 @@ export default function LandingPage({ navigate, onResume }: Props) {
   return (
     <div className="min-h-screen bg-[#EAF4F8] text-[#263B46] dark:bg-[#111C23] dark:text-[#EAF4F8] selection:bg-[#4D91AD] selection:text-white dark:selection:bg-[#63B8C6] dark:selection:text-[#111C23] font-['Inter',sans-serif] transition-colors">
       {/* ─── TOP NAVIGATION BAR ────────────────────────────────────────── */}
-      <nav className="bg-[#EAF4F8]/90 dark:bg-[#111C23]/95 backdrop-blur-md border-b border-[#C5DCE4] dark:border-[#2D4654] sticky top-0 z-50 px-4 sm:px-10 py-3 sm:py-4 transition-all">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+      <nav className="bg-[#EAF4F8]/90 dark:bg-[#111C23]/95 backdrop-blur-md border-b border-[#C5DCE4] dark:border-[#2D4654] sticky top-0 z-50 px-3 sm:px-10 py-2.5 sm:py-4 transition-all w-full overflow-x-hidden">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-3">
           <div className="cursor-pointer shrink-0" onClick={() => navigate('landing')}>
             <Logo size="md" />
           </div>
@@ -67,28 +67,28 @@ export default function LandingPage({ navigate, onResume }: Props) {
             </button>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             <ThemeToggle />
             <button
               onClick={() => navigate('consent')}
-              className="px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-gradient-to-r from-[#4D91AD] to-[#63B8C6] hover:brightness-105 text-white flex items-center gap-1.5 sm:gap-2 shadow-sm hover:shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+              className="px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl font-semibold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] bg-gradient-to-r from-[#4D91AD] to-[#63B8C6] hover:brightness-105 text-white flex items-center gap-1.5 sm:gap-2 shadow-sm hover:shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer whitespace-nowrap shrink-0"
             >
               <span>Begin session</span>
-              <ArrowRight size={14} className="sm:w-[15px] sm:h-[15px]" />
+              <ArrowRight size={14} className="sm:w-[15px] sm:h-[15px] shrink-0" />
             </button>
           </div>
         </div>
       </nav>
 
       {/* ─── HERO SECTION ─────────────────────────────────────────────── */}
-      <section className="relative pt-8 sm:pt-16 pb-14 sm:pb-24 px-4 sm:px-10 overflow-hidden bg-gradient-to-b from-[#EAF4F8] via-[#D5E8EF]/50 to-[#EAF4F8] dark:from-[#111C23] dark:via-[#192831] dark:to-[#111C23]">
+      <section className="relative pt-6 sm:pt-16 pb-12 sm:pb-24 px-3 sm:px-10 overflow-hidden bg-gradient-to-b from-[#EAF4F8] via-[#D5E8EF]/50 to-[#EAF4F8] dark:from-[#111C23] dark:via-[#192831] dark:to-[#111C23] w-full max-w-full">
         {/* Ambient lighting glows */}
         <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-[#4D91AD]/12 dark:bg-[#63B8C6]/10 rounded-full blur-[100px] sm:blur-[120px] pointer-events-none" />
         <div className="absolute bottom-10 right-1/4 w-[280px] sm:w-[450px] h-[280px] sm:h-[450px] bg-[#63B8C6]/15 dark:bg-[#4D91AD]/15 rounded-full blur-[100px] sm:blur-[130px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center relative z-10 w-full max-w-full">
           {/* Left Hero Column */}
-          <div className="lg:col-span-6 animate-fade-in-up">
+          <div className="lg:col-span-6 animate-fade-in-up w-full max-w-full">
             {/* Small uppercase category label with horizontal line accent */}
             <div className="inline-flex items-center gap-2 sm:gap-2.5 text-[#4D91AD] dark:text-[#63B8C6] text-[11px] sm:text-xs font-bold font-['Plus_Jakarta_Sans',sans-serif] uppercase tracking-[0.15em] sm:tracking-[0.2em] mb-4 sm:mb-6">
               <span className="w-6 sm:w-8 h-[2px] bg-[#4D91AD] dark:bg-[#63B8C6] rounded-full" />
@@ -96,7 +96,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
             </div>
 
             {/* Massive Bold Headline */}
-            <h1 className="text-3xl xs:text-4xl sm:text-6xl lg:text-[68px] font-extrabold text-[#263B46] dark:text-[#EAF4F8] leading-[1.08] sm:leading-[1.06] tracking-tight mb-4 sm:mb-6 font-['Plus_Jakarta_Sans',sans-serif]">
+            <h1 className="text-3xl xs:text-4xl sm:text-6xl lg:text-[68px] font-extrabold text-[#263B46] dark:text-[#EAF4F8] leading-[1.1] sm:leading-[1.06] tracking-tight mb-4 sm:mb-6 font-['Plus_Jakarta_Sans',sans-serif] break-words">
               Explore how<br />
               your mind<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4D91AD] via-[#52A6B4] to-[#63B8C6] dark:from-[#63B8C6] dark:via-[#7DD3E1] dark:to-[#EAF4F8]">
@@ -110,7 +110,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-8 sm:mb-10">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-8 sm:mb-10 w-full max-w-full">
               <button
                 onClick={() => navigate('consent')}
                 className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-bold text-sm sm:text-base font-['Plus_Jakarta_Sans',sans-serif] bg-gradient-to-r from-[#4D91AD] to-[#63B8C6] hover:brightness-105 text-white flex items-center justify-center gap-2.5 shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
@@ -153,7 +153,7 @@ export default function LandingPage({ navigate, onResume }: Props) {
           </div>
 
           {/* Right Hero Column: Cognitive Network Visualization */}
-          <div className="lg:col-span-6 flex justify-center animate-fade-in w-full overflow-hidden">
+          <div className="lg:col-span-6 flex justify-center animate-fade-in w-full max-w-full overflow-hidden">
             <CognitiveNetworkHero onSelectTask={() => navigate('consent')} />
           </div>
         </div>

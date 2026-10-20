@@ -641,16 +641,6 @@ export default function TowerOfHanoiRoom({ navigate, participant, sessionId, onC
                 <span className="text-xs font-medium text-[#526E7B]">{diskCount} discs</span>
               </div>
             </div>
-
-            {/* Mobile Exit Option in room header */}
-            <button
-              onClick={() => setShowExit(true)}
-              className="sm:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#DC2626] border border-rose-200 text-xs font-bold transition-all shadow-2xs active:scale-95 cursor-pointer ml-auto"
-              title="Exit puzzle and return to dashboard"
-            >
-              <LogOut size={13} />
-              <span>Exit</span>
-            </button>
           </div>
 
           <div className="hidden sm:flex items-center gap-1.5 sm:gap-2">

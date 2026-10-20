@@ -574,15 +574,6 @@ export default function CorsiRoom({ navigate, participant, sessionId, onComplete
               <div className="text-[10px] font-black text-[#183B4A] dark:text-[#183B4A] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
                 Room 02 — Backward Corsi Block Task
               </div>
-              {/* Mobile Exit Option in room header */}
-              <button
-                onClick={() => setShowExit(true)}
-                className="sm:hidden flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#DC2626] border border-rose-200 text-xs font-bold transition-all shadow-2xs active:scale-95 cursor-pointer ml-auto"
-                title="Exit task and return to dashboard"
-              >
-                <LogOut size={13} />
-                <span>Exit</span>
-              </button>
             </div>
             <div className="flex items-center justify-center sm:justify-start gap-2 sm:gap-3 mt-0.5 flex-wrap">
               {isPracticeMode ? (

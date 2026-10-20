@@ -816,16 +816,6 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                 <span className="hidden sm:inline">Tutorial</span>
               </button>
             )}
-
-            {/* Mobile Exit Option in room header */}
-            <button
-              onClick={() => setShowExit(true)}
-              className="sm:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-[#DC2626] border border-rose-200 text-xs font-bold transition-all shadow-2xs active:scale-95 cursor-pointer ml-auto"
-              title="Exit task and return to dashboard"
-            >
-              <LogOut size={13} />
-              <span>Exit</span>
-            </button>
           </div>
         </div>
       </div>
@@ -1500,17 +1490,6 @@ export default function TaskSwitchingRoom({ navigate, participant, sessionId, on
                   </button>
                 </div>
               )}
-
-              {/* Mobile Exit Option below trial area */}
-              <div className="sm:hidden mt-4 pt-2 flex justify-center w-full">
-                <button
-                  onClick={() => setShowExit(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-[#DC2626] bg-rose-50/90 hover:bg-rose-100 border border-rose-200 transition-all cursor-pointer active:scale-95 shadow-2xs"
-                >
-                  <LogOut size={13} />
-                  <span>Exit Task</span>
-                </button>
-              </div>
             </div>
           </div>
         )}
