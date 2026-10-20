@@ -199,10 +199,10 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="bg-white dark:bg-white border border-[#C5DCE4] shadow-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl flex items-center gap-2">
+            <div className="bg-white dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62] shadow-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
-              <span className="text-xs font-semibold text-[#526E7B]">ID:</span>
-              <span className="text-xs font-bold text-[#183B4A] font-['JetBrains_Mono',monospace]">
+              <span className="text-xs font-semibold text-[#526E7B] dark:text-[#A2C4D6]">ID:</span>
+              <span className="text-xs font-bold text-[#183B4A] dark:text-[#F1F8FB] font-['JetBrains_Mono',monospace]">
                 {currentParticipant.id}
               </span>
             </div>
@@ -210,23 +210,23 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
         </div>
 
         {/* ─── COGNITIVE CHALLENGE PROGRESS TRACKER ────────────────────── */}
-        <div className="bg-white dark:bg-white text-[#183B4A] rounded-3xl border border-[#C5DCE4] p-5 sm:p-7 md:p-8 shadow-[0_2px_16px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] mb-6 sm:mb-10">
+        <div className="bg-white dark:bg-[#1A2B36] text-[#183B4A] dark:text-[#F1F8FB] rounded-3xl border border-[#C5DCE4] dark:border-[#314E62] p-5 sm:p-7 md:p-8 shadow-[0_2px_16px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] mb-6 sm:mb-10 transition-colors">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-6">
             <div>
-              <div className="text-[10px] sm:text-[11px] font-bold text-[#245D72] dark:text-[#245D72] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif] mb-1.5">
+              <div className="text-[10px] sm:text-[11px] font-bold text-[#245D72] dark:text-[#63B8C6] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif] mb-1.5">
                 Cognitive Challenge Progress
               </div>
               <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
-                <span className="text-base sm:text-2xl font-extrabold text-[#183B4A] dark:text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif] tracking-tight">
+                <span className="text-base sm:text-2xl font-extrabold text-[#183B4A] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif] tracking-tight">
                   {completedActivities} of {totalActivities} Challenges Completed
                 </span>
                 <span
                   className={`text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full font-['Plus_Jakarta_Sans',sans-serif] flex items-center gap-1.5 shadow-xs ${
                     allDone
-                      ? 'bg-[#EAF4F8] text-[#2B7F8C] border border-[#63B8C6]'
+                      ? 'bg-[#EAF4F8] dark:bg-[#203444] text-[#2B7F8C] dark:text-[#63B8C6] border border-[#63B8C6]'
                       : completedActivities > 0 || hasInterrupted
-                      ? 'bg-[#FEF3C7] text-[#D97706] border border-[#FDE68A]'
-                      : 'bg-[#EAF4F8] text-[#526E7B] border border-[#C5DCE4]'
+                      ? 'bg-[#FEF3C7] dark:bg-[#2A2318] text-[#D97706] dark:text-[#FCD34D] border border-[#FDE68A] dark:border-[#78350F]'
+                      : 'bg-[#EAF4F8] dark:bg-[#203444] text-[#526E7B] dark:text-[#A2C4D6] border border-[#C5DCE4] dark:border-[#314E62]'
                   }`}
                 >
                   {allDone ? (
@@ -246,7 +246,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
               </div>
             </div>
 
-            <div className="text-xs text-[#526E7B] dark:text-[#526E7B] font-medium flex items-center gap-1.5">
+            <div className="text-xs text-[#526E7B] dark:text-[#A2C4D6] font-medium flex items-center gap-1.5">
               <span>Tasks can be completed in any order</span>
             </div>
           </div>
@@ -275,10 +275,10 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                   title={`Click to view ${stage.title} room details`}
                   className={`p-3.5 sm:p-4 rounded-2xl border transition-all duration-200 flex items-center gap-2.5 sm:gap-3.5 select-none cursor-pointer hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] ${
                     isCompleted
-                      ? 'border-[#63B8C6]/50 bg-[#EAF4F8] hover:border-[#63B8C6]'
+                      ? 'border-[#63B8C6]/50 bg-[#EAF4F8] dark:bg-[#1E3746] hover:border-[#63B8C6]'
                       : isInProgress
-                      ? 'border-[#FDE68A] bg-[#FEFDF2] hover:border-[#D97706] hover:bg-[#FEF3C7]/40 ring-2 ring-[#D97706]/15'
-                      : 'border-[#C5DCE4] bg-[#F8FCFD] hover:border-[#4D91AD] hover:bg-[#EAF4F8]/70'
+                      ? 'border-[#FDE68A] dark:border-[#78350F] bg-[#FEFDF2] dark:bg-[#2A2318] hover:border-[#D97706] hover:bg-[#FEF3C7]/40 ring-2 ring-[#D97706]/15'
+                      : 'border-[#C5DCE4] dark:border-[#314E62] bg-[#F8FCFD] dark:bg-[#16242E] hover:border-[#4D91AD] hover:bg-[#EAF4F8]/70 dark:hover:bg-[#1E323F]'
                   }`}
                 >
                   <div
@@ -287,7 +287,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                         ? 'bg-[#4D91AD] text-white'
                         : isInProgress
                         ? 'bg-[#B47836] text-white'
-                        : 'bg-[#D5E8EF] text-[#526E7B]'
+                        : 'bg-[#D5E8EF] dark:bg-[#253D4D] text-[#526E7B] dark:text-[#A2C4D6]'
                     }`}
                   >
                     {isCompleted ? (
@@ -305,7 +305,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                         {isCompleted ? '✓ Completed' : isInProgress ? 'In Progress' : stage.label}
                       </span>
                     </div>
-                    <div className="text-[11px] sm:text-xs font-bold text-[#183B4A] dark:text-[#183B4A] truncate font-['Plus_Jakarta_Sans',sans-serif]">
+                    <div className="text-[11px] sm:text-xs font-bold text-[#183B4A] dark:text-[#F1F8FB] truncate font-['Plus_Jakarta_Sans',sans-serif]">
                       {stage.title}
                     </div>
                   </div>
@@ -315,7 +315,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
           </div>
 
           {/* Overall Continuous Progress Bar */}
-          <div className="w-full bg-[#E2EDF1] h-2.5 rounded-full overflow-hidden mt-5 sm:mt-6 border border-[#C5DCE4]/60">
+          <div className="w-full bg-[#E2EDF1] dark:bg-[#16242E] h-2.5 rounded-full overflow-hidden mt-5 sm:mt-6 border border-[#C5DCE4]/60 dark:border-[#314E62]/60">
             <div
               className="h-full rounded-full transition-all duration-700 bg-gradient-to-r from-[#4D91AD] to-[#63B8C6] shadow-xs"
               style={{
@@ -355,10 +355,10 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             aria-label={hanoiStatus === 'in_progress' ? 'Resume Tower of Hanoi challenge' : undefined}
             className={`rounded-3xl border overflow-hidden transition-all duration-300 flex flex-col sm:flex-row group ${
               hanoiStatus === 'completed'
-                ? 'border-[#63B8C6]/60 dark:border-[#63B8C6]/50 bg-white dark:bg-white shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]'
+                ? 'border-[#63B8C6]/60 dark:border-[#63B8C6]/50 bg-white dark:bg-[#1A2B36] shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]'
                 : hanoiStatus === 'in_progress'
-                ? 'border-[#D97706] dark:border-[#D97706] bg-white dark:bg-white hover:border-[#B45309] shadow-[0_4px_20px_rgba(38,59,70,0.08)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1 cursor-pointer active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#D97706]'
-                : 'border-[#C5DCE4] dark:border-[#C5DCE4] bg-white dark:bg-white hover:border-[#4D91AD] shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1'
+                ? 'border-[#D97706] dark:border-[#D97706] bg-white dark:bg-[#1A2B36] hover:border-[#B45309] shadow-[0_4px_20px_rgba(38,59,70,0.08)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1 cursor-pointer active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#D97706]'
+                : 'border-[#C5DCE4] dark:border-[#314E62] bg-white dark:bg-[#1A2B36] hover:border-[#4D91AD] shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1'
             }`}
           >
             {/* Left Visual Panel - Dark Vibrant Gradient matching Enter Challenge button */}
@@ -394,40 +394,40 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             </div>
 
             {/* Right Details Panel - Bright White Surface */}
-            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-white text-[#183B4A]">
+            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-[#1A2B36] text-[#183B4A] dark:text-[#F1F8FB] transition-colors">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] sm:text-xs font-extrabold text-[#245D72] dark:text-[#245D72] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-[11px] sm:text-xs font-extrabold text-[#245D72] dark:text-[#63B8C6] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                     Strategy Challenge
                   </span>
                   {hanoiStatus === 'in_progress' && (
-                    <span className="text-[11px] font-bold text-[#D97706] bg-[#FEF3C7] border border-[#FDE68A] px-2 py-0.5 rounded-md">
+                    <span className="text-[11px] font-bold text-[#D97706] bg-[#FEF3C7] dark:bg-[#2A2318] border border-[#FDE68A] dark:border-[#78350F] px-2 py-0.5 rounded-md">
                       {currentParticipant.hanoiProgressCount || 0} recorded
                     </span>
                   )}
                 </div>
-                <h3 className="text-xl sm:text-2xl font-extrabold text-[#183B4A] dark:text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-extrabold text-[#183B4A] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
                   Tower of Hanoi
                 </h3>
-                <p className="text-xs sm:text-sm text-[#385563] dark:text-[#385563] font-semibold leading-relaxed mb-2.5">
+                <p className="text-xs sm:text-sm text-[#385563] dark:text-[#A2C4D6] font-semibold leading-relaxed mb-2.5">
                   Planning & problem-solving
                 </p>
 
                 {/* Subtitle / Description */}
-                <p className="text-xs text-[#526E7B] dark:text-[#526E7B] leading-relaxed mb-4">
+                <p className="text-xs text-[#526E7B] dark:text-[#8AA8B8] leading-relaxed mb-4">
                   Solve 6 disc puzzles. Each one harder than the last. Rules need to be followed exactly.
                 </p>
               </div>
 
               <div>
                 {/* Divider Line */}
-                <div className="border-t border-[#C5DCE4] pt-3 sm:pt-4 mb-4 sm:mb-5 flex items-center gap-4 sm:gap-5 text-xs text-[#526E7B] dark:text-[#526E7B] font-medium font-['Plus_Jakarta_Sans',sans-serif]">
-                  <div className="flex items-center gap-1.5 text-[#183B4A] dark:text-[#183B4A] font-bold">
-                    <Layers size={14} className="text-[#245D72]" />
+                <div className="border-t border-[#C5DCE4] dark:border-[#314E62] pt-3 sm:pt-4 mb-4 sm:mb-5 flex items-center gap-4 sm:gap-5 text-xs text-[#526E7B] dark:text-[#8AA8B8] font-medium font-['Plus_Jakarta_Sans',sans-serif]">
+                  <div className="flex items-center gap-1.5 text-[#183B4A] dark:text-[#F1F8FB] font-bold">
+                    <Layers size={14} className="text-[#245D72] dark:text-[#63B8C6]" />
                     <span>6 puzzles</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Clock size={14} className="text-[#245D72]" />
+                    <Clock size={14} className="text-[#245D72] dark:text-[#63B8C6]" />
                     <span>~12 min</span>
                   </div>
                 </div>
@@ -436,10 +436,10 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                 {hanoiStatus === 'completed' ? (
                   <button
                     disabled
-                    className="w-full py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl font-bold text-xs font-['Plus_Jakarta_Sans',sans-serif] bg-[#EAF4F8] text-[#526E7B] border border-[#C5DCE4] cursor-not-allowed flex items-center justify-center gap-2 opacity-90 shadow-none"
+                    className="w-full py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl font-bold text-xs font-['Plus_Jakarta_Sans',sans-serif] bg-[#EAF4F8] dark:bg-[#203444] text-[#526E7B] dark:text-[#8AA8B8] border border-[#C5DCE4] dark:border-[#314E62] cursor-not-allowed flex items-center justify-center gap-2 opacity-90 shadow-none"
                     title="This challenge was already completed in this session and cannot be repeated."
                   >
-                    <CheckCircle size={15} className="text-[#245D72]" />
+                    <CheckCircle size={15} className="text-[#245D72] dark:text-[#63B8C6]" />
                     Challenge Completed
                   </button>
                 ) : hanoiStatus === 'in_progress' ? (
@@ -499,10 +499,10 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             aria-label={corsiStatus === 'in_progress' ? 'Resume Backward Corsi challenge' : undefined}
             className={`rounded-3xl border overflow-hidden transition-all duration-300 flex flex-col sm:flex-row group ${
               corsiStatus === 'completed'
-                ? 'border-[#63B8C6]/60 dark:border-[#63B8C6]/50 bg-white dark:bg-white shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]'
+                ? 'border-[#63B8C6]/60 dark:border-[#63B8C6]/50 bg-white dark:bg-[#1A2B36] shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]'
                 : corsiStatus === 'in_progress'
-                ? 'border-[#D97706] dark:border-[#D97706] bg-white dark:bg-white hover:border-[#B45309] shadow-[0_4px_20px_rgba(38,59,70,0.08)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1 cursor-pointer active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#D97706]'
-                : 'border-[#C5DCE4] dark:border-[#C5DCE4] bg-white dark:bg-white hover:border-[#4D91AD] shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1'
+                ? 'border-[#D97706] dark:border-[#D97706] bg-white dark:bg-[#1A2B36] hover:border-[#B45309] shadow-[0_4px_20px_rgba(38,59,70,0.08)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1 cursor-pointer active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#D97706]'
+                : 'border-[#C5DCE4] dark:border-[#314E62] bg-white dark:bg-[#1A2B36] hover:border-[#4D91AD] shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1'
             }`}
           >
             {/* Left Visual Panel - Dark Vibrant Gradient matching Enter Challenge button */}
@@ -538,40 +538,40 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             </div>
 
             {/* Right Details Panel - Bright White Surface */}
-            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-white text-[#183B4A]">
+            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-[#1A2B36] text-[#183B4A] dark:text-[#F1F8FB] transition-colors">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] sm:text-xs font-extrabold text-[#245D72] dark:text-[#245D72] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-[11px] sm:text-xs font-extrabold text-[#245D72] dark:text-[#63B8C6] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                     Memory Challenge
                   </span>
                   {corsiStatus === 'in_progress' && (
-                    <span className="text-[11px] font-bold text-[#D97706] bg-[#FEF3C7] border border-[#FDE68A] px-2 py-0.5 rounded-md">
+                    <span className="text-[11px] font-bold text-[#D97706] bg-[#FEF3C7] dark:bg-[#2A2318] border border-[#FDE68A] dark:border-[#78350F] px-2 py-0.5 rounded-md">
                       {currentParticipant.corsiProgressCount || 0} recorded
                     </span>
                   )}
                 </div>
-                <h3 className="text-xl sm:text-2xl font-extrabold text-[#183B4A] dark:text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-extrabold text-[#183B4A] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
                   Backward Corsi Block
                 </h3>
-                <p className="text-xs sm:text-sm text-[#385563] dark:text-[#385563] font-semibold leading-relaxed mb-2.5">
+                <p className="text-xs sm:text-sm text-[#385563] dark:text-[#A2C4D6] font-semibold leading-relaxed mb-2.5">
                   Spatial working memory
                 </p>
 
                 {/* Subtitle / Description */}
-                <p className="text-xs text-[#526E7B] dark:text-[#526E7B] leading-relaxed mb-4">
+                <p className="text-xs text-[#526E7B] dark:text-[#8AA8B8] leading-relaxed mb-4">
                   Watch the squares light up on a 3×3 grid. Then tap them back in the opposite order.
                 </p>
               </div>
 
               <div>
                 {/* Divider Line */}
-                <div className="border-t border-[#C5DCE4] pt-3 sm:pt-4 mb-4 sm:mb-5 flex items-center gap-4 sm:gap-5 text-xs text-[#526E7B] dark:text-[#526E7B] font-medium font-['Plus_Jakarta_Sans',sans-serif]">
-                  <div className="flex items-center gap-1.5 text-[#183B4A] dark:text-[#183B4A] font-bold">
-                    <Grid3X3 size={14} className="text-[#245D72]" />
+                <div className="border-t border-[#C5DCE4] dark:border-[#314E62] pt-3 sm:pt-4 mb-4 sm:mb-5 flex items-center gap-4 sm:gap-5 text-xs text-[#526E7B] dark:text-[#8AA8B8] font-medium font-['Plus_Jakarta_Sans',sans-serif]">
+                  <div className="flex items-center gap-1.5 text-[#183B4A] dark:text-[#F1F8FB] font-bold">
+                    <Grid3X3 size={14} className="text-[#245D72] dark:text-[#63B8C6]" />
                     <span>8 levels</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Clock size={14} className="text-[#245D72]" />
+                    <Clock size={14} className="text-[#245D72] dark:text-[#63B8C6]" />
                     <span>~8–10 min</span>
                   </div>
                 </div>
@@ -580,10 +580,10 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                 {corsiStatus === 'completed' ? (
                   <button
                     disabled
-                    className="w-full py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl font-bold text-xs font-['Plus_Jakarta_Sans',sans-serif] bg-[#EAF4F8] text-[#526E7B] border border-[#C5DCE4] cursor-not-allowed flex items-center justify-center gap-2 opacity-90 shadow-none"
+                    className="w-full py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl font-bold text-xs font-['Plus_Jakarta_Sans',sans-serif] bg-[#EAF4F8] dark:bg-[#203444] text-[#526E7B] dark:text-[#8AA8B8] border border-[#C5DCE4] dark:border-[#314E62] cursor-not-allowed flex items-center justify-center gap-2 opacity-90 shadow-none"
                     title="This challenge was already completed in this session and cannot be repeated."
                   >
-                    <CheckCircle size={15} className="text-[#245D72]" />
+                    <CheckCircle size={15} className="text-[#245D72] dark:text-[#63B8C6]" />
                     Challenge Completed
                   </button>
                 ) : corsiStatus === 'in_progress' ? (
@@ -643,10 +643,10 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             aria-label={stroopStatus === 'in_progress' ? 'Resume Stroop Task challenge' : undefined}
             className={`rounded-3xl border overflow-hidden transition-all duration-300 flex flex-col sm:flex-row group ${
               stroopStatus === 'completed'
-                ? 'border-[#63B8C6]/60 dark:border-[#63B8C6]/50 bg-white dark:bg-white shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]'
+                ? 'border-[#63B8C6]/60 dark:border-[#63B8C6]/50 bg-white dark:bg-[#1A2B36] shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]'
                 : stroopStatus === 'in_progress'
-                ? 'border-[#D97706] dark:border-[#D97706] bg-white dark:bg-white hover:border-[#B45309] shadow-[0_4px_20px_rgba(38,59,70,0.08)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1 cursor-pointer active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#D97706]'
-                : 'border-[#C5DCE4] dark:border-[#C5DCE4] bg-white dark:bg-white hover:border-[#4D91AD] shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1'
+                ? 'border-[#D97706] dark:border-[#D97706] bg-white dark:bg-[#1A2B36] hover:border-[#B45309] shadow-[0_4px_20px_rgba(38,59,70,0.08)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1 cursor-pointer active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#D97706]'
+                : 'border-[#C5DCE4] dark:border-[#314E62] bg-white dark:bg-[#1A2B36] hover:border-[#4D91AD] dark:hover:border-[#4D91AD] shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1'
             }`}
           >
             {/* Left Visual Panel - Dark Vibrant Gradient matching Enter Challenge button */}
@@ -682,40 +682,40 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             </div>
 
             {/* Right Details Panel - Bright White Surface */}
-            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-white text-[#183B4A]">
+            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-[#1A2B36] text-[#183B4A] dark:text-[#F1F8FB]">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] sm:text-xs font-extrabold text-[#245D72] dark:text-[#245D72] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-[11px] sm:text-xs font-extrabold text-[#245D72] dark:text-[#63B8C6] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                     Attention Challenge
                   </span>
                   {stroopStatus === 'in_progress' && (
-                    <span className="text-[11px] font-bold text-[#D97706] bg-[#FEF3C7] border border-[#FDE68A] px-2 py-0.5 rounded-md">
+                    <span className="text-[11px] font-bold text-[#D97706] bg-[#FEF3C7] dark:bg-[#2A2318] border border-[#FDE68A] dark:border-[#78350F] px-2 py-0.5 rounded-md">
                       {currentParticipant.stroopProgressCount || 0} recorded
                     </span>
                   )}
                 </div>
-                <h3 className="text-xl sm:text-2xl font-extrabold text-[#183B4A] dark:text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-extrabold text-[#183B4A] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
                   Stroop Task
                 </h3>
-                <p className="text-xs sm:text-sm text-[#385563] dark:text-[#385563] font-semibold leading-relaxed mb-2.5">
+                <p className="text-xs sm:text-sm text-[#385563] dark:text-[#A2C4D6] font-semibold leading-relaxed mb-2.5">
                   Selective attention & control
                 </p>
 
                 {/* Subtitle / Description */}
-                <p className="text-xs text-[#526E7B] dark:text-[#526E7B] leading-relaxed mb-4">
+                <p className="text-xs text-[#526E7B] dark:text-[#8AA8B8] leading-relaxed mb-4">
                   Click the button that matches the COLOR of the displayed word. Ignore the word's meaning, focus only on the display color.
                 </p>
               </div>
 
               <div>
                 {/* Divider Line */}
-                <div className="border-t border-[#C5DCE4] pt-3 sm:pt-4 mb-4 sm:mb-5 flex items-center gap-4 sm:gap-5 text-xs text-[#526E7B] dark:text-[#526E7B] font-medium font-['Plus_Jakarta_Sans',sans-serif]">
-                  <div className="flex items-center gap-1.5 text-[#183B4A] dark:text-[#183B4A] font-bold">
-                    <Zap size={14} className="text-[#245D72]" />
+                <div className="border-t border-[#C5DCE4] dark:border-[#314E62] pt-3 sm:pt-4 mb-4 sm:mb-5 flex items-center gap-4 sm:gap-5 text-xs text-[#526E7B] dark:text-[#8AA8B8] font-medium font-['Plus_Jakarta_Sans',sans-serif]">
+                  <div className="flex items-center gap-1.5 text-[#183B4A] dark:text-[#F1F8FB] font-bold">
+                    <Zap size={14} className="text-[#245D72] dark:text-[#63B8C6]" />
                     <span>128 trials</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Clock size={14} className="text-[#245D72]" />
+                    <Clock size={14} className="text-[#245D72] dark:text-[#63B8C6]" />
                     <span>~7 min</span>
                   </div>
                 </div>
@@ -724,10 +724,10 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                 {stroopStatus === 'completed' ? (
                   <button
                     disabled
-                    className="w-full py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl font-bold text-xs font-['Plus_Jakarta_Sans',sans-serif] bg-[#EAF4F8] text-[#526E7B] border border-[#C5DCE4] cursor-not-allowed flex items-center justify-center gap-2 opacity-90 shadow-none"
+                    className="w-full py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl font-bold text-xs font-['Plus_Jakarta_Sans',sans-serif] bg-[#EAF4F8] dark:bg-[#203444] text-[#526E7B] dark:text-[#8AA8B8] border border-[#C5DCE4] dark:border-[#314E62] cursor-not-allowed flex items-center justify-center gap-2 opacity-90 shadow-none"
                     title="This challenge was already completed in this session and cannot be repeated."
                   >
-                    <CheckCircle size={15} className="text-[#245D72]" />
+                    <CheckCircle size={15} className="text-[#245D72] dark:text-[#63B8C6]" />
                     Challenge Completed
                   </button>
                 ) : stroopStatus === 'in_progress' ? (
@@ -787,10 +787,10 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             aria-label={taskSwitchingStatus === 'in_progress' ? 'Resume Task Switching challenge' : undefined}
             className={`rounded-3xl border overflow-hidden transition-all duration-300 flex flex-col sm:flex-row group ${
               taskSwitchingStatus === 'completed'
-                ? 'border-[#63B8C6]/60 dark:border-[#63B8C6]/50 bg-white dark:bg-white shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]'
+                ? 'border-[#63B8C6]/60 dark:border-[#63B8C6]/50 bg-white dark:bg-[#1A2B36] shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)]'
                 : taskSwitchingStatus === 'in_progress'
-                ? 'border-[#D97706] dark:border-[#D97706] bg-white dark:bg-white hover:border-[#B45309] shadow-[0_4px_20px_rgba(38,59,70,0.08)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1 cursor-pointer active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#D97706]'
-                : 'border-[#C5DCE4] dark:border-[#C5DCE4] bg-white dark:bg-white hover:border-[#4D91AD] shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1'
+                ? 'border-[#D97706] dark:border-[#D97706] bg-white dark:bg-[#1A2B36] hover:border-[#B45309] shadow-[0_4px_20px_rgba(38,59,70,0.08)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1 cursor-pointer active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#D97706]'
+                : 'border-[#C5DCE4] dark:border-[#314E62] bg-white dark:bg-[#1A2B36] hover:border-[#4D91AD] dark:hover:border-[#4D91AD] shadow-[0_4px_20px_rgba(38,59,70,0.06)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] hover:shadow-xl hover:-translate-y-1'
             }`}
           >
             {/* Left Visual Panel - Dark Vibrant Gradient matching Enter Challenge button */}
@@ -826,40 +826,40 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             </div>
 
             {/* Right Details Panel - Bright White Surface */}
-            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-white text-[#183B4A]">
+            <div className="sm:w-[60%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-[#1A2B36] text-[#183B4A] dark:text-[#F1F8FB]">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] sm:text-xs font-extrabold text-[#245D72] dark:text-[#245D72] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+                  <span className="text-[11px] sm:text-xs font-extrabold text-[#245D72] dark:text-[#63B8C6] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                     Flexibility Challenge
                   </span>
                   {taskSwitchingStatus === 'in_progress' && (
-                    <span className="text-[11px] font-bold text-[#D97706] bg-[#FEF3C7] border border-[#FDE68A] px-2 py-0.5 rounded-md">
+                    <span className="text-[11px] font-bold text-[#D97706] bg-[#FEF3C7] dark:bg-[#2A2318] border border-[#FDE68A] dark:border-[#78350F] px-2 py-0.5 rounded-md">
                       {currentParticipant.taskSwitchingProgressCount || 0} recorded
                     </span>
                   )}
                 </div>
-                <h3 className="text-xl sm:text-2xl font-extrabold text-[#183B4A] dark:text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-extrabold text-[#183B4A] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
                   Task Switching
                 </h3>
-                <p className="text-xs sm:text-sm text-[#385563] dark:text-[#385563] font-semibold leading-relaxed mb-2.5">
+                <p className="text-xs sm:text-sm text-[#385563] dark:text-[#A2C4D6] font-semibold leading-relaxed mb-2.5">
                   Cognitive flexibility
                 </p>
 
                 {/* Subtitle / Description */}
-                <p className="text-xs text-[#526E7B] dark:text-[#526E7B] leading-relaxed mb-4">
+                <p className="text-xs text-[#526E7B] dark:text-[#8AA8B8] leading-relaxed mb-4">
                   Categorize letter-number stimuli while alternating between letter and number decision rules.
                 </p>
               </div>
 
               <div>
                 {/* Divider Line */}
-                <div className="border-t border-[#C5DCE4] pt-3 sm:pt-4 mb-4 sm:mb-5 flex items-center gap-4 sm:gap-5 text-xs text-[#526E7B] dark:text-[#526E7B] font-medium font-['Plus_Jakarta_Sans',sans-serif]">
-                  <div className="flex items-center gap-1.5 text-[#183B4A] dark:text-[#183B4A] font-bold">
-                    <Repeat size={14} className="text-[#245D72]" />
+                <div className="border-t border-[#C5DCE4] dark:border-[#314E62] pt-3 sm:pt-4 mb-4 sm:mb-5 flex items-center gap-4 sm:gap-5 text-xs text-[#526E7B] dark:text-[#8AA8B8] font-medium font-['Plus_Jakarta_Sans',sans-serif]">
+                  <div className="flex items-center gap-1.5 text-[#183B4A] dark:text-[#F1F8FB] font-bold">
+                    <Repeat size={14} className="text-[#245D72] dark:text-[#63B8C6]" />
                     <span>128 trials</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Clock size={14} className="text-[#245D72]" />
+                    <Clock size={14} className="text-[#245D72] dark:text-[#63B8C6]" />
                     <span>~6 min</span>
                   </div>
                 </div>
@@ -868,10 +868,10 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                 {taskSwitchingStatus === 'completed' ? (
                   <button
                     disabled
-                    className="w-full py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl font-bold text-xs font-['Plus_Jakarta_Sans',sans-serif] bg-[#EAF4F8] text-[#526E7B] border border-[#C5DCE4] cursor-not-allowed flex items-center justify-center gap-2 opacity-90 shadow-none"
+                    className="w-full py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl font-bold text-xs font-['Plus_Jakarta_Sans',sans-serif] bg-[#EAF4F8] dark:bg-[#203444] text-[#526E7B] dark:text-[#8AA8B8] border border-[#C5DCE4] dark:border-[#314E62] cursor-not-allowed flex items-center justify-center gap-2 opacity-90 shadow-none"
                     title="This challenge was already completed in this session and cannot be repeated."
                   >
-                    <CheckCircle size={15} className="text-[#245D72]" />
+                    <CheckCircle size={15} className="text-[#245D72] dark:text-[#63B8C6]" />
                     Challenge Completed
                   </button>
                 ) : taskSwitchingStatus === 'in_progress' ? (
@@ -906,16 +906,16 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
 
         {/* ─── ALL CHALLENGES COMPLETED BANNER ────────────────────────── */}
         {allDone && (
-          <div className="bg-white dark:bg-white text-[#183B4A] rounded-3xl border border-[#63B8C6] p-5 sm:p-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-6 animate-pop-in shadow-md mb-8">
+          <div className="bg-white dark:bg-[#1A2B36] text-[#183B4A] dark:text-[#F1F8FB] rounded-3xl border border-[#63B8C6] dark:border-[#314E62] p-5 sm:p-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 sm:gap-6 animate-pop-in shadow-md mb-8">
             <div className="flex items-center gap-3.5 sm:gap-5">
               <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-[#4D91AD] to-[#63B8C6] rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md">
                 <CheckCircle size={28} className="text-white sm:w-8 sm:h-8" />
               </div>
               <div>
-                <h3 className="text-lg sm:text-xl font-extrabold text-[#183B4A] dark:text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif]">
+                <h3 className="text-lg sm:text-xl font-extrabold text-[#183B4A] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif]">
                   All Four Challenges Completed!
                 </h3>
-                <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#526E7B] font-medium mt-0.5">
+                <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#A2C4D6] font-medium mt-0.5">
                   Your cognitive performance session has been successfully recorded. View your complete session summary below.
                 </p>
               </div>
@@ -950,19 +950,19 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
       {/* ─── INTERRUPTED SESSION PROTOCOL MODAL ───────────────────────── */}
       {interruptedModalTask && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#111C23]/80 backdrop-blur-xs animate-fade-in">
-          <div className="bg-white dark:bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-[#C5DCE4] text-center animate-slide-up text-[#183B4A]">
-            <div className="w-14 h-14 rounded-2xl bg-[#FEF3C7] text-[#D97706] flex items-center justify-center mx-auto mb-4 border border-[#FDE68A]">
+          <div className="bg-white dark:bg-[#1A2B36] rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-[#C5DCE4] dark:border-[#314E62] text-center animate-slide-up text-[#183B4A] dark:text-[#F1F8FB]">
+            <div className="w-14 h-14 rounded-2xl bg-[#FEF3C7] dark:bg-[#2A2318] text-[#D97706] dark:text-[#FCD34D] flex items-center justify-center mx-auto mb-4 border border-[#FDE68A] dark:border-[#78350F]">
               <RotateCcw size={28} />
             </div>
             <div className="text-[11px] font-bold text-[#D97706] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif] mb-1">
               Interrupted Session Notice
             </div>
-            <h3 className="text-xl sm:text-2xl font-extrabold text-[#183B4A] dark:text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif] mb-2">
+            <h3 className="text-xl sm:text-2xl font-extrabold text-[#183B4A] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif] mb-2">
               {interruptedModalTask.title}
             </h3>
-            <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#526E7B] leading-relaxed mb-4">
+            <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#A2C4D6] leading-relaxed mb-4">
               You previously recorded{' '}
-              <strong className="text-[#183B4A] dark:text-[#183B4A]">
+              <strong className="text-[#183B4A] dark:text-[#F1F8FB]">
                 {interruptedModalTask.recordedTrials}{' '}
                 {interruptedModalTask.id === 'hanoi'
                   ? 'puzzle(s)'
@@ -973,15 +973,15 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
               in this challenge.
             </p>
 
-            <div className="bg-[#EAF4F8] border border-[#C5DCE4] rounded-2xl p-4 text-left mb-6">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#183B4A] dark:text-[#183B4A] mb-1.5 font-['Plus_Jakarta_Sans',sans-serif]">
-                <Info size={14} className="text-[#245D72]" />
+            <div className="bg-[#EAF4F8] dark:bg-[#16242E] border border-[#C5DCE4] dark:border-[#314E62] rounded-2xl p-4 text-left mb-6">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#183B4A] dark:text-[#F1F8FB] mb-1.5 font-['Plus_Jakarta_Sans',sans-serif]">
+                <Info size={14} className="text-[#245D72] dark:text-[#63B8C6]" />
                 Cognitive Measurement Protocol
               </div>
-              <p className="text-[11px] sm:text-xs text-[#526E7B] dark:text-[#526E7B] leading-relaxed">
+              <p className="text-[11px] sm:text-xs text-[#526E7B] dark:text-[#A2C4D6] leading-relaxed">
                 These tests need you to focus without stopping. The tests measure how well you remember, recall, and switch tasks. Resuming an old session would make the results less accurate.
               </p>
-              <div className="mt-2.5 text-[11px] text-[#2B7F8C] font-medium flex items-center gap-1.5">
+              <div className="mt-2.5 text-[11px] text-[#2B7F8C] dark:text-[#5EEAD4] font-medium flex items-center gap-1.5">
                 <CheckCircle size={13} className="flex-shrink-0" />
                 <span>Your previous trial records remain preserved in research logs.</span>
               </div>
@@ -990,7 +990,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             <div className="flex flex-col gap-3">
               <button
                 onClick={() => setInterruptedModalTask(null)}
-                className="w-full py-3 px-4 rounded-xl font-bold text-xs text-[#183B4A] bg-[#EAF4F8] hover:bg-[#D5E8EF] border border-[#C5DCE4] transition-colors cursor-pointer"
+                className="w-full py-3 px-4 rounded-xl font-bold text-xs text-[#183B4A] dark:text-[#F1F8FB] bg-[#EAF4F8] dark:bg-[#203444] hover:bg-[#D5E8EF] dark:hover:bg-[#2A4458] border border-[#C5DCE4] dark:border-[#314E62] transition-colors cursor-pointer"
               >
                 Back to Dashboard
               </button>
@@ -1031,8 +1031,8 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             subtitle: 'Planning & problem-solving',
             description: 'Solve 6 disc puzzles. Each one harder than the last. Rules need to be followed exactly.',
             chips: [
-              { icon: <Layers size={14} className="text-[#245D72]" />, text: '6 puzzles' },
-              { icon: <Clock size={14} className="text-[#245D72]" />, text: '~12 min' },
+              { icon: <Layers size={14} className="text-[#245D72] dark:text-[#63B8C6]" />, text: '6 puzzles' },
+              { icon: <Clock size={14} className="text-[#245D72] dark:text-[#63B8C6]" />, text: '~12 min' },
             ],
             visual: <HanoiVisual size="md" variant="card" />,
           },
@@ -1043,8 +1043,8 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             subtitle: 'Spatial working memory',
             description: 'Watch the squares light up on a 3×3 grid. Then tap them back in the opposite order.',
             chips: [
-              { icon: <Grid3X3 size={14} className="text-[#245D72]" />, text: '8 levels' },
-              { icon: <Clock size={14} className="text-[#245D72]" />, text: '~8–10 min' },
+              { icon: <Grid3X3 size={14} className="text-[#245D72] dark:text-[#63B8C6]" />, text: '8 levels' },
+              { icon: <Clock size={14} className="text-[#245D72] dark:text-[#63B8C6]" />, text: '~8–10 min' },
             ],
             visual: <CorsiVisual size="md" variant="card" />,
           },
@@ -1055,8 +1055,8 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             subtitle: 'Selective attention & control',
             description: 'Click the button that matches the COLOR of the displayed word. Ignore the word\'s meaning, focus only on the display color.',
             chips: [
-              { icon: <Zap size={14} className="text-[#245D72]" />, text: '128 trials' },
-              { icon: <Clock size={14} className="text-[#245D72]" />, text: '~7 min' },
+              { icon: <Zap size={14} className="text-[#245D72] dark:text-[#63B8C6]" />, text: '128 trials' },
+              { icon: <Clock size={14} className="text-[#245D72] dark:text-[#63B8C6]" />, text: '~7 min' },
             ],
             visual: <StroopVisual size="md" variant="card" />,
           },
@@ -1067,8 +1067,8 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             subtitle: 'Cognitive flexibility & set-shifting',
             description: 'Follow Rule 1 (Top: Number) or Rule 2 (Bottom: Letter) depending on where the character appears.',
             chips: [
-              { icon: <Repeat size={14} className="text-[#245D72]" />, text: '128 trials' },
-              { icon: <Clock size={14} className="text-[#245D72]" />, text: '~8–10 min' },
+              { icon: <Repeat size={14} className="text-[#245D72] dark:text-[#63B8C6]" />, text: '128 trials' },
+              { icon: <Clock size={14} className="text-[#245D72] dark:text-[#63B8C6]" />, text: '~8–10 min' },
             ],
             visual: <TaskSwitchingVisual size="md" variant="card" />,
           },
@@ -1080,7 +1080,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
           title: stage.title,
           subtitle: 'Cognitive Research Task',
           description: 'Complete the cognitive evaluation according to standard instructions.',
-          chips: [{ icon: <Clock size={14} className="text-[#245D72]" />, text: '~10 min' }],
+          chips: [{ icon: <Clock size={14} className="text-[#245D72] dark:text-[#63B8C6]" />, text: '~10 min' }],
           visual: <HanoiVisual size="md" variant="card" />,
         };
 
@@ -1093,13 +1093,13 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             onClick={() => setPopupRoomId(null)}
           >
             <div
-              className="bg-white dark:bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-[#C5DCE4] overflow-hidden animate-slide-up text-[#183B4A] relative"
+              className="bg-white dark:bg-[#1A2B36] rounded-3xl max-w-2xl w-full shadow-2xl border border-[#C5DCE4] dark:border-[#314E62] overflow-hidden animate-slide-up text-[#183B4A] dark:text-[#F1F8FB] relative"
               onClick={e => e.stopPropagation()}
             >
               {/* Close Button */}
               <button
                 onClick={() => setPopupRoomId(null)}
-                className="absolute top-3.5 right-3.5 z-30 p-2 rounded-full bg-white/80 hover:bg-white text-[#183B4A] shadow-md transition-all cursor-pointer hover:scale-105 active:scale-95"
+                className="absolute top-3.5 right-3.5 z-30 p-2 rounded-full bg-white/80 dark:bg-[#203444]/90 hover:bg-white dark:hover:bg-[#2A4458] text-[#183B4A] dark:text-[#F1F8FB] shadow-md transition-all cursor-pointer hover:scale-105 active:scale-95 border border-[#C5DCE4] dark:border-[#314E62]"
                 aria-label="Close popup"
               >
                 <X size={18} strokeWidth={2.5} />
@@ -1139,34 +1139,34 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                 </div>
 
                 {/* Right Details Panel */}
-                <div className="sm:w-[58%] p-5 sm:p-7 flex flex-col justify-between bg-white text-[#183B4A]">
+                <div className="sm:w-[58%] p-5 sm:p-7 flex flex-col justify-between bg-white dark:bg-[#1A2B36] text-[#183B4A] dark:text-[#F1F8FB]">
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-[11px] sm:text-xs font-extrabold text-[#245D72] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
+                      <span className="text-[11px] sm:text-xs font-extrabold text-[#245D72] dark:text-[#63B8C6] uppercase tracking-wider font-['Plus_Jakarta_Sans',sans-serif]">
                         {info.category}
                       </span>
                       {isInProgress && (
-                        <span className="text-[11px] font-bold text-[#D97706] bg-[#FEF3C7] border border-[#FDE68A] px-2 py-0.5 rounded-md">
+                        <span className="text-[11px] font-bold text-[#D97706] bg-[#FEF3C7] dark:bg-[#2A2318] border border-[#FDE68A] dark:border-[#78350F] px-2 py-0.5 rounded-md">
                           {stage.progressCount} recorded
                         </span>
                       )}
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-extrabold text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
+                    <h3 className="text-xl sm:text-2xl font-extrabold text-[#183B4A] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif] mb-1 tracking-tight">
                       {info.title}
                     </h3>
-                    <p className="text-xs sm:text-sm text-[#385563] font-semibold leading-relaxed mb-2">
+                    <p className="text-xs sm:text-sm text-[#385563] dark:text-[#A2C4D6] font-semibold leading-relaxed mb-2">
                       {info.subtitle}
                     </p>
-                    <p className="text-xs text-[#526E7B] leading-relaxed mb-4">
+                    <p className="text-xs text-[#526E7B] dark:text-[#8AA8B8] leading-relaxed mb-4">
                       {info.description}
                     </p>
                   </div>
 
                   <div>
                     {/* Divider and stats chips */}
-                    <div className="border-t border-[#C5DCE4] pt-3 mb-4 sm:mb-5 flex items-center gap-4 text-xs text-[#526E7B] font-medium font-['Plus_Jakarta_Sans',sans-serif]">
+                    <div className="border-t border-[#C5DCE4] dark:border-[#314E62] pt-3 mb-4 sm:mb-5 flex items-center gap-4 text-xs text-[#526E7B] dark:text-[#8AA8B8] font-medium font-['Plus_Jakarta_Sans',sans-serif]">
                       {info.chips.map((chip, i) => (
-                        <div key={i} className="flex items-center gap-1.5 text-[#183B4A] font-bold">
+                        <div key={i} className="flex items-center gap-1.5 text-[#183B4A] dark:text-[#F1F8FB] font-bold">
                           {chip.icon}
                           <span>{chip.text}</span>
                         </div>
@@ -1178,9 +1178,9 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
                       {isCompleted ? (
                         <button
                           disabled
-                          className="w-full py-3 px-5 rounded-xl font-bold text-xs font-['Plus_Jakarta_Sans',sans-serif] bg-[#EAF4F8] text-[#526E7B] border border-[#C5DCE4] cursor-not-allowed flex items-center justify-center gap-2 opacity-90 shadow-none"
+                          className="w-full py-3 px-5 rounded-xl font-bold text-xs font-['Plus_Jakarta_Sans',sans-serif] bg-[#EAF4F8] dark:bg-[#203444] text-[#526E7B] dark:text-[#8AA8B8] border border-[#C5DCE4] dark:border-[#314E62] cursor-not-allowed flex items-center justify-center gap-2 opacity-90 shadow-none"
                         >
-                          <CheckCircle size={15} className="text-[#245D72]" />
+                          <CheckCircle size={15} className="text-[#245D72] dark:text-[#63B8C6]" />
                           Challenge Completed
                         </button>
                       ) : isInProgress ? (
@@ -1217,7 +1217,7 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
 
                       <button
                         onClick={() => setPopupRoomId(null)}
-                        className="w-full py-2 px-4 rounded-xl font-semibold text-xs text-[#526E7B] hover:text-[#183B4A] hover:bg-[#EAF4F8] transition-all cursor-pointer text-center"
+                        className="w-full py-2 px-4 rounded-xl font-semibold text-xs text-[#526E7B] dark:text-[#8AA8B8] hover:text-[#183B4A] dark:hover:text-[#F1F8FB] hover:bg-[#EAF4F8] dark:hover:bg-[#203444] transition-all cursor-pointer text-center"
                       >
                         Cancel & choose another
                       </button>

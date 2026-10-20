@@ -454,14 +454,14 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
       )}
 
       {/* Header strip */}
-      <div className="bg-white dark:bg-white border-b border-[#C5DCE4] px-4 sm:px-8 py-3 sm:py-4 transition-colors">
+      <div className="bg-white dark:bg-[#1A2B36] border-b border-[#C5DCE4] dark:border-[#314E62] px-4 sm:px-8 py-3 sm:py-4 transition-colors">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center justify-between w-full sm:w-auto">
             <div className="text-left">
-              <div className="text-[10px] font-black text-[#183B4A] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
+              <div className="text-[10px] font-black text-[#183B4A] dark:text-[#F1F8FB] uppercase tracking-[0.16em] font-['Plus_Jakarta_Sans',sans-serif]">
                 Room 03 — Stroop Color-Word Task
               </div>
-              <div className="text-xs sm:text-sm font-bold text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif] mt-0.5">
+              <div className="text-xs sm:text-sm font-bold text-[#183B4A] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif] mt-0.5">
                 Selective Attention & Cognitive Inhibition
               </div>
             </div>
@@ -470,15 +470,15 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
           {(phase === 'practice' || phase === 'experiment') && (
             <div className="flex items-center gap-4 sm:gap-6">
               <div className="text-center">
-                <div className="text-[8px] sm:text-[9px] font-bold text-[#526E7B] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
+                <div className="text-[8px] sm:text-[9px] font-bold text-[#526E7B] dark:text-[#A2C4D6] uppercase tracking-widest font-['Plus_Jakarta_Sans',sans-serif]">
                   {isPractice ? 'Practice' : 'Trial'}
                 </div>
-                <div className="text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#183B4A]">
+                <div className="text-base sm:text-lg font-bold font-['JetBrains_Mono',monospace] text-[#183B4A] dark:text-[#F1F8FB]">
                   {trialIndex + 1}/{currentTotal}
                 </div>
               </div>
               {/* Progress bar */}
-              <div className="w-24 sm:w-32 h-2 rounded-full bg-[#EAF4F8] overflow-hidden">
+              <div className="w-24 sm:w-32 h-2 rounded-full bg-[#EAF4F8] dark:bg-[#203541] overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-150"
                   style={{
@@ -510,69 +510,69 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
             </p>
 
             {/* 2 Stimulus Types Educational Card */}
-            <div className="bg-white dark:bg-white rounded-2xl border-2 border-[#C5DCE4] dark:border-[#C5DCE4] p-4 sm:p-6 mb-5 text-left shadow-xs">
+            <div className="bg-white dark:bg-[#1A2B36] rounded-2xl border-2 border-[#C5DCE4] dark:border-[#314E62] p-4 sm:p-6 mb-5 text-left shadow-xs">
               <div className="text-xs font-bold text-[#E11D48] uppercase tracking-wider mb-2.5">
                 2 STIMULUS TYPES IN THIS TASK
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-4 text-xs">
-                <div className="p-3 rounded-xl bg-[#F8FBFC] dark:bg-[#F8FBFC] border border-[#C5DCE4] dark:border-[#C5DCE4]">
-                  <div className="font-bold text-[#183B4A] dark:text-[#183B4A] mb-1">1. Congruent</div>
+                <div className="p-3 rounded-xl bg-[#F8FBFC] dark:bg-[#15242E] border border-[#C5DCE4] dark:border-[#314E62]">
+                  <div className="font-bold text-[#183B4A] dark:text-[#F1F8FB] mb-1">1. Congruent</div>
                   <div className="text-[#2563EB] font-black text-sm tracking-wide mb-1 font-['Plus_Jakarta_Sans',sans-serif]">BLUE</div>
-                  <p className="text-[#526E7B] dark:text-[#526E7B] text-[11px] leading-snug">
+                  <p className="text-[#526E7B] dark:text-[#A2C4D6] text-[11px] leading-snug">
                     Word name matches ink color. Correct response = <strong className="text-[#2563EB]">Blue</strong>.
                   </p>
                 </div>
-                <div className="p-3 rounded-xl bg-[#F8FBFC] dark:bg-[#F8FBFC] border border-[#C5DCE4] dark:border-[#C5DCE4]">
-                  <div className="font-bold text-[#183B4A] dark:text-[#183B4A] mb-1">2. Incongruent</div>
+                <div className="p-3 rounded-xl bg-[#F8FBFC] dark:bg-[#15242E] border border-[#C5DCE4] dark:border-[#314E62]">
+                  <div className="font-bold text-[#183B4A] dark:text-[#F1F8FB] mb-1">2. Incongruent</div>
                   <div className="text-[#2563EB] font-black text-sm tracking-wide mb-1 font-['Plus_Jakarta_Sans',sans-serif]">RED</div>
-                  <p className="text-[#526E7B] dark:text-[#526E7B] text-[11px] leading-snug">
+                  <p className="text-[#526E7B] dark:text-[#A2C4D6] text-[11px] leading-snug">
                     Word says &quot;RED&quot; in blue ink 🔵. Correct response = <strong className="text-[#2563EB]">Blue</strong>.
                   </p>
                 </div>
               </div>
 
               {/* Centered Example Box */}
-              <div className="text-xs font-bold text-[#526E7B] dark:text-[#526E7B] uppercase tracking-wider mb-2">
+              <div className="text-xs font-bold text-[#526E7B] dark:text-[#A2C4D6] uppercase tracking-wider mb-2">
                 EXAMPLE
               </div>
-              <div className="bg-[#F8FBFC] dark:bg-[#F8FBFC] rounded-2xl p-4 sm:p-5 mb-4 border border-[#C5DCE4] dark:border-[#C5DCE4] flex flex-col items-center justify-center text-center">
+              <div className="bg-[#F8FBFC] dark:bg-[#15242E] rounded-2xl p-4 sm:p-5 mb-4 border border-[#C5DCE4] dark:border-[#314E62] flex flex-col items-center justify-center text-center">
                 <div className="text-2xl sm:text-3xl font-black font-['Plus_Jakarta_Sans',sans-serif] tracking-wide text-[#DC2626] mb-2 sm:mb-2.5">
                   GREEN
                 </div>
-                <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#526E7B] font-medium mb-1">
+                <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#A2C4D6] font-medium mb-1">
                   The word says &quot;GREEN&quot;, but the ink is <strong className="text-[#DC2626] font-bold">RED</strong>.
                 </p>
-                <p className="text-xs sm:text-sm text-[#183B4A] dark:text-[#183B4A] font-medium">
-                  Correct response = <strong className="text-[#183B4A] dark:text-[#183B4A] font-['JetBrains_Mono',monospace]">R</strong> <strong className="text-[#183B4A] dark:text-[#183B4A] font-semibold">(Red)</strong>
+                <p className="text-xs sm:text-sm text-[#183B4A] dark:text-[#F1F8FB] font-medium">
+                  Correct response = <strong className="text-[#183B4A] dark:text-[#F1F8FB] font-['JetBrains_Mono',monospace]">R</strong> <strong className="text-[#183B4A] dark:text-[#F1F8FB] font-semibold">(Red)</strong>
                 </p>
               </div>
 
               {/* Response Key Mapping Legend */}
-              <div className="text-xs font-bold text-[#526E7B] dark:text-[#526E7B] uppercase tracking-wider mt-4 mb-2">
+              <div className="text-xs font-bold text-[#526E7B] dark:text-[#A2C4D6] uppercase tracking-wider mt-4 mb-2">
                 RESPONSE KEY MAPPINGS
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
-                <div className="p-2 sm:p-2.5 rounded-lg bg-[#FCE8EB] dark:bg-[#FCE8EB] text-[#DC2626] dark:text-[#DC2626] font-semibold border border-[#F9CFD5] dark:border-[#F9CFD5]">
-                  <kbd className="px-1.5 py-0.5 bg-white dark:bg-white text-[#183B4A] dark:text-[#183B4A] rounded shadow-xs text-xs font-mono font-bold mr-1">R</kbd>
+                <div className="p-2 sm:p-2.5 rounded-lg bg-[#FCE8EB] dark:bg-rose-950/40 text-[#DC2626] dark:text-[#F87171] font-semibold border border-[#F9CFD5] dark:border-rose-900/50">
+                  <kbd className="px-1.5 py-0.5 bg-white dark:bg-[#15242E] text-[#183B4A] dark:text-[#F1F8FB] border border-rose-200 dark:border-rose-900/50 rounded shadow-xs text-xs font-mono font-bold mr-1">R</kbd>
                   Red
                 </div>
-                <div className="p-2 sm:p-2.5 rounded-lg bg-[#EBF7EE] dark:bg-[#EBF7EE] text-[#16A34A] dark:text-[#16A34A] font-semibold border border-[#CEEED6] dark:border-[#CEEED6]">
-                  <kbd className="px-1.5 py-0.5 bg-white dark:bg-white text-[#183B4A] dark:text-[#183B4A] rounded shadow-xs text-xs font-mono font-bold mr-1">G</kbd>
+                <div className="p-2 sm:p-2.5 rounded-lg bg-[#EBF7EE] dark:bg-emerald-950/40 text-[#16A34A] dark:text-[#4ADE80] font-semibold border border-[#CEEED6] dark:border-emerald-900/50">
+                  <kbd className="px-1.5 py-0.5 bg-white dark:bg-[#15242E] text-[#183B4A] dark:text-[#F1F8FB] border border-emerald-200 dark:border-emerald-900/50 rounded shadow-xs text-xs font-mono font-bold mr-1">G</kbd>
                   Green
                 </div>
-                <div className="p-2 sm:p-2.5 rounded-lg bg-[#EDF4FD] dark:bg-[#EDF4FD] text-[#2563EB] dark:text-[#2563EB] font-semibold border border-[#CFE1FB] dark:border-[#CFE1FB]">
-                  <kbd className="px-1.5 py-0.5 bg-white dark:bg-white text-[#183B4A] dark:text-[#183B4A] rounded shadow-xs text-xs font-mono font-bold mr-1">B</kbd>
+                <div className="p-2 sm:p-2.5 rounded-lg bg-[#EDF4FD] dark:bg-blue-950/40 text-[#2563EB] dark:text-[#60A5FA] font-semibold border border-[#CFE1FB] dark:border-blue-900/50">
+                  <kbd className="px-1.5 py-0.5 bg-white dark:bg-[#15242E] text-[#183B4A] dark:text-[#F1F8FB] border border-blue-200 dark:border-blue-900/50 rounded shadow-xs text-xs font-mono font-bold mr-1">B</kbd>
                   Blue
                 </div>
-                <div className="p-2 sm:p-2.5 rounded-lg bg-[#FEFCE8] dark:bg-[#FEFCE8] text-[#A16207] dark:text-[#A16207] font-semibold border border-[#FEF08A] dark:border-[#FEF08A]">
-                  <kbd className="px-1.5 py-0.5 bg-white dark:bg-white text-[#183B4A] dark:text-[#183B4A] rounded shadow-xs text-xs font-mono font-bold mr-1">Y</kbd>
+                <div className="p-2 sm:p-2.5 rounded-lg bg-[#FEFCE8] dark:bg-amber-950/40 text-[#A16207] dark:text-[#FBBF24] font-semibold border border-[#FEF08A] dark:border-amber-900/50">
+                  <kbd className="px-1.5 py-0.5 bg-white dark:bg-[#15242E] text-[#183B4A] dark:text-[#F1F8FB] border border-amber-200 dark:border-amber-900/50 rounded shadow-xs text-xs font-mono font-bold mr-1">Y</kbd>
                   Yellow
                 </div>
               </div>
             </div>
 
-            <div className="bg-white dark:bg-white rounded-xl border border-[#C5DCE4] dark:border-[#C5DCE4] p-3.5 sm:p-4 mb-6 sm:mb-8 text-left text-xs text-[#205266] dark:text-[#205266] flex items-center gap-3 shadow-xs">
-              <Zap size={18} className="flex-shrink-0 text-[#205266]" />
+            <div className="bg-white dark:bg-[#1A2B36] rounded-xl border border-[#C5DCE4] dark:border-[#314E62] p-3.5 sm:p-4 mb-6 sm:mb-8 text-left text-xs text-[#205266] dark:text-[#63B8C6] flex items-center gap-3 shadow-xs">
+              <Zap size={18} className="flex-shrink-0 text-[#205266] dark:text-[#63B8C6]" />
               <span>
                 You will complete <strong>{PRACTICE_COUNT} practice trials</strong> first with feedback, followed by <strong>{EXPERIMENTAL_COUNT} experimental trials</strong>.
               </span>
@@ -593,7 +593,7 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
         {(phase === 'practice' || phase === 'experiment') && currentTrial && (
           <div className="flex flex-col items-center gap-4 sm:gap-6 w-full max-w-xl animate-fade-in">
             {/* Phase Badge */}
-            <div className="flex items-center gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-semibold font-['Plus_Jakarta_Sans',sans-serif] bg-white dark:bg-white border border-[#C5DCE4] dark:border-[#C5DCE4] shadow-xs text-[#183B4A] dark:text-[#183B4A] text-center">
+            <div className="flex items-center gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs font-semibold font-['Plus_Jakarta_Sans',sans-serif] bg-white dark:bg-[#1A2B36] border border-[#C5DCE4] dark:border-[#314E62] shadow-xs text-[#183B4A] dark:text-[#F1F8FB] text-center">
               {isPractice ? (
                 <>
                   <span className="w-2 h-2 rounded-full bg-[#2E6B82] animate-pulse" />
@@ -608,9 +608,9 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
             </div>
 
             {/* Stimulus Card */}
-            <div className="w-full h-48 sm:h-56 bg-white dark:bg-white rounded-3xl border-2 border-[#C5DCE4] dark:border-[#C5DCE4] shadow-md flex flex-col items-center justify-center relative overflow-hidden select-none px-4 transition-colors">
+            <div className="w-full h-48 sm:h-56 bg-white dark:bg-[#1A2B36] rounded-3xl border-2 border-[#C5DCE4] dark:border-[#314E62] shadow-md flex flex-col items-center justify-center relative overflow-hidden select-none px-4 transition-colors">
               {trialStage === 'fixation' && (
-                <div className="text-3xl sm:text-4xl font-light text-[#526E7B] dark:text-[#526E7B] font-mono select-none animate-scale-in">
+                <div className="text-3xl sm:text-4xl font-light text-[#526E7B] dark:text-[#A2C4D6] font-mono select-none animate-scale-in">
                   +
                 </div>
               )}
@@ -630,13 +630,13 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
               {trialStage === 'feedback' && feedback && (
                 <div className="flex flex-col items-center justify-center gap-2 animate-pop-in">
                   {feedback.isCorrect ? (
-                    <div className="flex items-center gap-2.5 px-6 py-2 sm:py-2.5 rounded-2xl bg-emerald-100 dark:bg-emerald-100 border-2 border-emerald-500 dark:border-emerald-500 text-emerald-900 dark:text-emerald-900 text-base sm:text-lg font-black shadow-md">
-                      <CheckCircle size={22} className="text-emerald-600 dark:text-emerald-600" />
+                    <div className="flex items-center gap-2.5 px-6 py-2 sm:py-2.5 rounded-2xl bg-emerald-100 dark:bg-emerald-950/80 border-2 border-emerald-500 dark:border-emerald-600 text-emerald-900 dark:text-emerald-200 text-base sm:text-lg font-black shadow-md">
+                      <CheckCircle size={22} className="text-emerald-600 dark:text-emerald-400" />
                       <span>Correct!</span>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2.5 px-6 py-2 sm:py-2.5 rounded-2xl bg-rose-100 dark:bg-rose-100 border-2 border-rose-500 dark:border-rose-500 text-rose-900 dark:text-rose-900 text-base sm:text-lg font-black shadow-md">
-                      <X size={22} className="text-rose-600 dark:text-rose-600" />
+                    <div className="flex items-center gap-2.5 px-6 py-2 sm:py-2.5 rounded-2xl bg-rose-100 dark:bg-rose-950/80 border-2 border-rose-500 dark:border-rose-600 text-rose-900 dark:text-rose-200 text-base sm:text-lg font-black shadow-md">
+                      <X size={22} className="text-rose-600 dark:text-rose-400" />
                       <span>Incorrect</span>
                     </div>
                   )}
@@ -644,7 +644,7 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
               )}
 
               {trialStage === 'interTrial' && (
-                <div className="w-2 h-2 rounded-full bg-[#C5DCE4] dark:bg-[#C5DCE4]" />
+                <div className="w-2 h-2 rounded-full bg-[#C5DCE4] dark:bg-[#314E62]" />
               )}
             </div>
 
@@ -664,18 +664,18 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
                         handleResponse(color);
                       }}
                       disabled={trialStage !== 'stimulus'}
-                      className={`flex flex-col items-center justify-center p-2.5 sm:p-3.5 rounded-2xl bg-white dark:bg-white border-2 border-[#C5DCE4] dark:border-[#C5DCE4] shadow-xs hover:border-[#245D72] dark:hover:border-[#245D72] hover:bg-[#EAF4F8] dark:hover:bg-[#EAF4F8] active:scale-95 transition-all ${
+                      className={`flex flex-col items-center justify-center p-2.5 sm:p-3.5 rounded-2xl bg-white dark:bg-[#1A2B36] border-2 border-[#C5DCE4] dark:border-[#314E62] shadow-xs hover:border-[#245D72] dark:hover:border-[#63B8C6] hover:bg-[#EAF4F8] dark:hover:bg-[#203541] active:scale-95 transition-all ${
                         trialStage === 'stimulus' ? 'cursor-pointer hover:shadow-md' : 'opacity-85 cursor-default'
                       }`}
                     >
-                      <kbd className="px-2.5 py-1 bg-[#EAF4F8] dark:bg-[#EAF4F8] border border-[#B8D7E3] dark:border-[#B8D7E3] rounded-lg text-xs sm:text-sm font-black font-['JetBrains_Mono',monospace] text-[#183B4A] dark:text-[#183B4A] mb-1.5 shadow-2xs">
+                      <kbd className="px-2.5 py-1 bg-[#EAF4F8] dark:bg-[#15242E] border border-[#B8D7E3] dark:border-[#314E62] rounded-lg text-xs sm:text-sm font-black font-['JetBrains_Mono',monospace] text-[#183B4A] dark:text-[#F1F8FB] mb-1.5 shadow-2xs">
                         {meta.key}
                       </kbd>
                       <div
                         className="w-3.5 h-3.5 rounded-full mb-1 ring-2 ring-black/10 dark:ring-white/20 shadow-xs"
                         style={{ backgroundColor: STROOP_COLOR_HEX[color] }}
                       />
-                      <span className="text-xs sm:text-sm font-bold text-[#183B4A] dark:text-[#183B4A] font-['Plus_Jakarta_Sans',sans-serif]">
+                      <span className="text-xs sm:text-sm font-bold text-[#183B4A] dark:text-[#F1F8FB] font-['Plus_Jakarta_Sans',sans-serif]">
                         {meta.label}
                       </span>
                     </button>
@@ -688,23 +688,23 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
 
         {/* 4. PRACTICE COMPLETE TRANSITION */}
         {phase === 'practiceComplete' && (
-          <div className="text-center max-w-md w-full animate-pop-in p-6 bg-white dark:bg-white rounded-3xl border border-[#C5DCE4] shadow-md">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#D1EDE5] dark:bg-[#D1EDE5] rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5">
+          <div className="text-center max-w-md w-full animate-pop-in p-6 bg-white dark:bg-[#1A2B36] rounded-3xl border border-[#C5DCE4] dark:border-[#314E62] shadow-md">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#D1EDE5] dark:bg-emerald-950/60 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5">
               <CheckCircle size={28} className="text-[#4A9B7F] sm:w-8 sm:h-8" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#183B4A] dark:text-[#183B4A] mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#183B4A] dark:text-[#F1F8FB] mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
               {isResuming && (participant?.stroopProgressCount || 0) > 0
                 ? 'Resume Experiment'
                 : 'Practice Completed'}
             </h2>
-            <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#526E7B] mb-4">
+            <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#A2C4D6] mb-4">
               {isResuming && (participant?.stroopProgressCount || 0) > 0
                 ? `Continuing your test from trial ${(participant?.stroopProgressCount || 0) + 1} of ${EXPERIMENTAL_COUNT}.`
                 : 'You are now ready for the official research experiment.'}
             </p>
-            <div className="bg-[#F8FBFC] dark:bg-[#F8FBFC] rounded-2xl border border-[#C5DCE4] dark:border-[#C5DCE4] p-4 sm:p-5 mb-6 sm:mb-8 text-left text-xs sm:text-sm text-[#183B4A] dark:text-[#183B4A] space-y-2.5">
+            <div className="bg-[#F8FBFC] dark:bg-[#15242E] rounded-2xl border border-[#C5DCE4] dark:border-[#314E62] p-4 sm:p-5 mb-6 sm:mb-8 text-left text-xs sm:text-sm text-[#183B4A] dark:text-[#F1F8FB] space-y-2.5">
               <div className="flex gap-2.5 items-start">
-                <Clock size={16} className="text-[#205266] flex-shrink-0 mt-0.5" />
+                <Clock size={16} className="text-[#205266] dark:text-[#63B8C6] flex-shrink-0 mt-0.5" />
                 <span>
                   You will complete <strong>{EXPERIMENTAL_COUNT} trials</strong> (Congruent and Incongruent).
                 </span>
@@ -731,14 +731,14 @@ export default function StroopRoom({ navigate, participant, sessionId, onComplet
 
         {/* 5. TASK COMPLETE SUMMARY */}
         {phase === 'taskComplete' && (
-          <div className="text-center max-w-sm w-full animate-pop-in p-6 bg-white dark:bg-white rounded-3xl border border-[#C5DCE4] shadow-md">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#D1EDE5] dark:bg-[#D1EDE5] rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5">
+          <div className="text-center max-w-sm w-full animate-pop-in p-6 bg-white dark:bg-[#1A2B36] rounded-3xl border border-[#C5DCE4] dark:border-[#314E62] shadow-md">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-[#D1EDE5] dark:bg-emerald-950/60 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5">
               <CheckCircle size={28} className="text-[#4A9B7F] sm:w-8 sm:h-8" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#183B4A] dark:text-[#183B4A] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#183B4A] dark:text-[#F1F8FB] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
               Activity Completed
             </h2>
-            <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#526E7B] mb-6 sm:mb-8">
+            <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#A2C4D6] mb-6 sm:mb-8">
               Thank you for completing the Stroop Task.
             </p>
 

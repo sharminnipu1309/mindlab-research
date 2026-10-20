@@ -103,30 +103,33 @@ export function ConfirmExitModal({ onConfirm, onCancel }: ConfirmExitModalProps)
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-[#111C23]/75 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative bg-white dark:bg-[#203541] rounded-2xl p-5 sm:p-8 max-w-sm w-full mx-auto shadow-2xl animate-slide-up border border-[#C5DCE4] dark:border-[#2D4654] max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white dark:bg-[#1A2B36] rounded-2xl p-5 sm:p-8 max-w-sm w-full mx-auto shadow-2xl animate-slide-up border border-[#C5DCE4] dark:border-[#314E62] max-h-[90vh] overflow-y-auto">
         <button
           onClick={onCancel}
-          className="absolute top-4 right-4 text-[#526E7B] dark:text-[#9BB5C4] hover:text-[#263B46] dark:hover:text-[#EAF4F8] p-1 rounded-lg hover:bg-[#D5E8EF] dark:hover:bg-[#192831] cursor-pointer"
+          className="absolute top-4 right-4 text-[#526E7B] dark:text-[#A2C4D6] hover:text-[#263B46] dark:hover:text-[#F1F8FB] p-1 rounded-lg hover:bg-[#D5E8EF] dark:hover:bg-[#203444] cursor-pointer"
         >
           <X size={18} />
         </button>
 
-        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#FEF3C7] dark:bg-[#78350F]/40 rounded-xl flex items-center justify-center mb-3 sm:mb-4">
-          <LogOut size={20} className="text-[#D97706] dark:text-[#FBBF24] sm:w-[22px] sm:h-[22px]" />
+        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#FEF3C7] dark:bg-[#2A2318] border border-[#FDE68A] dark:border-[#78350F] rounded-xl flex items-center justify-center mb-3 sm:mb-4">
+          <LogOut size={20} className="text-[#D97706] dark:text-[#FCD34D] sm:w-[22px] sm:h-[22px]" />
         </div>
 
-        <h3 className="text-base sm:text-lg font-bold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">Exit activity?</h3>
-        <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#9BB5C4] leading-relaxed mb-5 sm:mb-6">
+        <h3 className="text-base sm:text-lg font-bold text-[#263B46] dark:text-[#F1F8FB] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">Exit activity?</h3>
+        <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#A2C4D6] leading-relaxed mb-5 sm:mb-6">
           Your current progress on this task will not be saved. You can return to the participant dashboard.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
-          <button onClick={onCancel} className="btn-secondary flex-1 justify-center py-2.5 text-xs sm:text-sm cursor-pointer">
+          <button
+            onClick={onCancel}
+            className="flex-1 py-2.5 px-4 rounded-xl bg-[#EAF4F8] hover:bg-[#D5E8EF] text-[#183B4A] dark:bg-[#203444] dark:hover:bg-[#284154] dark:text-[#F1F8FB] border border-[#C5DCE4] dark:border-[#314E62] font-semibold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] transition-all text-center justify-center cursor-pointer"
+          >
             Continue task
           </button>
           <button
             onClick={onConfirm}
-            className="flex-1 py-2.5 px-4 rounded-xl bg-[#FEF3C7] hover:bg-[#D97706] text-[#D97706] hover:text-white dark:bg-[#78350F]/50 dark:hover:bg-[#D97706] dark:text-[#FDE68A] dark:hover:text-white font-semibold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] transition-all text-center cursor-pointer"
+            className="flex-1 py-2.5 px-4 rounded-xl bg-[#FEF3C7] hover:bg-[#D97706] text-[#D97706] hover:text-white dark:bg-[#2A2318] dark:hover:bg-[#D97706] dark:text-[#FCD34D] dark:hover:text-white border border-[#FDE68A] dark:border-[#78350F] font-semibold text-xs sm:text-sm font-['Plus_Jakarta_Sans',sans-serif] transition-all text-center cursor-pointer"
           >
             Exit session
           </button>
