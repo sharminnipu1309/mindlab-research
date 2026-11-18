@@ -65,35 +65,32 @@ console.log('   ✓ Millisecond reaction time calculation verified.');
 // 8. Programmatic Verification of No-Consecutive-Ink-Color Algorithm across 100 runs
 console.log('\n6. Programmatically Verifying Experimental Trial Generator (100 Runs)...');
 const STROOP_COLORS = ['RED', 'GREEN', 'BLUE', 'YELLOW'];
-const EXPERIMENTAL_COUNT = 128;
+const EXPERIMENTAL_COUNT = 30;
 
 function simulateGenerateExperimentalTrials() {
   const pool = [];
-  STROOP_COLORS.forEach(color => {
-    for (let i = 0; i < 24; i++) {
+  const congruentDistribution = [
+    { color: 'RED', count: 6 },
+    { color: 'GREEN', count: 6 },
+    { color: 'BLUE', count: 6 },
+    { color: 'YELLOW', count: 5 },
+  ];
+  congruentDistribution.forEach(({ color, count }) => {
+    for (let i = 0; i < count; i++) {
       pool.push({ word: color, inkColor: color, condition: 'congruent' });
     }
   });
 
-  const incPairs = [];
-  STROOP_COLORS.forEach(w => {
-    STROOP_COLORS.forEach(ink => {
-      if (w !== ink) incPairs.push({ word: w, inkColor: ink });
-    });
-  });
-  incPairs.forEach(pair => {
-    for (let i = 0; i < 2; i++) {
-      pool.push({ ...pair, condition: 'incongruent' });
-    }
-  });
-  pool.push({ word: 'YELLOW', inkColor: 'RED', condition: 'incongruent' });
-  pool.push({ word: 'BLUE', inkColor: 'RED', condition: 'incongruent' });
-  pool.push({ word: 'RED', inkColor: 'GREEN', condition: 'incongruent' });
-  pool.push({ word: 'YELLOW', inkColor: 'GREEN', condition: 'incongruent' });
-  pool.push({ word: 'GREEN', inkColor: 'BLUE', condition: 'incongruent' });
-  pool.push({ word: 'RED', inkColor: 'BLUE', condition: 'incongruent' });
-  pool.push({ word: 'BLUE', inkColor: 'YELLOW', condition: 'incongruent' });
-  pool.push({ word: 'GREEN', inkColor: 'YELLOW', condition: 'incongruent' });
+  const incongruentItems = [
+    { word: 'GREEN', inkColor: 'RED' },
+    { word: 'BLUE', inkColor: 'RED' },
+    { word: 'RED', inkColor: 'GREEN' },
+    { word: 'YELLOW', inkColor: 'GREEN' },
+    { word: 'RED', inkColor: 'BLUE' },
+    { word: 'YELLOW', inkColor: 'BLUE' },
+    { word: 'BLUE', inkColor: 'YELLOW' },
+  ];
+  incongruentItems.forEach(pair => pool.push({ ...pair, condition: 'incongruent' }));
 
   for (let attempt = 0; attempt < 500; attempt++) {
     const remaining = [...pool];
@@ -142,11 +139,11 @@ function simulateGenerateExperimentalTrials() {
 
 for (let r = 0; r < 100; r++) {
   const seq = simulateGenerateExperimentalTrials();
-  assert.strictEqual(seq.length, 128, `Run ${r}: Must contain exactly 128 trials`);
+  assert.strictEqual(seq.length, 30, `Run ${r}: Must contain exactly 30 trials`);
   const congruentCount = seq.filter(t => t.condition === 'congruent').length;
   const incongruentCount = seq.filter(t => t.condition === 'incongruent').length;
-  assert.strictEqual(congruentCount, 96, `Run ${r}: Must contain exactly 96 congruent (75%)`);
-  assert.strictEqual(incongruentCount, 32, `Run ${r}: Must contain exactly 32 incongruent (25%)`);
+  assert.strictEqual(congruentCount, 23, `Run ${r}: Must contain exactly 23 congruent (~76.7%)`);
+  assert.strictEqual(incongruentCount, 7, `Run ${r}: Must contain exactly 7 incongruent (~23.3%)`);
 
   for (let i = 1; i < seq.length; i++) {
     assert.notStrictEqual(
@@ -156,6 +153,6 @@ for (let r = 0; r < 100; r++) {
     );
   }
 }
-console.log('   ✓ 100 runs verified: 128 trials, 96 congruent (75%)/32 incongruent (25%), 0 consecutive ink color repetitions.');
+console.log('   ✓ 100 runs verified: 30 trials, 23 congruent (~76.7%)/7 incongruent (~23.3%), 0 consecutive ink color repetitions.');
 
 console.log('\n🎉 ALL STROOP TASK CORRECTION CHECKS PASSED SUCCESSFULLY!\n');

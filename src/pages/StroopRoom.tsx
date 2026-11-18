@@ -29,9 +29,9 @@ interface Props {
 type Phase = 'intro' | 'practice' | 'practiceComplete' | 'experiment' | 'taskComplete';
 type TrialStage = 'fixation' | 'stimulus' | 'feedback' | 'interTrial';
 
-// Trial counts: 128 experimental trials (96 Congruent, 32 Incongruent; 75%/25% ratio) and 20 practice trials
-const PRACTICE_COUNT = 20; // 12 Congruent, 8 Incongruent
-const EXPERIMENTAL_COUNT = 128; // 96 Congruent, 32 Incongruent (24 congruent per color, 8 incongruent per ink color)
+// Trial counts: 30 experimental trials (23 Congruent, 7 Incongruent; ~76.7%/23.3% ratio) and 5 practice trials
+const PRACTICE_COUNT = 5; // 4 Congruent, 1 Incongruent
+const EXPERIMENTAL_COUNT = 30; // 23 Congruent, 7 Incongruent
 
 // Timings in milliseconds
 const FIXATION_DURATION = 400; // ms
@@ -44,25 +44,21 @@ interface TrialItem {
   condition: StroopCondition;
 }
 
-
-
 /**
- * Generates 20 practice trials balanced across 2 conditions (12 Congruent, 8 Incongruent):
- * - 12 Congruent (3 for each of the 4 colors: RED, GREEN, BLUE, YELLOW)
- * - 8 Incongruent (2 for each of the 4 ink colors)
+ * Generates 5 practice trials:
+ * - 4 Congruent (1 for each of the 4 colors: RED, GREEN, BLUE, YELLOW)
+ * - 1 Incongruent
  * Shuffled with constraint that no consecutive trials have the same ink color.
  */
 function generatePracticeTrials(): TrialItem[] {
   const list: TrialItem[] = [];
 
-  // 1. 12 Congruent practice items (3 for each of 4 colors)
+  // 1. 4 Congruent practice items (1 for each of 4 colors)
   STROOP_COLORS.forEach(color => {
-    for (let i = 0; i < 3; i++) {
-      list.push({ word: color, inkColor: color, condition: 'congruent' });
-    }
+    list.push({ word: color, inkColor: color, condition: 'congruent' });
   });
 
-  // 2. 8 Incongruent practice items (2 for each of 4 ink colors)
+  // 2. 1 Incongruent practice item
   const incongruentBase: Array<{ word: string; inkColor: StroopColor }> = [
     { word: 'GREEN', inkColor: 'RED' },
     { word: 'YELLOW', inkColor: 'RED' },
@@ -73,7 +69,8 @@ function generatePracticeTrials(): TrialItem[] {
     { word: 'BLUE', inkColor: 'YELLOW' },
     { word: 'GREEN', inkColor: 'YELLOW' },
   ];
-  incongruentBase.forEach(pair => list.push({ ...pair, condition: 'incongruent' }));
+  const randomInc = incongruentBase[Math.floor(Math.random() * incongruentBase.length)];
+  list.push({ ...randomInc, condition: 'incongruent' });
 
   // Shuffle ensuring no consecutive same ink color
   for (let attempt = 0; attempt < 200; attempt++) {
@@ -97,44 +94,39 @@ function generatePracticeTrials(): TrialItem[] {
 }
 
 /**
- * Generates exactly 128 experimental trials:
- * - 96 Congruent trials (24 for each of the 4 colors: RED, GREEN, BLUE, YELLOW)
- * - 32 Incongruent trials (8 for each of the 4 ink colors, 8 for each word color)
- * - Ratio: 75% Congruent, 25% Incongruent
+ * Generates exactly 30 experimental trials:
+ * - 23 Congruent trials (6 RED, 6 GREEN, 6 BLUE, 5 YELLOW)
+ * - 7 Incongruent trials (2 RED ink, 2 GREEN ink, 2 BLUE ink, 1 YELLOW ink)
+ * - Ratio: ~76.7% Congruent, ~23.3% Incongruent (preserving the ~75%/25% ratio)
  * Strictly enforces: NO consecutive trials have the same ink color
  */
 function generateExperimentalTrials(): TrialItem[] {
   const pool: TrialItem[] = [];
 
-  // 1. 96 Congruent trials (24 per color)
-  STROOP_COLORS.forEach(color => {
-    for (let i = 0; i < 24; i++) {
+  // 1. 23 Congruent trials (6 RED, 6 GREEN, 6 BLUE, 5 YELLOW)
+  const congruentDistribution: Array<{ color: StroopColor; count: number }> = [
+    { color: 'RED', count: 6 },
+    { color: 'GREEN', count: 6 },
+    { color: 'BLUE', count: 6 },
+    { color: 'YELLOW', count: 5 },
+  ];
+  congruentDistribution.forEach(({ color, count }) => {
+    for (let i = 0; i < count; i++) {
       pool.push({ word: color, inkColor: color, condition: 'congruent' });
     }
   });
 
-  // 2. 32 Incongruent trials (8 per ink color, 8 per word color)
-  // All 12 distinct incongruent pairs repeated twice = 24 trials (6 per ink color)
-  const incPairs: Array<{ word: string; inkColor: StroopColor }> = [];
-  STROOP_COLORS.forEach(w => {
-    STROOP_COLORS.forEach(ink => {
-      if (w !== ink) incPairs.push({ word: w, inkColor: ink });
-    });
-  });
-  incPairs.forEach(pair => {
-    for (let i = 0; i < 2; i++) {
-      pool.push({ ...pair, condition: 'incongruent' });
-    }
-  });
-  // 8 extra balanced incongruent trials (2 per ink color, 2 per word color) -> 32 total
-  pool.push({ word: 'YELLOW', inkColor: 'RED', condition: 'incongruent' });
-  pool.push({ word: 'BLUE', inkColor: 'RED', condition: 'incongruent' });
-  pool.push({ word: 'RED', inkColor: 'GREEN', condition: 'incongruent' });
-  pool.push({ word: 'YELLOW', inkColor: 'GREEN', condition: 'incongruent' });
-  pool.push({ word: 'GREEN', inkColor: 'BLUE', condition: 'incongruent' });
-  pool.push({ word: 'RED', inkColor: 'BLUE', condition: 'incongruent' });
-  pool.push({ word: 'BLUE', inkColor: 'YELLOW', condition: 'incongruent' });
-  pool.push({ word: 'GREEN', inkColor: 'YELLOW', condition: 'incongruent' });
+  // 2. 7 Incongruent trials (2 RED ink, 2 GREEN ink, 2 BLUE ink, 1 YELLOW ink)
+  const incongruentItems: Array<{ word: string; inkColor: StroopColor }> = [
+    { word: 'GREEN', inkColor: 'RED' },
+    { word: 'BLUE', inkColor: 'RED' },
+    { word: 'RED', inkColor: 'GREEN' },
+    { word: 'YELLOW', inkColor: 'GREEN' },
+    { word: 'RED', inkColor: 'BLUE' },
+    { word: 'YELLOW', inkColor: 'BLUE' },
+    { word: 'BLUE', inkColor: 'YELLOW' },
+  ];
+  incongruentItems.forEach(pair => pool.push({ ...pair, condition: 'incongruent' }));
 
   // 3. Shuffle with max-frequency heuristic ensuring no two consecutive trials have the same ink color
   for (let attempt = 0; attempt < 500; attempt++) {

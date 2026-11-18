@@ -1055,8 +1055,8 @@ export default function ParticipantDashboard({ navigate, participant }: Props) {
             subtitle: 'Selective attention & control',
             description: 'Click the button that matches the COLOR of the displayed word. Ignore the word\'s meaning, focus only on the display color.',
             chips: [
-              { icon: <Zap size={14} className="text-[#245D72] dark:text-[#63B8C6]" />, text: '128 trials' },
-              { icon: <Clock size={14} className="text-[#245D72] dark:text-[#63B8C6]" />, text: '~7 min' },
+              { icon: <Zap size={14} className="text-[#245D72] dark:text-[#63B8C6]" />, text: '30 trials' },
+              { icon: <Clock size={14} className="text-[#245D72] dark:text-[#63B8C6]" />, text: '~2 min' },
             ],
             visual: <StroopVisual size="md" variant="card" />,
           },

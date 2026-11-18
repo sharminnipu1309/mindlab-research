@@ -300,16 +300,14 @@ export default function ParticipantManagement({ navigate, onLogout, currentPage 
                     let sDetail: string;
                     let sStatusLabel = sDone ? 'Done' : 'Not Done';
                     let sStatusColor = sDone ? 'text-[#4A9B7F]' : 'text-[#9597AB]';
-                    if (sExp >= 128) {
-                      sDetail = '128/128 experimental trials completed';
-                    } else if (sExp >= 80 && sDone) {
-                      sDetail = '80/80 experimental trials completed (protocol v1)';
+                    if (sExp >= 30) {
+                      sDetail = `${sExp}/${sExp >= 128 ? 128 : sExp >= 80 ? 80 : 30} experimental trials completed`;
                     } else if (sExp > 0) {
-                      sDetail = `${sExp}/128 experimental trials completed`;
+                      sDetail = `${sExp}/30 experimental trials completed`;
                       sStatusLabel = 'Partial';
                       sStatusColor = 'text-[#D97706]';
                     } else if (sPractice > 0) {
-                      sDetail = `Incomplete: ${sPractice} practice trial(s) only (0/128 experimental trials)`;
+                      sDetail = `Incomplete: ${sPractice} practice trial(s) only (0/30 experimental trials)`;
                       sStatusLabel = 'Practice Only';
                       sStatusColor = 'text-[#D97706]';
                     } else {

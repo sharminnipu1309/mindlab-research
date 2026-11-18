@@ -226,7 +226,7 @@ export async function fetchParticipantsList() {
           const sessionStroop = (stroopTrials || []).filter((t: any) => t.session_id === s.id);
           const stroopExpCount = sessionStroop.filter((t: any) => t.phase === 'experiment').length;
           const stroopPracticeCount = sessionStroop.filter((t: any) => t.phase === 'practice').length;
-          const stroopDone = Boolean(stroopExpCount >= 128 || (stroopExpCount >= 80 && s.stroop_completed));
+          const stroopDone = Boolean(stroopExpCount >= 30 || s.stroop_completed);
 
           // 4. Task Switching Real Activity Metrics
           const sessionTS = (tsTrials || []).filter((t: any) => t.session_id === s.id);

@@ -124,7 +124,7 @@ export default function StroopAnalysis({ navigate, onLogout, currentPage }: Prop
     const iMean = pIncongruent.length > 0 ? Math.round(pIncongruent.reduce((s, t) => s + t.reactionTimeMs, 0) / pIncongruent.length) : null;
     const effect = (cMean !== null && iMean !== null) ? iMean - cMean : null;
     const acc = (pExpTrials.filter(t => t.isCorrect).length / pExpTrials.length) * 100;
-    const isFull = pExpTrials.length >= 128 || (pExpTrials.length >= 80 && Boolean(participants.find(p => p.id === pid)?.stroopDone));
+    const isFull = pExpTrials.length >= 30 || Boolean(participants.find(p => p.id === pid)?.stroopDone);
 
     return {
       id: pid,
@@ -135,7 +135,7 @@ export default function StroopAnalysis({ navigate, onLogout, currentPage }: Prop
       stroopEffect: effect,
       totalExpTrials: pExpTrials.length,
       totalPracticeTrials: pPracticeTrials.length,
-      status: isFull ? 'Complete' : `Incomplete (${pExpTrials.length}/${pExpTrials.length > 80 || pExpTrials.length === 0 ? 128 : 80})`,
+      status: isFull ? 'Complete' : `Incomplete (${pExpTrials.length}/30)`,
     };
   });
 
@@ -204,7 +204,7 @@ export default function StroopAnalysis({ navigate, onLogout, currentPage }: Prop
               <strong className="text-[#252640]">Stroop Effect (Interference Cost)</strong> = The reaction time (RT) difference between correctly answered congruent and incongruent trials (Mean RT Incongruent − Mean RT Congruent). Evaluates selective attention and inhibitory control.
             </p>
             <p>
-              <strong className="text-[#252640]">Trial Structure:</strong> 20 Practice trials (retained in raw data but excluded from research metrics) + 128 Experimental trials (96 Congruent [75%], 32 Incongruent [25%]).
+              <strong className="text-[#252640]">Trial Structure:</strong> 5 Practice trials (retained in raw data but excluded from research metrics) + 30 Experimental trials (23 Congruent [~76.7%], 7 Incongruent [~23.3%]).
             </p>
             <p>
               <strong className="text-[#252640]">Response Keys:</strong> R = Red · G = Green · B = Blue · Y = Yellow.
