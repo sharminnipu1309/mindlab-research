@@ -38,3 +38,4 @@ if (failed === 0) {
   console.error(`FAILED: ${failed} assertion(s).`);
   process.exit(1);
 }
+

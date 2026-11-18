@@ -27,14 +27,14 @@ function generateId(): string {
   return `ML-${String(num).padStart(4, '0')}`;
 }
 
-// Steps:
+// Ordered Steps:
 // 1: Consent statement & confidentiality bond
-// 2: Table (ক) - নিজের ক্ষেত্রে… (Questions 1-7)
-// 3: Table (খ) - অন্যদের ক্ষেত্রে… (Questions 8-10)
-// 4: Table (গ) - অন্যের অবস্থান/দৃষ্টিকোণ থেকে বিবেচনা করার ক্ষেত্রে… (Questions 11-13)
-// 5: Table (ঘ) - সমস্যা সমাধান করার ক্ষেত্রে… (Questions 14-18)
-// 6: Participant Details (Username, Age, Gender, ADHD)
-// 7: Registration Confirmation (Participant ID card)
+// 2: Participant Details (Username, Age, Gender, ADHD Diagnosis) [BEFORE THE FORM]
+// 3: Table (ক) - নিজের ক্ষেত্রে… (Questions 1-7)
+// 4: Table (খ) - অন্যদের ক্ষেত্রে… (Questions 8-10)
+// 5: Table (গ) - অন্যের অবস্থান/দৃষ্টিকোণ থেকে বিবেচনা করার ক্ষেত্রে… (Questions 11-13)
+// 6: Table (ঘ) - সমস্যা সমাধান করার ক্ষেত্রে… (Questions 14-18)
+// 7: Registration Confirmation (Participant ID card & summary)
 type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export default function ConsentPage({ navigate, onRegister }: Props) {
@@ -42,12 +42,7 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
   const [consented, setConsented] = useState(false);
   const [consentError, setConsentError] = useState(false);
 
-  // Questionnaire responses state: questionId (1..18) -> rating (1..5)
-  const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [questionnaireError, setQuestionnaireError] = useState<string | null>(null);
-  const [unansweredList, setUnansweredList] = useState<number[]>([]);
-
-  // Participant details form state
+  // Participant details form state (Step 2)
   const [form, setForm] = useState<{
     name: string;
     age: string;
@@ -56,6 +51,11 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
   }>({ name: '', age: '', gender: '', adhdDiagnosis: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [generatedId] = useState(generateId);
+
+  // Questionnaire responses state: questionId (1..18) -> rating (1..5)
+  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [questionnaireError, setQuestionnaireError] = useState<string | null>(null);
+  const [unansweredList, setUnansweredList] = useState<number[]>([]);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -69,13 +69,30 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
     }
   };
 
-  const handleContinueToQuestionnaire = () => {
+  const handleContinueToDetails = () => {
     if (!consented) {
       setConsentError(true);
       return;
     }
     setConsentError(false);
     setStep(2);
+    scrollToTop();
+  };
+
+  const validateForm = () => {
+    const errs: Record<string, string> = {};
+    if (!form.name.trim()) errs.name = 'Username is required';
+    if (!form.age || isNaN(Number(form.age)) || Number(form.age) < 16 || Number(form.age) > 100)
+      errs.age = 'Please enter a valid age (16–100)';
+    if (!form.gender) errs.gender = 'Please select a gender option';
+    if (!form.adhdDiagnosis) errs.adhdDiagnosis = 'Please select an option';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleContinueToQuestionnaire = () => {
+    if (!validateForm()) return;
+    setStep(3); // Advance to Table (ক)
     scrollToTop();
   };
 
@@ -99,36 +116,6 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
     setUnansweredList([]);
     setQuestionnaireError(null);
     return true;
-  };
-
-  const handleNextSection = (currentSectionIndex: number) => {
-    if (!validateSection(currentSectionIndex)) return;
-
-    if (currentSectionIndex === 0) setStep(3); // from ক to খ
-    else if (currentSectionIndex === 1) setStep(4); // from খ to গ
-    else if (currentSectionIndex === 2) setStep(5); // from গ to ঘ
-    else if (currentSectionIndex === 3) setStep(6); // from ঘ to Details
-
-    scrollToTop();
-  };
-
-  const handleSelectOption = (questionId: number, value: number) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: value }));
-    setUnansweredList((prev) => prev.filter((id) => id !== questionId));
-    if (unansweredList.length <= 1) {
-      setQuestionnaireError(null);
-    }
-  };
-
-  const validateForm = () => {
-    const errs: Record<string, string> = {};
-    if (!form.name.trim()) errs.name = 'Username is required';
-    if (!form.age || isNaN(Number(form.age)) || Number(form.age) < 16 || Number(form.age) > 100)
-      errs.age = 'Please enter a valid age (16–100)';
-    if (!form.gender) errs.gender = 'Please select a gender option';
-    if (!form.adhdDiagnosis) errs.adhdDiagnosis = 'Please select an option';
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
   };
 
   const calculateScores = (): MentalizationResponses => {
@@ -157,8 +144,25 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
     };
   };
 
-  const handleSubmit = () => {
-    if (!validateForm()) return;
+  const handleNextSection = (currentSectionIndex: number) => {
+    if (!validateSection(currentSectionIndex)) return;
+
+    if (currentSectionIndex === 0) {
+      setStep(4); // from ক to খ
+      scrollToTop();
+    } else if (currentSectionIndex === 1) {
+      setStep(5); // from খ to গ
+      scrollToTop();
+    } else if (currentSectionIndex === 2) {
+      setStep(6); // from গ to ঘ
+      scrollToTop();
+    } else if (currentSectionIndex === 3) {
+      // Completed Table ঘ -> Complete Registration!
+      handleFinalSubmit();
+    }
+  };
+
+  const handleFinalSubmit = () => {
     const computedScores = calculateScores();
 
     const participant: ParticipantSession = {
@@ -178,6 +182,14 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
     scrollToTop();
   };
 
+  const handleSelectOption = (questionId: number, value: number) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: value }));
+    setUnansweredList((prev) => prev.filter((id) => id !== questionId));
+    if (unansweredList.length <= 1) {
+      setQuestionnaireError(null);
+    }
+  };
+
   const handleBegin = () => navigate('participant-dashboard');
 
   return (
@@ -186,7 +198,7 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
 
       <div ref={containerRef} className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
         {/* ========================================================================= */}
-        {/* Step 1: Participant Consent (Screenshot Page)                             */}
+        {/* Step 1: Participant Consent                                               */}
         {/* ========================================================================= */}
         {step === 1 && (
           <div className="max-w-2xl mx-auto animate-fade-in-up">
@@ -317,7 +329,7 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
                 ← Back to home
               </button>
               <button
-                onClick={handleContinueToQuestionnaire}
+                onClick={handleContinueToDetails}
                 className="btn-primary px-6 sm:px-7 py-2.5 justify-center text-xs sm:text-sm cursor-pointer"
               >
                 Continue
@@ -328,10 +340,180 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
         )}
 
         {/* ========================================================================= */}
-        {/* Steps 2-5: Bangla Questionnaire Tables ((ক), (খ), (গ), (ঘ))                 */}
+        {/* Step 2: Participant Details [BEFORE THE BANGLA QUESTIONNAIRE]             */}
         {/* ========================================================================= */}
-        {(step === 2 || step === 3 || step === 4 || step === 5) && (() => {
-          const sectionIndex = step - 2; // 0 for ক, 1 for খ, 2 for গ, 3 for ঘ
+        {step === 2 && (
+          <div className="max-w-2xl mx-auto animate-fade-in-up">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#263B46] dark:text-[#EAF4F8] mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
+              Participant Details
+            </h1>
+            <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#9BB5C4] mb-6 sm:mb-8">
+              Your information is used for research purposes only. A participant ID will be generated for your session.
+            </p>
+
+            <div className="bg-white dark:bg-[#203541] rounded-2xl border border-[#C5DCE4] dark:border-[#2D4654] p-4 sm:p-7 space-y-4 sm:space-y-5 shadow-sm">
+              {/* Username */}
+              <div>
+                <label className="block text-xs sm:text-sm font-semibold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
+                  Username <span className="text-[#EF4444]">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter your username"
+                  value={form.name}
+                  onChange={(e) => {
+                    setForm((f) => ({ ...f, name: e.target.value }));
+                    setErrors((err) => ({ ...err, name: '' }));
+                  }}
+                  className={`ml-input ${errors.name ? 'error' : ''}`}
+                />
+                {errors.name && (
+                  <p className="flex items-center gap-1.5 text-xs text-[#EF4444] mt-1.5">
+                    <AlertCircle size={12} /> {errors.name}
+                  </p>
+                )}
+              </div>
+
+              {/* Age + Gender row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <label className="block text-xs sm:text-sm font-semibold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
+                    Age <span className="text-[#EF4444]">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="e.g. 23"
+                    value={form.age}
+                    onChange={(e) => {
+                      setForm((f) => ({ ...f, age: e.target.value }));
+                      setErrors((err) => ({ ...err, age: '' }));
+                    }}
+                    className={`ml-input ${errors.age ? 'error' : ''}`}
+                    min={16}
+                    max={100}
+                  />
+                  {errors.age && (
+                    <p className="flex items-center gap-1.5 text-xs text-[#EF4444] mt-1.5">
+                      <AlertCircle size={12} /> {errors.age}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-xs sm:text-sm font-semibold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
+                    Gender <span className="text-[#EF4444]">*</span>
+                  </label>
+                  <select
+                    value={form.gender}
+                    onChange={(e) => {
+                      setForm((f) => ({ ...f, gender: e.target.value }));
+                      setErrors((err) => ({ ...err, gender: '' }));
+                    }}
+                    className={`ml-input appearance-none ${errors.gender ? 'error' : ''}`}
+                  >
+                    <option value="">Select an option</option>
+                    {genderOptions.map((g) => (
+                      <option key={g} value={g}>
+                        {g}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.gender && (
+                    <p className="flex items-center gap-1.5 text-xs text-[#EF4444] mt-1.5">
+                      <AlertCircle size={12} /> {errors.gender}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* ADHD Diagnosis */}
+              <div>
+                <label className="block text-xs sm:text-sm font-semibold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
+                  Are you clinically diagnosed with ADHD? <span className="text-[#EF4444]">*</span>
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                  {[
+                    { value: 'yes', label: 'Yes' },
+                    { value: 'no', label: 'No' },
+                  ].map((opt) => {
+                    const isSelected = form.adhdDiagnosis === opt.value;
+                    return (
+                      <label
+                        key={opt.value}
+                        className={`flex items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 rounded-xl border-2 cursor-pointer transition-all ${
+                          isSelected
+                            ? 'border-[#4D91AD] dark:border-[#63B8C6] bg-[#D5E8EF] dark:bg-[#192831] shadow-xs'
+                            : errors.adhdDiagnosis
+                            ? 'border-[#EF4444]/60 bg-[#FDF0EE]/30 hover:border-[#EF4444]'
+                            : 'border-[#C5DCE4] dark:border-[#2D4654] bg-white dark:bg-[#192831]/60 hover:border-[#4D91AD] dark:hover:border-[#63B8C6]'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="adhdDiagnosis"
+                          value={opt.value}
+                          checked={isSelected}
+                          onChange={() => {
+                            setForm((f) => ({ ...f, adhdDiagnosis: opt.value as ADHDDiagnosisOption }));
+                            setErrors((err) => ({ ...err, adhdDiagnosis: '' }));
+                          }}
+                          className="sr-only"
+                        />
+                        <div
+                          className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                            isSelected
+                              ? 'border-[#4D91AD] bg-[#4D91AD] dark:border-[#63B8C6] dark:bg-[#63B8C6]'
+                              : 'border-[#C5DCE4] dark:border-[#2D4654] bg-white dark:bg-[#203541]'
+                          }`}
+                        >
+                          {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white dark:bg-[#111C23]" />}
+                        </div>
+                        <span
+                          className={`text-xs sm:text-sm font-semibold font-['Plus_Jakarta_Sans',sans-serif] ${
+                            isSelected ? 'text-[#4D91AD] dark:text-[#63B8C6]' : 'text-[#263B46] dark:text-[#EAF4F8]'
+                          }`}
+                        >
+                          {opt.label}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+                {errors.adhdDiagnosis && (
+                  <p className="flex items-center gap-1.5 text-xs text-[#EF4444] mt-1.5">
+                    <AlertCircle size={12} /> {errors.adhdDiagnosis}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-6">
+              <button
+                type="button"
+                onClick={() => {
+                  setStep(1);
+                  scrollToTop();
+                }}
+                className="btn-ghost justify-center text-xs sm:text-sm py-2.5 cursor-pointer"
+              >
+                ← Back to consent
+              </button>
+              <button
+                type="button"
+                onClick={handleContinueToQuestionnaire}
+                className="btn-primary px-6 sm:px-7 py-2.5 justify-center text-xs sm:text-sm cursor-pointer"
+              >
+                Continue to Questionnaire
+                <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* Steps 3-6: Bangla Questionnaire Tables ((ক), (খ), (গ), (ঘ))                 */}
+        {/* ========================================================================= */}
+        {(step === 3 || step === 4 || step === 5 || step === 6) && (() => {
+          const sectionIndex = step - 3; // 0 for ক (step 3), 1 for খ (step 4), 2 for গ (step 5), 3 for ঘ (step 6)
           const section = QUESTIONNAIRE_SECTIONS[sectionIndex];
           const answeredCount = section.questions.filter((q) => answers[q.id]).length;
           const totalInSection = section.questions.length;
@@ -542,7 +724,7 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
                   className="btn-ghost justify-center text-xs sm:text-sm py-2.5 cursor-pointer"
                 >
                   <ArrowLeft size={16} />
-                  {step === 2 ? '← সম্মতি পত্র' : 'পূর্ববর্তী পৃষ্ঠা'}
+                  {step === 3 ? '← তথ্যাবলি (Participant Details)' : 'পূর্ববর্তী পৃষ্ঠা'}
                 </button>
 
                 <button
@@ -553,7 +735,7 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
                   }`}
                 >
                   <span>
-                    {step === 5 ? 'সম্পূর্ণ করুন ও তথ্যাবলি পৃষ্ঠায় যান' : 'পরবর্তী পৃষ্ঠা'}
+                    {step === 6 ? 'সম্পূর্ণ করুন (Complete Registration)' : 'পরবর্তী পৃষ্ঠা'}
                   </span>
                   <ArrowRight size={16} />
                 </button>
@@ -561,181 +743,6 @@ export default function ConsentPage({ navigate, onRegister }: Props) {
             </div>
           );
         })()}
-
-        {/* ========================================================================= */}
-        {/* Step 6: Registration form (Participant Details)                           */}
-        {/* ========================================================================= */}
-        {step === 6 && (
-          <div className="max-w-2xl mx-auto animate-fade-in-up">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold mb-3">
-              <CheckCircle size={13} />
-              <span>প্রশ্নাবলির ১৮টি প্রশ্ন সফলভাবে সম্পন্ন হয়েছে</span>
-            </div>
-
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#263B46] dark:text-[#EAF4F8] mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
-              Participant Details
-            </h1>
-            <p className="text-xs sm:text-sm text-[#526E7B] dark:text-[#9BB5C4] mb-6 sm:mb-8">
-              Your information is used for research purposes only. A participant ID will be generated for your session.
-            </p>
-
-            <div className="bg-white dark:bg-[#203541] rounded-2xl border border-[#C5DCE4] dark:border-[#2D4654] p-4 sm:p-7 space-y-4 sm:space-y-5 shadow-sm">
-              {/* Username */}
-              <div>
-                <label className="block text-xs sm:text-sm font-semibold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
-                  Username <span className="text-[#EF4444]">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter your username"
-                  value={form.name}
-                  onChange={(e) => {
-                    setForm((f) => ({ ...f, name: e.target.value }));
-                    setErrors((err) => ({ ...err, name: '' }));
-                  }}
-                  className={`ml-input ${errors.name ? 'error' : ''}`}
-                />
-                {errors.name && (
-                  <p className="flex items-center gap-1.5 text-xs text-[#EF4444] mt-1.5">
-                    <AlertCircle size={12} /> {errors.name}
-                  </p>
-                )}
-              </div>
-
-              {/* Age + Gender row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                <div>
-                  <label className="block text-xs sm:text-sm font-semibold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
-                    Age <span className="text-[#EF4444]">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="e.g. 23"
-                    value={form.age}
-                    onChange={(e) => {
-                      setForm((f) => ({ ...f, age: e.target.value }));
-                      setErrors((err) => ({ ...err, age: '' }));
-                    }}
-                    className={`ml-input ${errors.age ? 'error' : ''}`}
-                    min={16}
-                    max={100}
-                  />
-                  {errors.age && (
-                    <p className="flex items-center gap-1.5 text-xs text-[#EF4444] mt-1.5">
-                      <AlertCircle size={12} /> {errors.age}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-xs sm:text-sm font-semibold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
-                    Gender <span className="text-[#EF4444]">*</span>
-                  </label>
-                  <select
-                    value={form.gender}
-                    onChange={(e) => {
-                      setForm((f) => ({ ...f, gender: e.target.value }));
-                      setErrors((err) => ({ ...err, gender: '' }));
-                    }}
-                    className={`ml-input appearance-none ${errors.gender ? 'error' : ''}`}
-                  >
-                    <option value="">Select an option</option>
-                    {genderOptions.map((g) => (
-                      <option key={g} value={g}>
-                        {g}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.gender && (
-                    <p className="flex items-center gap-1.5 text-xs text-[#EF4444] mt-1.5">
-                      <AlertCircle size={12} /> {errors.gender}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* ADHD Diagnosis */}
-              <div>
-                <label className="block text-xs sm:text-sm font-semibold text-[#263B46] dark:text-[#EAF4F8] mb-1.5 sm:mb-2 font-['Plus_Jakarta_Sans',sans-serif]">
-                  Are you clinically diagnosed with ADHD? <span className="text-[#EF4444]">*</span>
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
-                  {[
-                    { value: 'yes', label: 'Yes' },
-                    { value: 'no', label: 'No' },
-                  ].map((opt) => {
-                    const isSelected = form.adhdDiagnosis === opt.value;
-                    return (
-                      <label
-                        key={opt.value}
-                        className={`flex items-center gap-2.5 sm:gap-3 p-3 sm:p-3.5 rounded-xl border-2 cursor-pointer transition-all ${
-                          isSelected
-                            ? 'border-[#4D91AD] dark:border-[#63B8C6] bg-[#D5E8EF] dark:bg-[#192831] shadow-xs'
-                            : errors.adhdDiagnosis
-                            ? 'border-[#EF4444]/60 bg-[#FDF0EE]/30 hover:border-[#EF4444]'
-                            : 'border-[#C5DCE4] dark:border-[#2D4654] bg-white dark:bg-[#192831]/60 hover:border-[#4D91AD] dark:hover:border-[#63B8C6]'
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name="adhdDiagnosis"
-                          value={opt.value}
-                          checked={isSelected}
-                          onChange={() => {
-                            setForm((f) => ({ ...f, adhdDiagnosis: opt.value as ADHDDiagnosisOption }));
-                            setErrors((err) => ({ ...err, adhdDiagnosis: '' }));
-                          }}
-                          className="sr-only"
-                        />
-                        <div
-                          className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
-                            isSelected
-                              ? 'border-[#4D91AD] bg-[#4D91AD] dark:border-[#63B8C6] dark:bg-[#63B8C6]'
-                              : 'border-[#C5DCE4] dark:border-[#2D4654] bg-white dark:bg-[#203541]'
-                          }`}
-                        >
-                          {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white dark:bg-[#111C23]" />}
-                        </div>
-                        <span
-                          className={`text-xs sm:text-sm font-semibold font-['Plus_Jakarta_Sans',sans-serif] ${
-                            isSelected ? 'text-[#4D91AD] dark:text-[#63B8C6]' : 'text-[#263B46] dark:text-[#EAF4F8]'
-                          }`}
-                        >
-                          {opt.label}
-                        </span>
-                      </label>
-                    );
-                  })}
-                </div>
-                {errors.adhdDiagnosis && (
-                  <p className="flex items-center gap-1.5 text-xs text-[#EF4444] mt-1.5">
-                    <AlertCircle size={12} /> {errors.adhdDiagnosis}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-6">
-              <button
-                type="button"
-                onClick={() => {
-                  setStep(5);
-                  scrollToTop();
-                }}
-                className="btn-ghost justify-center text-xs sm:text-sm py-2.5 cursor-pointer"
-              >
-                ← পূর্ববর্তী (টেবিল ঘ)
-              </button>
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="btn-primary px-6 sm:px-7 py-2.5 justify-center text-xs sm:text-sm cursor-pointer"
-              >
-                Create session
-                <ArrowRight size={16} />
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* ========================================================================= */}
         {/* Step 7: Confirmation & Session Token Card                                 */}

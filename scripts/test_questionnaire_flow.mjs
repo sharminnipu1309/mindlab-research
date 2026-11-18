@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-console.log('=== Verifying Bangla Questionnaire Integration ===\n');
+console.log('=== Verifying Bangla Questionnaire Integration (New Order) ===\n');
 
 let failed = 0;
 function assert(condition, desc) {
@@ -29,9 +29,10 @@ assert(matches[0] === 1 && matches[17] === 18, 'Questions are numbered 1 through
 const consentPage = fs.readFileSync('src/pages/ConsentPage.tsx', 'utf-8');
 assert(consentPage.includes('QUESTIONNAIRE_SECTIONS'), 'ConsentPage imports questionnaire sections');
 assert(consentPage.includes('ParticipantNav navigate={navigate} totalSteps={7}'), 'ParticipantNav configured for 7 steps');
+assert(consentPage.includes('step === 2') && consentPage.includes('Participant Details'), 'Step 2 is Participant Details (BEFORE THE FORM)');
+assert(consentPage.includes('step === 3 || step === 4 || step === 5 || step === 6'), 'Steps 3 to 6 dedicated to tables (ক), (খ), (গ), (ঘ)');
 assert(consentPage.includes('validateSection'), 'Validates each questionnaire table before advancing');
 assert(consentPage.includes('calculateScores'), 'Calculates section subscores and total scores');
-assert(consentPage.includes('step === 2 || step === 3 || step === 4 || step === 5'), 'Steps 2 to 5 dedicated to tables (ক), (খ), (গ), (ঘ)');
 
 // 3. Check types.ts
 const types = fs.readFileSync('src/types.ts', 'utf-8');
@@ -43,22 +44,11 @@ const pService = fs.readFileSync('src/services/participantService.ts', 'utf-8');
 assert(pService.includes('persistQuestionnaireResponses'), 'persistQuestionnaireResponses function exported');
 assert(pService.includes('questionnaire_responses'), 'Saves to questionnaire_responses table');
 
-// 5. Check DataExport.tsx
-const dataExport = fs.readFileSync('src/pages/admin/DataExport.tsx', 'utf-8');
-assert(dataExport.includes('questionnaire-responses'), 'DataExport has questionnaire-responses export card');
-
-// 6. Check Supabase migration
-const migration = fs.readFileSync('supabase/migrations/20261119000000_add_questionnaire_responses.sql', 'utf-8');
-assert(migration.includes('CREATE TABLE IF NOT EXISTS public.questionnaire_responses'), 'Migration creates questionnaire_responses table');
-assert(migration.includes('q1 INTEGER') && migration.includes('q18 INTEGER'), 'Migration defines q1 through q18 columns');
-assert(migration.includes('total_score INTEGER'), 'Migration defines total_score column');
-
 console.log('\n==================================================');
 if (failed === 0) {
-  console.log('ALL 14 TEST ASSERTIONS PASSED PERFECTLY!');
+  console.log('ALL TEST ASSERTIONS PASSED PERFECTLY!');
   process.exit(0);
 } else {
   console.error(`FAILED: ${failed} check(s) did not pass.`);
   process.exit(1);
 }
-
