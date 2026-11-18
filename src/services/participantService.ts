@@ -1393,4 +1393,47 @@ export async function persistQuestionnaireResponses(
   return true;
 }
 
+/**
+ * Updates a participant's contact email in Supabase and local cache
+ * so they can receive their research results and interpretation.
+ */
+export async function updateParticipantEmail(participantCode: string, email: string): Promise<boolean> {
+  const cleanEmail = email.trim();
+  if (!cleanEmail) return false;
+
+  // 1. Update local storage context
+  const stored = getStoredSessionContext();
+  if (stored && stored.participantData) {
+    stored.participantData.email = cleanEmail;
+    try {
+      sessionStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(stored));
+      localStorage.setItem(LOCAL_STORAGE_SESSION_KEY, JSON.stringify(stored));
+    } catch {}
+  }
+
+  // 2. Update in Supabase
+  if (isSupabaseConfigured() && supabase) {
+    try {
+      const { error } = await supabase
+        .from('participants')
+        .update({ email: cleanEmail, updated_at: new Date().toISOString() })
+        .eq('participant_code', participantCode);
+
+      if (error) {
+        console.warn('[Supabase] Failed to update participant email:', error.message);
+        queueUnsavedPayload('participants', { participant_code: participantCode, email: cleanEmail }, 'participant_code');
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.warn('[Supabase] Exception updating participant email:', err);
+      queueUnsavedPayload('participants', { participant_code: participantCode, email: cleanEmail }, 'participant_code');
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
 

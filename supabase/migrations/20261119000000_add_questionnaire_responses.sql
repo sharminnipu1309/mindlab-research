@@ -72,3 +72,4 @@ ON public.questionnaire_responses
 FOR SELECT
 TO anon, authenticated
 USING (true);
+

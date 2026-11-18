@@ -61,3 +61,4 @@ if (failed === 0) {
   console.error(`FAILED: ${failed} check(s) did not pass.`);
   process.exit(1);
 }
+
