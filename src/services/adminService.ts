@@ -889,6 +889,7 @@ export async function fetchExportRowCounts(): Promise<Record<string, number>> {
       taskSwitchingTrialsRes,
       participantsRes,
       sessionsRes,
+      questionnaireRes,
     ] = await Promise.all([
       supabase.from('hanoi_puzzles').select('*', { count: 'exact', head: true }),
       supabase.from('hanoi_moves').select('*', { count: 'exact', head: true }),
@@ -897,6 +898,7 @@ export async function fetchExportRowCounts(): Promise<Record<string, number>> {
       supabase.from('task_switching_trials').select('*', { count: 'exact', head: true }),
       supabase.from('participants').select('*', { count: 'exact', head: true }),
       supabase.from('sessions').select('*', { count: 'exact', head: true }),
+      supabase.from('questionnaire_responses').select('*', { count: 'exact', head: true }),
     ]);
 
     const numHanoiPuzzles = hanoiPuzzlesRes.count || 0;
@@ -906,6 +908,7 @@ export async function fetchExportRowCounts(): Promise<Record<string, number>> {
     const numTsTrials = taskSwitchingTrialsRes.count || 0;
     const numParticipants = participantsRes.count || 0;
     const numSessions = sessionsRes.count || 0;
+    const numQuestionnaires = questionnaireRes?.count || 0;
 
     counts['hanoi-summary'] = numHanoiPuzzles;
     counts['hanoi-moves'] = numHanoiMoves;
@@ -919,6 +922,7 @@ export async function fetchExportRowCounts(): Promise<Record<string, number>> {
     counts['task-switching-trials'] = numTsTrials;
     counts['participants'] = numParticipants;
     counts['sessions'] = numSessions;
+    counts['questionnaire-responses'] = numQuestionnaires;
   } catch (err) {
     console.warn('Error fetching live export counts:', err);
   }
@@ -1160,6 +1164,37 @@ export async function fetchExportTableData(tableKey: string): Promise<Record<str
           stroop_complete: s.stroop_completed_at || '',
           task_switching_completed: s.task_switching_completed,
           task_switching_complete: s.task_switching_completed_at || '',
+        }));
+      }
+      case 'questionnaire-responses': {
+        const { data } = await supabase.from('questionnaire_responses').select('*').order('created_at', { ascending: true });
+        return (data || []).map(q => ({
+          participant_id: q.participant_code || pMap.get(q.participant_id) || q.participant_id,
+          session_id: q.session_id,
+          total_score: q.total_score,
+          section_a_score: q.section_a_score,
+          section_b_score: q.section_b_score,
+          section_c_score: q.section_c_score,
+          section_d_score: q.section_d_score,
+          q1: q.q1,
+          q2: q.q2,
+          q3: q.q3,
+          q4: q.q4,
+          q5: q.q5,
+          q6: q.q6,
+          q7: q.q7,
+          q8: q.q8,
+          q9: q.q9,
+          q10: q.q10,
+          q11: q.q11,
+          q12: q.q12,
+          q13: q.q13,
+          q14: q.q14,
+          q15: q.q15,
+          q16: q.q16,
+          q17: q.q17,
+          q18: q.q18,
+          submitted_at: q.created_at,
         }));
       }
       default:

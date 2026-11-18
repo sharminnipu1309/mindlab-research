@@ -1,6 +1,7 @@
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import {
   ParticipantSession,
+  MentalizationResponses,
   HanoiSessionResult,
   CorsiSessionResult,
   CorsiTrialRecord,
@@ -211,6 +212,16 @@ export async function registerParticipantSession(
         queueUnsavedPayload('sessions', sessionPayload, 'id');
       } else if (sData) {
         dbSessionId = sData.id;
+      }
+
+      // 3. Insert questionnaire responses if available
+      if (participant.questionnaireResponses) {
+        await persistQuestionnaireResponses(
+          dbParticipantId,
+          dbSessionId,
+          participant.id,
+          participant.questionnaireResponses
+        );
       }
     } catch (err) {
       console.error('Database registration exception:', err);
@@ -1314,4 +1325,72 @@ export async function refreshParticipantSessionStatus(
     return currentParticipant;
   }
 }
+
+/**
+ * Persists mentalization questionnaire responses locally and in Supabase.
+ */
+export async function persistQuestionnaireResponses(
+  participantId: string,
+  sessionId: string,
+  participantCode: string,
+  responses: MentalizationResponses
+): Promise<boolean> {
+  const payload = {
+    participant_id: participantId,
+    session_id: sessionId,
+    participant_code: participantCode,
+    section_a_score: responses.sectionAScore,
+    section_b_score: responses.sectionBScore,
+    section_c_score: responses.sectionCScore,
+    section_d_score: responses.sectionDScore,
+    total_score: responses.totalScore,
+    answers_json: responses.answers,
+    q1: responses.answers[1] || null,
+    q2: responses.answers[2] || null,
+    q3: responses.answers[3] || null,
+    q4: responses.answers[4] || null,
+    q5: responses.answers[5] || null,
+    q6: responses.answers[6] || null,
+    q7: responses.answers[7] || null,
+    q8: responses.answers[8] || null,
+    q9: responses.answers[9] || null,
+    q10: responses.answers[10] || null,
+    q11: responses.answers[11] || null,
+    q12: responses.answers[12] || null,
+    q13: responses.answers[13] || null,
+    q14: responses.answers[14] || null,
+    q15: responses.answers[15] || null,
+    q16: responses.answers[16] || null,
+    q17: responses.answers[17] || null,
+    q18: responses.answers[18] || null,
+  };
+
+  // 1. Always store locally
+  try {
+    localStorage.setItem(`mindlab_questionnaire_${participantCode}`, JSON.stringify(responses));
+  } catch {}
+
+  // 2. Persist to Supabase if configured
+  if (isSupabaseConfigured() && supabase) {
+    try {
+      const { error } = await supabase
+        .from('questionnaire_responses')
+        .insert(payload);
+
+      if (error) {
+        console.warn('[Supabase] Failed to insert questionnaire response into table:', error.message);
+        queueUnsavedPayload('questionnaire_responses', payload);
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.warn('[Supabase] Network exception saving questionnaire:', err);
+      queueUnsavedPayload('questionnaire_responses', payload);
+      return false;
+    }
+  }
+
+  return true;
+}
+
 

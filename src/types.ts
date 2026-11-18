@@ -242,6 +242,16 @@ export const TASK_SWITCHING_EVEN_NUMBERS = [2, 4, 6, 8];
 
 export type ADHDDiagnosisOption = 'yes' | 'no' | 'prefer_not_to_say';
 
+export interface MentalizationResponses {
+  answers: Record<number, number>; // question id (1..18) -> rating (1..5)
+  sectionAScore: number; // Sum of items 1-7 (Range: 7 - 35)
+  sectionBScore: number; // Sum of items 8-10 (Range: 3 - 15)
+  sectionCScore: number; // Sum of items 11-13 (Range: 3 - 15)
+  sectionDScore: number; // Sum of items 14-18 (Range: 5 - 25)
+  totalScore: number; // Sum of all 18 items (Range: 18 - 90)
+  completedAt: string;
+}
+
 export type ExperimentStatus = 'not_started' | 'in_progress' | 'completed';
 
 export interface ParticipantSession {
@@ -254,6 +264,7 @@ export interface ParticipantSession {
   gender: string;
   adhdDiagnosis?: ADHDDiagnosisOption;
   email?: string;
+  questionnaireResponses?: MentalizationResponses;
   hanoiCompleted: boolean;
   corsiCompleted: boolean;
   stroopCompleted: boolean;

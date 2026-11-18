@@ -182,6 +182,19 @@ const exports: ExportCard[] = [
     color: '#6567C9',
     bg: '#EDEAF8',
   },
+  {
+    id: 'questionnaire-responses',
+    category: 'Questionnaire',
+    title: 'Mentalization Questionnaire (RFQ / বাংলা মানসিক প্রশ্নাবলি)',
+    dataClassification: 'Participant/session summaries',
+    typeTag: 'summary',
+    oneRowRepresents: 'One row per participant containing responses to all 18 items across 4 sections (ক, খ, গ, ঘ) plus section subscores and total score.',
+    usefulFor: 'Assessing reflective functioning, mentalization capacity, emotional awareness, perspective taking, problem solving scores, and correlating with cognitive task metrics.',
+    columnsList: ['participant_id', 'session_id', 'total_score', 'section_a_score', 'section_b_score', 'section_c_score', 'section_d_score', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10', 'q11', 'q12', 'q13', 'q14', 'q15', 'q16', 'q17', 'q18', 'submitted_at'],
+    filenamePrefix: 'memtiva_questionnaire_mentalization_responses',
+    color: '#0D9488',
+    bg: '#E4F2F0',
+  },
 ];
 
 export default function DataExport({ navigate, onLogout, currentPage }: Props) {

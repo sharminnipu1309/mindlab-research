@@ -33,32 +33,44 @@ export default function ParticipantNav({
 
         {/* Progress steps */}
         {totalSteps && currentStep && (
-          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-            {Array.from({ length: totalSteps }, (_, i) => (
-              <div key={i} className="flex items-center gap-1.5 sm:gap-3">
-                <div
-                  className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[11px] sm:text-xs font-bold font-['Plus_Jakarta_Sans',sans-serif] transition-all ${
-                    i + 1 < currentStep
-                      ? 'bg-[#4D91AD] text-white dark:bg-[#63B8C6] dark:text-[#111C23] shadow-xs'
-                      : i + 1 === currentStep
-                      ? 'bg-[#4D91AD] text-white ring-2 sm:ring-4 ring-[#4D91AD]/30 dark:bg-[#63B8C6] dark:text-[#111C23] dark:ring-[#63B8C6]/30 shadow-sm'
-                      : 'bg-[#D5E8EF] text-[#526E7B] dark:bg-[#203541] dark:text-[#9BB5C4]'
-                  }`}
-                >
-                  {i + 1 < currentStep ? '✓' : i + 1}
-                </div>
-                {i < totalSteps - 1 && (
+          <>
+            {/* Desktop / Tablet: Full Stepper */}
+            <div className={`${totalSteps > 4 ? 'hidden sm:flex' : 'flex'} items-center gap-1.5 sm:gap-3 shrink-0`}>
+              {Array.from({ length: totalSteps }, (_, i) => (
+                <div key={i} className="flex items-center gap-1.5 sm:gap-3">
                   <div
-                    className={`w-3 sm:w-6 md:w-10 h-0.5 rounded-full transition-all ${
+                    className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[11px] sm:text-xs font-bold font-['Plus_Jakarta_Sans',sans-serif] transition-all ${
                       i + 1 < currentStep
-                        ? 'bg-[#4D91AD] dark:bg-[#63B8C6]'
-                        : 'bg-[#C5DCE4] dark:bg-[#2D4654]'
+                        ? 'bg-[#4D91AD] text-white dark:bg-[#63B8C6] dark:text-[#111C23] shadow-xs'
+                        : i + 1 === currentStep
+                        ? 'bg-[#4D91AD] text-white ring-2 sm:ring-4 ring-[#4D91AD]/30 dark:bg-[#63B8C6] dark:text-[#111C23] dark:ring-[#63B8C6]/30 shadow-sm'
+                        : 'bg-[#D5E8EF] text-[#526E7B] dark:bg-[#203541] dark:text-[#9BB5C4]'
                     }`}
-                  />
-                )}
+                  >
+                    {i + 1 < currentStep ? '✓' : i + 1}
+                  </div>
+                  {i < totalSteps - 1 && (
+                    <div
+                      className={`w-2.5 sm:w-4 md:w-8 h-0.5 rounded-full transition-all ${
+                        i + 1 < currentStep
+                          ? 'bg-[#4D91AD] dark:bg-[#63B8C6]'
+                          : 'bg-[#C5DCE4] dark:border-[#2D4654]'
+                      }`}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Mobile Compact View for > 4 steps */}
+            {totalSteps > 4 && (
+              <div className="sm:hidden flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#D5E8EF] dark:bg-[#203541] text-[#263B46] dark:text-[#EAF4F8] text-xs font-bold shrink-0">
+                <span className="text-[#4D91AD] dark:text-[#63B8C6]">{currentStep}</span>
+                <span className="text-[#526E7B] dark:text-[#9BB5C4]">/</span>
+                <span>{totalSteps}</span>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
 
         {/* Right side */}
